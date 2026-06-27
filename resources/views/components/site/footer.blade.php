@@ -1,0 +1,91 @@
+@php
+    $brand = $settings->brand_name ?? 'Creative Trees Group';
+    $email = $settings->contact_email ?? 'hello@creativetrees.group';
+    $phone = $settings->contact_phone;
+    $address = $settings->contact_address;
+    $socials = $settings->social_links ?? [];
+    $cols = [
+        'Studio' => \App\Models\NavLink::query()->where('location', 'footer_studio')->ordered()->get(),
+        'Company' => \App\Models\NavLink::query()->where('location', 'footer_company')->ordered()->get(),
+    ];
+@endphp
+
+<footer class="surface-dark relative overflow-hidden">
+    {{-- ── CTA band ── --}}
+    <section class="frame !border-0 py-20 md:py-28">
+        <div class="grid gap-y-10 md:grid-cols-12 md:items-end md:gap-x-10">
+            <div class="md:col-span-7" data-reveal>
+                <x-ui.eyebrow class="mb-7">{{ content('footer.cta_eyebrow', "Let's build") }}</x-ui.eyebrow>
+                <h2 class="display text-[2.6rem] leading-[0.95] sm:text-5xl md:text-[4.2rem]">
+                    {!! nl2br(e(content('footer.cta_title', "Have something\nworth building?"))) !!}
+                </h2>
+            </div>
+            <div class="flex flex-col items-start md:col-span-5 md:items-end md:text-right" data-reveal data-reveal-delay="0.1">
+                <p class="mb-7 max-w-sm text-[1rem] leading-relaxed text-[#9a9a96]">
+                    {{ content('footer.cta_body', "Tell us where you're headed. We'll tell you the shortest honest path to get there.") }}
+                </p>
+                <x-ui.button href="/start" variant="invert">{{ content('footer.cta_button', 'Start a project') }}</x-ui.button>
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Link grid ── --}}
+    <section class="frame !border-0 border-t border-[#1c1c1c] py-16">
+        <div class="grid gap-x-10 gap-y-12 md:grid-cols-12">
+            {{-- brand --}}
+            <div class="md:col-span-4">
+                <a href="/" class="group inline-flex items-center gap-2.5">
+                    <x-ui.logo-mark class="h-5 w-5 text-paper transition-transform duration-500 group-hover:rotate-90" />
+                    <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">Creative&nbsp;Trees</span>
+                </a>
+                <p class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96]">
+                    {{ $settings->footer_tagline ?? 'Designed and built to compound.' }}
+                </p>
+                <a href="mailto:{{ $email }}" class="link-underline mt-7 inline-block font-mono text-sm text-paper">{{ $email }}</a>
+            </div>
+
+            {{-- evenly-spaced columns --}}
+            <div class="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 md:col-span-8">
+                @foreach ($cols as $title => $links)
+                    <nav>
+                        <p class="label-mono mb-5 text-[#8a8a86]">{{ $title }}</p>
+                        <ul class="space-y-3">
+                            @foreach ($links as $link)
+                                <li><a href="{{ $link->url }}" class="link-underline text-sm text-[#cfcfcc] transition-colors hover:text-paper">{{ $link->label }}</a></li>
+                            @endforeach
+                        </ul>
+                    </nav>
+                @endforeach
+
+                <div class="col-span-2 sm:col-span-1">
+                    <p class="label-mono mb-5 text-[#8a8a86]">{{ content('footer.contact_label', 'Contact') }}</p>
+                    <ul class="space-y-3 text-sm text-[#cfcfcc]">
+                        @if ($phone)<li>{{ $phone }}</li>@endif
+                        @if ($address)<li class="text-[#9a9a96]">{{ $address }}</li>@endif
+                    </ul>
+                    @if (! empty($socials))
+                        <div class="mt-6 flex flex-wrap gap-x-4 gap-y-2.5">
+                            @foreach ($socials as $name => $url)
+                                <a href="{{ $url }}" target="_blank" rel="noopener"
+                                   class="link-underline font-mono text-xs uppercase tracking-wide text-[#9a9a96] hover:text-paper">{{ $name }}</a>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Binary wordmark — letters built from flowing 0/1. Enlarges + wraps on
+         mobile so the binary stays legible; one clean line on tablet/desktop. ── --}}
+    <div class="frame !border-0 overflow-hidden pb-8 pt-8" aria-hidden="true">
+        <div class="binary-text display select-none text-center text-[13.5vw] leading-[1.05] sm:whitespace-nowrap sm:text-[7.6vw] sm:leading-[0.9] lg:text-[6.8vw] lg:leading-[0.85]"
+             data-binary-text>CREATIVE TREES GROUP</div>
+    </div>
+
+    {{-- ── Baseline ── --}}
+    <div class="frame !border-0 flex flex-col gap-2 border-t border-[#1c1c1c] py-6 font-mono text-[0.72rem] uppercase tracking-wide text-[#8a8a86] sm:flex-row sm:items-center sm:justify-between">
+        <span>© {{ date('Y') }} {{ $brand }}</span>
+        <span>{{ $address ?? 'Jakarta · Remote-first' }} — {{ $settings->footer_tagline ?? 'Built to compound' }}</span>
+    </div>
+</footer>
