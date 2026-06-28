@@ -11,6 +11,9 @@ return new class extends Migration
         Schema::create('site_settings', function (Blueprint $table) {
             $table->id();
             $table->string('brand_name')->default('Creative Trees Group');
+            $table->string('logo_path')->nullable();    // uploaded company logo
+            $table->string('logo_text')->nullable();    // header/footer wordmark text
+            $table->string('favicon_path')->nullable(); // uploaded favicon
             $table->string('hero_eyebrow')->nullable();
             $table->text('hero_title')->nullable();
             $table->text('hero_subtitle')->nullable();

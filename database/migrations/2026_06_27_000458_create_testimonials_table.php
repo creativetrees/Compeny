@@ -21,6 +21,7 @@ return new class extends Migration
             $table->unsignedSmallInteger('sort')->default(0);
             $table->timestamps();
 
+            $table->index('project_id'); // Postgres does not auto-index FKs
             $table->index(['is_featured', 'sort']);
         });
     }
