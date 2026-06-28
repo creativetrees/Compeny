@@ -1,0 +1,173 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# compose.prod.yaml — Creative Trees production stack (hardened)
+#
+#   docker compose -f compose.prod.yaml --env-file .env.prod up -d
+#
+# Differences vs the dev docker-compose.yml:
+#   • No vite / mailpit (dev-only).
+#   • postgres / redis / reverb are on an INTERNAL network with NO host ports.
+#   • Only nginx publishes 80/443.
+#   • Containers run non-root, drop all caps, no-new-privileges, with limits.
+#
+# PREREQUISITES (do once):
+#   1. docker/php/Dockerfile must expose a `runtime` build target that ends with
+#      `USER app` (non-root). See docs/SECURITY-HARDENING.md → Docker.
+#   2. Provide .env.prod (uncommitted) with APP_KEY, DB_*, REDIS_PASSWORD, etc.
+#   3. Build assets in CI/locally: `npm ci && npm run build` → public/build is
+#      shipped read-only to nginx.
+# ─────────────────────────────────────────────────────────────────────────────
+
+x-app-environment: &app-environment
+  APP_ENV: production
+  APP_DEBUG: "false"
+  DB_HOST: postgres
+  DB_PORT: "5432"
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env.prod}
+
+x-logging: &default-logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
+x-hardening: &hardening
+  restart: unless-stopped
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  logging: *default-logging
+
+services:
+  app: # php-fpm — runtime image (USER app baked in)
+    image: creative-trees/app:${APP_VERSION:-latest}
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: runtime
+    <<: *hardening
+    env_file: [.env.prod]
+    environment: { <<: *app-environment }
+    user: "app"
+    read_only: true
+    tmpfs: ["/tmp"]
+    volumes:
+      - app-storage:/var/www/html/storage
+      - app-bootcache:/var/www/html/bootstrap/cache
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 256
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD-SHELL", "cgi-fcgi -bind -connect 127.0.0.1:9000 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks: [edge, backend]
+
+  nginx:
+    image: nginx:1.27-alpine
+    <<: *hardening
+    read_only: true
+    tmpfs: ["/var/cache/nginx", "/run", "/var/log/nginx"]
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./public:/var/www/html/public:ro
+      - ./docker/nginx/certs:/etc/nginx/certs:ro # or mount from certbot
+    depends_on: [app]
+    mem_limit: 128m
+    cpus: 0.5
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/up"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks: [edge, backend]
+
+  postgres:
+    image: postgres:17-alpine
+    <<: *hardening
+    env_file: [.env.prod]
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env.prod}
+    volumes:
+      - ctg-pgdata:/var/lib/postgresql/data
+    # NO ports — internal only
+    mem_limit: 512m
+    cpus: 1.0
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [backend]
+
+  redis: # single hardened instance (single-tenant); split into cache+queue only if needed
+    image: redis:7-alpine
+    <<: *hardening
+    command: ["redis-server", "/usr/local/etc/redis/redis-queue.conf"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env.prod}
+    volumes:
+      - ./docker/redis/redis-queue.conf:/usr/local/etc/redis/redis-queue.conf:ro
+      - ctg-redisdata:/data
+    read_only: true
+    tmpfs: ["/tmp"]
+    # NO ports — internal only
+    mem_limit: 256m
+    cpus: 0.5
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping | grep -q PONG"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks: [backend]
+
+  queue:
+    image: creative-trees/app:${APP_VERSION:-latest}
+    <<: *hardening
+    user: "app"
+    env_file: [.env.prod]
+    environment: { <<: *app-environment }
+    command: php artisan queue:work --tries=3 --timeout=90 --sleep=1 --max-time=3600
+    read_only: true
+    tmpfs: ["/tmp"]
+    volumes:
+      - app-storage:/var/www/html/storage
+      - app-bootcache:/var/www/html/bootstrap/cache
+    depends_on:
+      redis: { condition: service_healthy }
+      postgres: { condition: service_healthy }
+    mem_limit: 512m
+    cpus: 0.5
+    networks: [backend]
+
+  # reverb: enable ONLY when realtime is on (VITE_ENABLE_REALTIME=true +
+  #   BROADCAST_CONNECTION=reverb). Internal-only; nginx proxies WSS to it.
+  # reverb:
+  #   image: creative-trees/app:${APP_VERSION:-latest}
+  #   <<: *hardening
+  #   user: "app"
+  #   env_file: [.env.prod]
+  #   environment: { <<: *app-environment }
+  #   command: php artisan reverb:start --host=0.0.0.0 --port=8080
+  #   mem_limit: 256m
+  #   networks: [backend]
+
+networks:
+  edge:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true # no host ingress/egress — DB/redis/reverb unreachable externally
+
+volumes:
+  ctg-pgdata: { driver: local }
+  ctg-redisdata: { driver: local }
+  app-storage: { driver: local }
+  app-bootcache: { driver: local }

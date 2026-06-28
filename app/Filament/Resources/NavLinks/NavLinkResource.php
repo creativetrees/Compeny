@@ -19,6 +19,7 @@ class NavLinkResource extends Resource
     protected static ?string $model = NavLink::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedLink;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 16;

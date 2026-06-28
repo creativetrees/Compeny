@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\ProcessPhases\Schemas;
 
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class ProcessPhaseForm

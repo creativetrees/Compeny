@@ -5,6 +5,7 @@ use App\Http\Controllers\Site\LeadController;
 use App\Http\Controllers\Site\PageController;
 use App\Http\Controllers\Site\ProductController;
 use App\Http\Controllers\Site\ServiceController;
+use App\Http\Controllers\Site\SitemapController;
 use App\Http\Controllers\Site\TeamController;
 use App\Http\Controllers\Site\WorkController;
 use Illuminate\Support\Facades\Route;
@@ -25,5 +26,5 @@ Route::get('/start', [LeadController::class, 'create'])->name('start');
 Route::post('/start', [LeadController::class, 'store'])->middleware('throttle:6,1')->name('leads.store');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
-Route::get('/sitemap.xml', [\App\Http\Controllers\Site\SitemapController::class, 'index'])->name('sitemap');
-Route::get('/robots.txt', [\App\Http\Controllers\Site\SitemapController::class, 'robots'])->name('robots');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');

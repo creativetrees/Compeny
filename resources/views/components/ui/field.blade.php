@@ -11,7 +11,7 @@
     $value = old($name);
     $hasError = $errors->has($name);
     $aria = $hasError ? ['aria-invalid' => 'true', 'aria-describedby' => $name.'-error'] : [];
-    $borderClass = $hasError ? 'border-2 border-ink' : '{{ $borderClass }}';
+    $borderClass = $hasError ? 'border-2 border-ink' : 'border border-line';
 @endphp
 
 <div>

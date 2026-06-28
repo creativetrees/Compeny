@@ -13,10 +13,14 @@ import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Swiper from 'swiper';
-import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import { Autoplay, Navigation, Pagination, A11y } from 'swiper/modules';
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const coarse = window.matchMedia('(pointer: coarse)').matches;
+
+// A11y: when the lead form reloads with validation errors, move focus to the
+// error summary so keyboard / screen-reader users are told the submit failed.
+document.querySelector('[data-error-summary]')?.focus();
 
 /* ── Alpine ─────────────────────────────────────────────────────────────── */
 Alpine.plugin(collapse);
@@ -360,7 +364,7 @@ function initCarousels() {
     document.querySelectorAll('.testimonials-swiper').forEach((el) => {
         const slides = el.querySelectorAll('.swiper-slide').length;
         new Swiper(el, {
-            modules: [Autoplay, Navigation, Pagination],
+            modules: [Autoplay, Navigation, Pagination, A11y],
             slidesPerView: 1,
             spaceBetween: 24,
             grabCursor: true,

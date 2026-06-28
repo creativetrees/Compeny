@@ -98,9 +98,16 @@
                         <div class="flex flex-col gap-3 border-b border-line py-6" data-stagger-item>
                             <dt class="label-mono text-faint">{{ content('contact.elsewhere_label', 'Elsewhere') }}</dt>
                             <dd class="flex flex-wrap gap-x-5 gap-y-2">
-                                @foreach ($socials as $name => $url)
-                                    <a href="{{ $url }}" target="_blank" rel="noopener"
-                                       class="link-underline font-mono text-xs uppercase tracking-wide text-ink/80 hover:text-ink">{{ $name }}</a>
+                                @foreach ($socials as $key => $social)
+                                    @php
+                                        // Supports both new [{platform,url}] and legacy {platform: url}.
+                                        $sUrl = is_array($social) ? ($social['url'] ?? null) : $social;
+                                        $sName = is_array($social) ? ($social['platform'] ?? null) : $key;
+                                    @endphp
+                                    @if ($sUrl && $sName)
+                                        <a href="{{ $sUrl }}" target="_blank" rel="noopener"
+                                           class="link-underline font-mono text-xs uppercase tracking-wide text-ink/80 hover:text-ink">{{ $sName }}</a>
+                                    @endif
                                 @endforeach
                             </dd>
                         </div>

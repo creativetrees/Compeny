@@ -130,11 +130,11 @@
                     <div x-data="{ open: false }" class="border-b border-line" data-stagger-item>
                         <button type="button" @click="open = !open"
                                 class="group flex w-full items-center justify-between gap-6 py-6 text-left"
-                                :aria-expanded="open">
+                                :aria-expanded="open" aria-controls="faq-panel-{{ $loop->index }}">
                             <span class="font-mono text-[0.95rem] font-bold uppercase tracking-tight transition-colors group-hover:text-ink/70">{{ $faq->question }}</span>
-                            <span class="shrink-0 font-mono text-xl text-faint transition-transform duration-300" :class="open && 'rotate-45'">+</span>
+                            <span class="shrink-0 font-mono text-xl text-faint transition-transform duration-300" :class="open && 'rotate-45'" aria-hidden="true">+</span>
                         </button>
-                        <div x-show="open" x-collapse>
+                        <div x-show="open" x-collapse id="faq-panel-{{ $loop->index }}">
                             <p class="measure pb-7 text-[0.97rem] leading-relaxed text-muted">{{ $faq->answer }}</p>
                         </div>
                     </div>

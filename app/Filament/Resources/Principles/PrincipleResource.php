@@ -19,6 +19,7 @@ class PrincipleResource extends Resource
     protected static ?string $model = Principle::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSparkles;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 13;

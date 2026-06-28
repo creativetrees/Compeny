@@ -19,6 +19,7 @@ class PricingTierResource extends Resource
     protected static ?string $model = PricingTier::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 10;

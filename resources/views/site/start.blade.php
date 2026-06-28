@@ -41,6 +41,18 @@
                     <form method="POST" action="{{ route('leads.store') }}" class="space-y-8" data-reveal>
                         @csrf
 
+                        @if ($errors->any())
+                            <div role="alert" tabindex="-1" data-error-summary
+                                 class="border-2 border-ink bg-panel px-5 py-4 font-mono text-sm text-ink">
+                                <p class="font-bold uppercase tracking-wide">Please fix {{ $errors->count() }} {{ \Illuminate\Support\Str::plural('field', $errors->count()) }}:</p>
+                                <ul class="mt-2 list-disc space-y-1 pl-5 text-muted">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         {{-- Honeypot: invisible to humans; bots that fill it are silently dropped. --}}
                         <div class="hidden" aria-hidden="true">
                             <label>Company URL

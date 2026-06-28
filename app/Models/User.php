@@ -31,13 +31,13 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        $domains = config('panel.allowed_email_domains', []);
+        $domains = array_map('strtolower', (array) config('panel.allowed_email_domains', []));
 
         if ($domains === []) {
             return false;
         }
 
-        return in_array(Str::after($this->email, '@'), $domains, true);
+        return in_array(Str::lower(Str::after($this->email, '@')), $domains, true);
     }
 
     /**

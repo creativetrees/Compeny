@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Events\LeadReceived;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Models\Service;
+use App\Models\StartStep;
 use Illuminate\Http\Request;
 
 class LeadController extends Controller
@@ -14,7 +16,7 @@ class LeadController extends Controller
         return view('site.start', [
             'services' => Service::query()->ordered()->get(),
             'budgets' => ['< $10k', '$10k–$25k', '$25k–$50k', '$50k+'],
-            'steps' => \App\Models\StartStep::query()->ordered()->get(),
+            'steps' => StartStep::query()->ordered()->get(),
         ]);
     }
 
@@ -37,7 +39,7 @@ class LeadController extends Controller
 
         $lead = Lead::create($data + ['status' => 'new', 'source' => 'website']);
 
-        event(new \App\Events\LeadReceived($lead));
+        event(new LeadReceived($lead));
 
         return redirect()->route('start')->with('lead_sent', true);
     }

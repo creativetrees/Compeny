@@ -5,8 +5,8 @@ namespace App\Filament\Resources\SiteSettings\Schemas;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class SiteSettingForm
@@ -30,12 +30,16 @@ class SiteSettingForm
                     ->image()
                     ->directory('site')
                     ->imageEditor()
-                    ->helperText('Transparent PNG/SVG. Empty = use the built-in mark.'),
+                    ->maxSize(2048)
+                    ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'])
+                    ->helperText('Transparent PNG/SVG, max 2 MB. Empty = use the built-in mark.'),
                 FileUpload::make('favicon_path')
                     ->label('Favicon')
                     ->image()
                     ->directory('site')
-                    ->helperText('Browser tab icon (ICO/PNG/SVG, e.g. 512×512). Empty = default favicon.'),
+                    ->maxSize(1024)
+                    ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'])
+                    ->helperText('Browser tab icon (ICO/PNG/SVG, e.g. 512×512), max 1 MB. Empty = default favicon.'),
 
                 // ── Hero ──
                 TextInput::make('hero_eyebrow'),

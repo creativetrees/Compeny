@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\Client;
+use App\Models\ProcessPhase;
 use App\Models\Product;
 use App\Models\Project;
 use App\Models\Service;
@@ -19,7 +20,7 @@ class HomeController extends Controller
             'clients' => Client::query()->featured()->ordered()->get(),
             'testimonials' => Testimonial::query()->ordered()->get(),
             'products' => Product::query()->published()->featured()->ordered()->take(3)->get(),
-            'process' => \App\Models\ProcessPhase::query()->ordered()->get(),
+            'process' => ProcessPhase::query()->ordered()->get(),
         ]);
     }
 }

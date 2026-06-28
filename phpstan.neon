@@ -1,0 +1,16 @@
+# Static analysis for Creative Trees.
+# Enable locally with:  composer require --dev larastan/larastan:^3.0
+# Then run:             vendor/bin/phpstan analyse --memory-limit=512M
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 6 # starting gate; ratchet to 8 as types tighten
+    paths:
+        - app
+        - config
+        - database
+        - routes
+    ignoreErrors:
+        - '#Unsafe usage of new static#'
+    checkMissingIterableValueType: false

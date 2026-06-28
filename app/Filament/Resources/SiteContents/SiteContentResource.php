@@ -19,6 +19,7 @@ class SiteContentResource extends Resource
     protected static ?string $model = SiteContent::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 20;

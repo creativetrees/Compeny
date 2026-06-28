@@ -19,6 +19,7 @@ class StartStepResource extends Resource
     protected static ?string $model = StartStep::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedListBullet;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 15;

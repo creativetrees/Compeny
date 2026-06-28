@@ -14,8 +14,8 @@ class SitemapController extends Controller
 
         $urls = [];
         foreach (['/' => '1.0', '/work' => '0.8', '/services' => '0.7', '/process' => '0.6',
-                  '/pricing' => '0.6', '/products' => '0.7', '/team' => '0.6', '/about' => '0.6',
-                  '/start' => '0.5', '/contact' => '0.4'] as $path => $priority) {
+            '/pricing' => '0.6', '/products' => '0.7', '/team' => '0.6', '/about' => '0.6',
+            '/start' => '0.5', '/contact' => '0.4'] as $path => $priority) {
             $urls[] = ['loc' => $base.$path, 'priority' => $priority];
         }
 

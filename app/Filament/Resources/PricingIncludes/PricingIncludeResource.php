@@ -19,6 +19,7 @@ class PricingIncludeResource extends Resource
     protected static ?string $model = PricingInclude::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCheckCircle;
+
     protected static string|\UnitEnum|null $navigationGroup = 'Content';
 
     protected static ?int $navigationSort = 11;

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\SiteSetting;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +23,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Fail fast in production if the app key was never generated — surface a
+        // misconfigured deploy at boot rather than as a later encryption error.
+        if ($this->app->environment('production') && ! $this->app->runningInConsole() && empty(config('app.key'))) {
+            throw new \RuntimeException('APP_KEY is not set — run `php artisan key:generate`.');
+        }
+
+        // App-level HTTPS backstop in production (defense-in-depth alongside the
+        // proxy X-Forwarded-Proto and the nginx http→https redirect).
+        if ($this->app->environment('production')) {
+            URL::forceScheme('https');
+        }
+
         // Make the singleton site settings available to every view & component.
         View::composer('*', function ($view) {
             $view->with('settings', SiteSetting::current());

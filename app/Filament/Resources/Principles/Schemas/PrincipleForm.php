@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Principles\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PrincipleForm
