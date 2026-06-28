@@ -12,8 +12,8 @@ import focus from '@alpinejs/focus';
 import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Swiper from 'swiper';
-import { Autoplay, Navigation, Pagination, A11y } from 'swiper/modules';
+// Swiper is lazy-loaded inside the carousel initialisers (code-split — only
+// the home + pricing pages pull it, keeping the main bundle smaller elsewhere).
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const coarse = window.matchMedia('(pointer: coarse)').matches;
@@ -412,8 +412,14 @@ function initCounters() {
 }
 
 /* ── Testimonials carousel (Swiper — autoplay, loop, responsive) ─────────── */
-function initCarousels() {
-    document.querySelectorAll('.testimonials-swiper').forEach((el) => {
+async function initCarousels() {
+    const els = document.querySelectorAll('.testimonials-swiper');
+    if (!els.length) return;
+    const [{ default: Swiper }, { Autoplay, Navigation, Pagination, A11y }] = await Promise.all([
+        import('swiper'),
+        import('swiper/modules'),
+    ]);
+    els.forEach((el) => {
         const slides = el.querySelectorAll('.swiper-slide').length;
         new Swiper(el, {
             modules: [Autoplay, Navigation, Pagination, A11y],
@@ -464,8 +470,14 @@ function initBinaryText() {
 }
 
 /* ── Pricing tiers carousel (Swiper — manual, scales to many tiers) ──────── */
-function initPricingCarousel() {
-    document.querySelectorAll('.pricing-swiper').forEach((el) => {
+async function initPricingCarousel() {
+    const els = document.querySelectorAll('.pricing-swiper');
+    if (!els.length) return;
+    const [{ default: Swiper }, { Navigation, Pagination }] = await Promise.all([
+        import('swiper'),
+        import('swiper/modules'),
+    ]);
+    els.forEach((el) => {
         const slides = el.querySelectorAll('.swiper-slide').length;
         new Swiper(el, {
             modules: [Navigation, Pagination],

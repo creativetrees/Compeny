@@ -134,7 +134,7 @@
                             <span class="font-mono text-[0.95rem] font-bold uppercase tracking-tight transition-colors group-hover:text-ink/70">{{ $faq->question }}</span>
                             <span class="shrink-0 font-mono text-xl text-faint transition-transform duration-300" :class="iconClass" aria-hidden="true">+</span>
                         </button>
-                        <div x-show="open" x-cloak id="faq-panel-{{ $loop->index }}">
+                        <div x-show="open" x-cloak class="faq-panel" id="faq-panel-{{ $loop->index }}">
                             <p class="measure pb-7 text-[0.97rem] leading-relaxed text-muted">{{ $faq->answer }}</p>
                         </div>
                     </div>

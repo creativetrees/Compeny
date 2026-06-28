@@ -23,7 +23,6 @@
         "laravel-echo": "^2.3.7",
         "lenis": "^1.3.25",
         "pusher-js": "^8.5.0",
-        "split-type": "^0.3.4",
         "swiper": "^14.0.0"
     }
 }
