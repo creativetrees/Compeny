@@ -2,8 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\ForgotPassword;
 use App\Filament\Auth\Login;
-use App\Support\Otp;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -32,6 +32,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->passwordReset(ForgotPassword::class)
             // Two-step login MFA, REQUIRED. PRIMARY = email OTP: a 6-char
             // alphanumeric code (e.g. 3H9J4D) emailed to the admin and entered in
             // the segmented code input. This uses Filament's built-in email flow,
@@ -41,8 +42,7 @@ class AdminPanelProvider extends PanelProvider
             // enrolment never locks the admin out if email is temporarily down
             // (they can enrol the offline app factor instead).
             ->multiFactorAuthentication([
-                EmailAuthentication::make()
-                    ->generateCodesUsing(fn (): string => Otp::code()),
+                EmailAuthentication::make(),
                 AppAuthentication::make()
                     ->recoverable()
                     ->brandName('Creative Trees Group'),
