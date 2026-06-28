@@ -4,19 +4,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Admin Panel Access
+    | Require multi-factor authentication
     |--------------------------------------------------------------------------
     |
-    | Only users whose email address belongs to one of these domains may
-    | access the Filament panel at /admin. Provide a comma-separated list
-    | via PANEL_ALLOWED_EMAIL_DOMAINS. An empty list denies all access
-    | (the access gate fails closed).
+    | When true, every admin must complete a second factor (email OTP, with the
+    | authenticator app as a fallback) to reach /admin. Disabled in the test
+    | suite so feature tests can exercise the panel without the MFA challenge.
+    |
+    | NOTE: panel access itself is gated by User::canAccessPanel() → the guarded
+    | `is_admin` flag (default-deny). The previous email-domain allow-list was
+    | removed because it was never wired into the gate.
     |
     */
 
-    'allowed_email_domains' => array_values(array_filter(array_map(
-        'trim',
-        explode(',', (string) env('PANEL_ALLOWED_EMAIL_DOMAINS', 'creativetrees.group'))
-    ))),
+    'mfa_required' => (bool) env('PANEL_MFA_REQUIRED', true),
 
 ];

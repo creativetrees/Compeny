@@ -28,4 +28,18 @@ class PanelAccessTest extends TestCase
 
         $this->actingAs($admin)->get('/admin')->assertSuccessful();
     }
+
+    /** Regression: is_admin must never be settable via mass-assignment. */
+    public function test_is_admin_cannot_be_mass_assigned(): void
+    {
+        $user = User::create([
+            'name' => 'Sneaky User',
+            'username' => 'sneaky',
+            'email' => 'sneaky@example.com',
+            'password' => 'secret123',
+            'is_admin' => true, // attempt to self-escalate
+        ]);
+
+        $this->assertFalse((bool) $user->fresh()->is_admin);
+    }
 }

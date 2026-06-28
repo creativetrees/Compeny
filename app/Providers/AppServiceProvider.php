@@ -33,6 +33,12 @@ class AppServiceProvider extends ServiceProvider
         // proxy X-Forwarded-Proto and the nginx http→https redirect).
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
+
+            // Never let auth codes (MFA email-OTP, password resets) be written to
+            // log files — the log/array mailers would expose them in plaintext.
+            if (in_array(config('mail.default'), ['log', 'array'], true)) {
+                logger()->warning('MAIL_MAILER is "'.config('mail.default').'" in production — auth OTP / reset emails will be logged, not delivered. Configure a real SMTP transport.');
+            }
         }
 
         // Make the singleton site settings available to every view & component.

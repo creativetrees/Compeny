@@ -3,7 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Auth\Login;
+use App\Support\Otp;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
+use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,15 +32,21 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
-            // App-authenticator (TOTP) MFA with recovery codes. Available (not
-            // forced) so the admin enrols it from their profile without risk of
-            // a lock-out; flip the third arg of multiFactorAuthentication() to
-            // true to require it once enrolled.
+            // Two-step login MFA, REQUIRED. PRIMARY = email OTP: a 6-char
+            // alphanumeric code (e.g. 3H9J4D) emailed to the admin and entered in
+            // the segmented code input. This uses Filament's built-in email flow,
+            // which hashes the code in the session, expires it (~4 min), makes it
+            // single-use, and rate-limits both sending and verification.
+            // FALLBACK = authenticator app (TOTP) + recovery codes, so the forced
+            // enrolment never locks the admin out if email is temporarily down
+            // (they can enrol the offline app factor instead).
             ->multiFactorAuthentication([
+                EmailAuthentication::make()
+                    ->generateCodesUsing(fn (): string => Otp::code()),
                 AppAuthentication::make()
                     ->recoverable()
                     ->brandName('Creative Trees Group'),
-            ])
+            ], isRequired: (bool) config('panel.mfa_required'))
             ->brandName('Creative Trees Group')
             ->colors([
                 'primary' => Color::Zinc,
