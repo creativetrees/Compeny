@@ -2,6 +2,17 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Resources\PricingTiers\PricingTierResource;
+use App\Filament\Resources\Products\ProductResource;
+use App\Filament\Resources\Projects\ProjectResource;
+use App\Filament\Resources\SiteSettings\SiteSettingResource;
+use App\Filament\Resources\Testimonials\TestimonialResource;
+use App\Filament\Resources\Users\UserResource;
+use App\Models\PricingTier;
+use App\Models\Product;
+use App\Models\Project;
+use App\Models\SiteSetting;
+use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -33,6 +44,28 @@ class AdminPanelTest extends TestCase
         foreach ($resources as $resource) {
             $this->actingAs($admin)
                 ->get("/admin/{$resource}")
+                ->assertSuccessful();
+        }
+    }
+
+    public function test_tabbed_resource_edit_forms_render(): void
+    {
+        $this->seed();
+        $admin = User::factory()->admin()->create(['email' => 'admin@creativetrees.group']);
+
+        // Render every tabbed edit form — fails if the Tabs/Section layout API is wrong.
+        $forms = [
+            [SiteSettingResource::class, SiteSetting::firstOrFail()],
+            [ProjectResource::class, Project::firstOrFail()],
+            [ProductResource::class, Product::firstOrFail()],
+            [TestimonialResource::class, Testimonial::firstOrFail()],
+            [PricingTierResource::class, PricingTier::firstOrFail()],
+            [UserResource::class, $admin],
+        ];
+
+        foreach ($forms as [$resource, $record]) {
+            $this->actingAs($admin)
+                ->get($resource::getUrl('edit', ['record' => $record]))
                 ->assertSuccessful();
         }
     }

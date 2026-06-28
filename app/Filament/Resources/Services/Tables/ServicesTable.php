@@ -24,7 +24,9 @@ class ServicesTable
                 TextColumn::make('summary')
                     ->searchable(),
                 IconColumn::make('is_featured')
-                    ->boolean(),
+                    ->boolean()
+                    ->trueIcon('heroicon-s-star')
+                    ->falseIcon('heroicon-s-x-mark'),
                 TextColumn::make('sort')
                     ->numeric()
                     ->sortable(),

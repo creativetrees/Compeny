@@ -17,6 +17,7 @@ class SiteContentsTable
             ->columns([
                 TextColumn::make('group')
                     ->badge()
+                    ->icon('heroicon-m-rectangle-group')
                     ->searchable(),
                 TextColumn::make('label')
                     ->searchable(),

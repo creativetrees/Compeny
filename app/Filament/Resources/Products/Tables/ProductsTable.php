@@ -16,26 +16,43 @@ class ProductsTable
         return $table
             ->columns([
                 TextColumn::make('category.name')
+                    ->icon('heroicon-m-rectangle-stack')
                     ->searchable(),
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('type')
+                    ->icon('heroicon-m-tag')
                     ->searchable(),
                 TextColumn::make('summary')
                     ->searchable(),
                 TextColumn::make('price_label')
+                    ->icon('heroicon-m-banknotes')
                     ->searchable(),
                 TextColumn::make('cover_path')
                     ->searchable(),
                 TextColumn::make('cta_label')
                     ->searchable(),
                 TextColumn::make('cta_url')
+                    ->icon('heroicon-m-link')
                     ->searchable(),
                 IconColumn::make('is_featured')
-                    ->boolean(),
+                    ->boolean()
+                    ->trueIcon('heroicon-s-star')
+                    ->falseIcon('heroicon-s-x-mark'),
                 TextColumn::make('status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'published' => 'success',
+                        'draft' => 'gray',
+                        default => 'gray',
+                    })
+                    ->icon(fn (string $state): string => match ($state) {
+                        'published' => 'heroicon-m-check-circle',
+                        'draft' => 'heroicon-m-pencil-square',
+                        default => 'heroicon-m-flag',
+                    })
                     ->searchable(),
                 TextColumn::make('sort')
                     ->numeric()

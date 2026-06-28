@@ -23,6 +23,7 @@ class LeadsTable
                     ->searchable(),
                 TextColumn::make('email')
                     ->label('Email')
+                    ->icon('heroicon-m-envelope')
                     ->copyable()
                     ->searchable(),
                 TextColumn::make('company')
@@ -37,6 +38,14 @@ class LeadsTable
                 TextColumn::make('status')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => Str::headline($state))
+                    ->icon(fn (string $state): string => match ($state) {
+                        'new' => 'heroicon-m-sparkles',
+                        'contacted' => 'heroicon-m-chat-bubble-left-right',
+                        'qualified' => 'heroicon-m-check-badge',
+                        'won' => 'heroicon-m-trophy',
+                        'lost' => 'heroicon-m-x-circle',
+                        default => 'heroicon-m-flag',
+                    })
                     ->color(fn (string $state): string => match ($state) {
                         'new' => 'info',
                         'contacted' => 'warning',

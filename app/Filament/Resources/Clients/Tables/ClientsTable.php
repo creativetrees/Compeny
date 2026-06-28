@@ -30,13 +30,16 @@ class ClientsTable
                     ->description(fn ($record) => $record->logo_path ? null : 'Text logo'),
                 TextColumn::make('website_url')
                     ->label('Link')
+                    ->icon('heroicon-m-link')
                     ->url(fn ($record) => $record->website_url, true)
                     ->color('primary')
                     ->limit(34)
                     ->placeholder('—'),
                 IconColumn::make('is_featured')
                     ->label('Marquee')
-                    ->boolean(),
+                    ->boolean()
+                    ->trueIcon('heroicon-s-star')
+                    ->falseIcon('heroicon-s-x-mark'),
                 TextColumn::make('sort')
                     ->numeric()
                     ->sortable(),

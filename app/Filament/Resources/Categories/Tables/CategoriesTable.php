@@ -19,6 +19,7 @@ class CategoriesTable
                 TextColumn::make('slug')
                     ->searchable(),
                 TextColumn::make('type')
+                    ->icon('heroicon-m-tag')
                     ->searchable(),
                 TextColumn::make('description')
                     ->searchable(),

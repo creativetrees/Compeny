@@ -21,6 +21,7 @@ class NavLinksTable
                 TextColumn::make('label')
                     ->searchable(),
                 TextColumn::make('url')
+                    ->icon('heroicon-m-link')
                     ->searchable(),
                 TextColumn::make('sort')
                     ->numeric()
