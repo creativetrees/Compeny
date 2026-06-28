@@ -13,7 +13,7 @@ use Tests\TestCase;
 
 /**
  * Covers the user profile identity fields (username, NIK, phone) and the
- * username-or-email panel login built on top of them.
+ * username-only panel login built on top of them.
  */
 class UserProfileTest extends TestCase
 {
@@ -23,13 +23,12 @@ class UserProfileTest extends TestCase
     {
         parent::setUp();
 
-        config()->set('panel.allowed_email_domains', ['creativetrees.group']);
         Filament::setCurrentPanel(Filament::getPanel('admin'));
     }
 
     private function admin(array $attributes = []): User
     {
-        return User::factory()->create(array_merge([
+        return User::factory()->admin()->create(array_merge([
             'name' => 'CTG Admin',
             'username' => 'ctgadmin',
             'email' => 'admin@creativetrees.group',
@@ -41,13 +40,7 @@ class UserProfileTest extends TestCase
 
     public function test_users_table_has_the_profile_columns(): void
     {
-        $this->assertTrue(Schema::hasColumns('users', ['username', 'nik', 'phone']));
-    }
-
-    public function test_resolve_login_field_distinguishes_email_from_username(): void
-    {
-        $this->assertSame(['email', 'a@b.com'], User::resolveLoginField('a@b.com'));
-        $this->assertSame(['username', 'ctgadmin'], User::resolveLoginField('CTGAdmin'));
+        $this->assertTrue(Schema::hasColumns('users', ['username', 'nik', 'phone', 'is_admin']));
     }
 
     public function test_admin_can_authenticate_with_username(): void
@@ -56,19 +49,6 @@ class UserProfileTest extends TestCase
 
         Livewire::test(Login::class)
             ->set('data.login', 'ctgadmin')
-            ->set('data.password', 'secret123')
-            ->call('authenticate')
-            ->assertHasNoFormErrors();
-
-        $this->assertAuthenticated();
-    }
-
-    public function test_admin_can_authenticate_with_email(): void
-    {
-        $this->admin();
-
-        Livewire::test(Login::class)
-            ->set('data.login', 'admin@creativetrees.group')
             ->set('data.password', 'secret123')
             ->call('authenticate')
             ->assertHasNoFormErrors();
@@ -87,6 +67,19 @@ class UserProfileTest extends TestCase
             ->assertHasNoFormErrors();
 
         $this->assertAuthenticated();
+    }
+
+    public function test_email_does_not_authenticate(): void
+    {
+        $this->admin();
+
+        Livewire::test(Login::class)
+            ->set('data.login', 'admin@creativetrees.group')
+            ->set('data.password', 'secret123')
+            ->call('authenticate')
+            ->assertHasFormErrors(['login']);
+
+        $this->assertGuest();
     }
 
     public function test_authentication_fails_with_a_wrong_password(): void

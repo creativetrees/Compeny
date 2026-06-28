@@ -51,19 +51,35 @@ class DatabaseSeeder extends Seeder
         $password = (string) env('ADMIN_SEED_PASSWORD', app()->isProduction() ? '' : 'password');
 
         if ($password === '') {
-            $this->command?->warn('seedAdmin skipped: set ADMIN_SEED_PASSWORD to seed the admin user in production.');
+            $this->command?->warn('seedAdmin skipped: set ADMIN_SEED_PASSWORD to seed the admin user.');
 
             return;
         }
 
-        User::updateOrCreate(
-            ['email' => (string) env('ADMIN_SEED_EMAIL', 'admin@creativetrees.group')],
+        $email = (string) env('ADMIN_SEED_EMAIL', 'admin@creativetrees.group');
+
+        // Username is derived from the email local-part (e.g. halfirzzha@gmail.com
+        // → "halfirzzha"), lower-cased and stripped to the allowed characters.
+        $username = (string) Str::of($email)
+            ->before('@')
+            ->lower()
+            ->replaceMatches('/[^a-z0-9_.-]/', '');
+
+        if (strlen($username) < 3) {
+            $username = 'admin';
+        }
+
+        $admin = User::updateOrCreate(
+            ['email' => $email],
             [
                 'name' => 'CTG Admin',
-                'username' => (string) env('ADMIN_SEED_USERNAME', 'admin'),
+                'username' => $username,
                 'password' => Hash::make($password),
             ],
         );
+
+        // is_admin is guarded (not mass-assignable) — set it explicitly in code.
+        $admin->forceFill(['is_admin' => true])->save();
     }
 
     private function seedSettings(): void

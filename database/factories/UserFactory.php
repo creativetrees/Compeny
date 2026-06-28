@@ -31,9 +31,21 @@ class UserFactory extends Factory
             'nik' => (string) fake()->unique()->numberBetween(1_000_000_000_000_000, 9_999_999_999_999_999),
             'phone' => fake()->unique()->numerify('0812########'),
             'email_verified_at' => now(),
+            'is_admin' => false,
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * Flag the user as an admin (Filament panel access). Factories bypass
+     * mass-assignment protection, so this is how tests set the guarded flag.
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'is_admin' => true,
+        ]);
     }
 
     /**

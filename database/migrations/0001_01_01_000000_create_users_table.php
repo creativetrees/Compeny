@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('phone', 20)->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->boolean('is_admin')->default(false); // panel access — set in code only
             $table->rememberToken();
             $table->timestamps();
         });

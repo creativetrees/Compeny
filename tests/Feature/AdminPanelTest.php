@@ -17,10 +17,9 @@ class AdminPanelTest extends TestCase
 
     public function test_admin_dashboard_and_every_resource_render(): void
     {
-        // Panel access is gated on email domain (config/panel.php — default
-        // creativetrees.group, fails closed), so the test admin must belong to
-        // an allowed domain to mirror real authorised access.
-        $admin = User::factory()->create(['email' => 'admin@creativetrees.group']);
+        // Panel access is gated on the is_admin flag (default-deny), so the test
+        // admin must be flagged via the factory's admin() state.
+        $admin = User::factory()->admin()->create(['email' => 'admin@creativetrees.group']);
 
         $this->actingAs($admin)->get('/admin')->assertSuccessful();
 
