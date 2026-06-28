@@ -119,7 +119,7 @@
         <x-ui.eyebrow class="mb-8" data-scramble>{{ content('contact.write_eyebrow', 'Or just write') }}</x-ui.eyebrow>
 
         <a href="mailto:{{ $email }}"
-           class="link-underline display block break-all text-[8.5vw] leading-[0.9] md:text-[6vw]"
+           class="link-underline display block break-words text-[8.5vw] leading-[0.9] md:text-[6vw]"
            data-reveal>{{ $email }}</a>
 
         <p class="label-mono measure mt-10 text-faint" data-reveal data-reveal-delay="0.12">

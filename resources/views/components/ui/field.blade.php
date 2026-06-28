@@ -11,6 +11,7 @@
     $value = old($name);
     $hasError = $errors->has($name);
     $aria = $hasError ? ['aria-invalid' => 'true', 'aria-describedby' => $name.'-error'] : [];
+    $borderClass = $hasError ? 'border-2 border-ink' : '{{ $borderClass }}';
 @endphp
 
 <div>
@@ -22,11 +23,11 @@
     @if ($type === 'textarea')
         <textarea id="{{ $name }}" name="{{ $name }}" rows="5" @if ($required) required @endif
                   placeholder="{{ $placeholder }}" {{ $attributes->merge($aria) }}
-                  class="w-full resize-none border border-line bg-paper px-4 py-3 font-sans text-[0.95rem] text-ink placeholder-faint transition-colors focus:border-ink focus:outline-none">{{ $value }}</textarea>
+                  class="w-full resize-none {{ $borderClass }} bg-paper px-4 py-3 font-sans text-[0.95rem] text-ink placeholder-faint transition-colors focus:border-ink focus:outline-none">{{ $value }}</textarea>
     @elseif ($type === 'select')
         <div class="relative">
             <select id="{{ $name }}" name="{{ $name }}" @if ($required) required @endif {{ $attributes->merge($aria) }}
-                    class="w-full appearance-none border border-line bg-paper px-4 py-3 pr-10 font-sans text-[0.95rem] text-ink transition-colors focus:border-ink focus:outline-none">
+                    class="w-full appearance-none {{ $borderClass }} bg-paper px-4 py-3 pr-10 font-sans text-[0.95rem] text-ink transition-colors focus:border-ink focus:outline-none">
                 <option value="">{{ $placeholder ?? 'Select' }}</option>
                 @foreach ($options as $opt)
                     <option value="{{ $opt }}" @selected($value === $opt)>{{ $opt }}</option>
@@ -37,7 +38,7 @@
     @else
         <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}" value="{{ $value }}"
                @if ($required) required @endif placeholder="{{ $placeholder }}" {{ $attributes->merge($aria) }}
-               class="w-full border border-line bg-paper px-4 py-3 font-sans text-[0.95rem] text-ink placeholder-faint transition-colors focus:border-ink focus:outline-none">
+               class="w-full {{ $borderClass }} bg-paper px-4 py-3 font-sans text-[0.95rem] text-ink placeholder-faint transition-colors focus:border-ink focus:outline-none">
     @endif
 
     @error($name)

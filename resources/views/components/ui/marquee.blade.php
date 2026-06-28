@@ -30,7 +30,7 @@
                 <a
                     @if ($href) href="{{ $href }}" target="_blank" rel="noopener noreferrer" @endif
                     class="{{ $classes }}"
-                    aria-label="{{ $label }}"
+                    @if ($loop->index >= $count) aria-hidden="true" tabindex="-1" @else aria-label="{{ $label }}" @endif
                 >
                     @if ($client->logo_url)
                         <img src="{{ $client->logo_url }}" alt="{{ $client->name }}" loading="lazy"

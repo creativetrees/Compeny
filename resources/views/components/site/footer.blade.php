@@ -47,7 +47,7 @@
             {{-- evenly-spaced columns --}}
             <div class="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-3 md:col-span-8">
                 @foreach ($cols as $title => $links)
-                    <nav>
+                    <nav aria-label="{{ $title }}">
                         <p class="label-mono mb-5 text-[#8a8a86]">{{ $title }}</p>
                         <ul class="space-y-3">
                             @foreach ($links as $link)

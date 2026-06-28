@@ -10,7 +10,7 @@
         <div class="max-w-4xl">
             <x-ui.eyebrow data-scramble>{{ content('products.hero_eyebrow', 'Products') }}</x-ui.eyebrow>
 
-            <h1 class="display mt-6 text-[2.5rem] leading-[0.98] sm:text-5xl md:text-[4rem]">
+            <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]">
                 <span class="block" data-reveal data-reveal-delay="0.08">{{ content('products.hero_line1', 'Starters that ship') }}</span>
                 <span class="block" data-reveal data-reveal-delay="0.16">{{ content('products.hero_line2', 'in days, not months.') }}</span>
             </h1>

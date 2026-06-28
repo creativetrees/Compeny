@@ -162,8 +162,8 @@
                                             <img src="{{ $t->avatar_url }}" alt="" loading="lazy" class="h-10 w-10 rounded-full grayscale">
                                         @endif
                                         <div class="font-mono text-xs uppercase tracking-wide">
-                                            <div class="font-bold">{{ $t->role }}</div>
-                                            <div class="text-muted">{{ $t->company }}</div>
+                                            <div class="font-bold">{{ $t->author ?: $t->role }}</div>
+                                            <div class="text-muted">{{ $t->author ? trim($t->role.($t->company ? ' · '.$t->company : '')) : $t->company }}</div>
                                         </div>
                                     </figcaption>
                                 </figure>

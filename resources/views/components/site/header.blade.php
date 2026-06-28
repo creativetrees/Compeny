@@ -4,7 +4,9 @@
 
 <header
     x-data="{ scrolled: false, open: false }"
+    x-effect="window.lenis && (open ? window.lenis.stop() : window.lenis.start())"
     @scroll.window="scrolled = window.scrollY > 24"
+    @resize.window.debounce="window.innerWidth >= 1024 && (open = false)"
     :class="scrolled ? 'border-line/100 bg-paper/85 backdrop-blur' : 'border-transparent bg-paper/0'"
     class="fixed inset-x-0 top-0 z-50 border-b transition-colors duration-500"
 >
@@ -16,13 +18,13 @@
         </a>
 
         {{-- Desktop nav --}}
-        <nav class="hidden items-center gap-7 lg:flex">
+        <nav class="hidden items-center gap-7 lg:flex" aria-label="Primary">
             @foreach ($nav as $item)
                 <a href="{{ $item->url }}"
                    @class([
                        'link-underline font-mono text-[0.78rem] uppercase tracking-wide text-ink/80 transition-colors hover:text-ink',
                    ])
-                   @if (request()->is(ltrim($item->url, '/').'*')) aria-current="page" @endif
+                   @if ($item->url === '/' ? request()->is('/') : request()->is(ltrim($item->url, '/').'*')) aria-current="page" @endif
                 >{{ $item->label }}</a>
             @endforeach
         </nav>
@@ -56,10 +58,10 @@
         aria-modal="true"
         aria-label="Site menu"
         x-trap.noscroll="open"
-        x-transition:enter="transition duration-400 ease-out"
+        x-transition:enter="transition duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
         x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100"
-        x-transition:leave="transition duration-300 ease-in"
+        x-transition:leave="transition duration-200 ease-in"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
         class="fixed inset-0 z-50 flex flex-col bg-paper lg:hidden"
@@ -70,16 +72,17 @@
             <button @click="open = false" class="font-mono text-xs uppercase tracking-widest" aria-label="Close menu">Close ✕</button>
         </div>
 
-        <nav class="frame !border-0 mt-6 flex flex-1 flex-col gap-1">
+        <nav class="frame !border-0 mt-6 flex flex-1 flex-col gap-1" aria-label="Mobile">
             @foreach ($nav as $i => $item)
                 <a href="{{ $item->url }}"
-                   class="display flex items-baseline gap-4 border-b border-line py-5 text-3xl"
+                   class="menu-link display flex items-baseline gap-4 border-b border-line py-5 text-3xl"
+                   style="animation-delay: {{ 80 + $i * 55 }}ms"
                    @click="open = false">
                     <span class="label-mono text-faint">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
                     {{ $item->label }}
                 </a>
             @endforeach
-            <a href="/start" class="btn mt-8 self-start" @click="open = false">Start a project</a>
+            <a href="/start" class="menu-link btn mt-8 self-start" style="animation-delay: {{ 80 + $nav->count() * 55 }}ms" @click="open = false">Start a project</a>
         </nav>
     </div>
 </header>

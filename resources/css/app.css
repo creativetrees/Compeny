@@ -18,7 +18,7 @@
     --color-panel: #f2f2f0;
     --color-line: #e6e6e3;
     --color-muted: #6f6f6c;
-    --color-faint: #8c8c88;
+    --color-faint: #767670;
     --color-surface: #0a0a0a; /* dark sections */
 
     --tracking-eyebrow: 0.22em;
@@ -163,10 +163,8 @@
         letter-spacing: 0.12em;
         white-space: nowrap;
         transition:
-            transform 0.5s var(--ease-out-expo),
             background-color 0.35s ease,
             color 0.35s ease;
-        will-change: transform;
     }
     .btn::after {
         content: '';
@@ -516,3 +514,18 @@
 .pricing-swiper .swiper-slide {
     height: auto;
 }
+
+/* ── Mobile menu — staggered link reveal ────────────────────────────────── */
+@keyframes menu-link-in {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.menu-link {
+    animation: menu-link-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+    .menu-link { animation: none; }
+}
+
+/* Pause the trusted-by marquee when a logo link receives keyboard focus. */
+.marquee-viewport:focus-within .marquee { animation-play-state: paused; }

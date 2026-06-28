@@ -240,15 +240,15 @@ class DatabaseSeeder extends Seeder
     private function seedTestimonials(array $projects): void
     {
         $quotes = [
-            ['They operated like our own team — just faster and with better taste.', 'VP Product', 'Veltra'],
-            ['The clarity they brought to a messy problem was worth the engagement on its own.', 'CTO', 'Zyntric'],
-            ['We shipped in eight weeks what we had failed to ship in a year.', 'Founder', 'Orvian'],
-            ['Design and engineering finally spoke the same language. That never drifted.', 'Head of Design', 'Nexel'],
+            ['They operated like our own team — just faster and with better taste.', 'Sari Wijaya', 'VP Product', 'Veltra'],
+            ['The clarity they brought to a messy problem was worth the engagement on its own.', 'Daniel Tan', 'CTO', 'Zyntric'],
+            ['We shipped in eight weeks what we had failed to ship in a year.', 'Maya Larasati', 'Founder', 'Orvian'],
+            ['Design and engineering finally spoke the same language. That never drifted.', 'Rizki Hartono', 'Head of Design', 'Nexel'],
         ];
 
-        foreach ($quotes as $i => [$quote, $role, $company]) {
+        foreach ($quotes as $i => [$quote, $author, $role, $company]) {
             Testimonial::updateOrCreate(
-                ['author' => $role.' · '.$company],
+                ['author' => $author],
                 [
                     'project_id' => $projects[$i]->id ?? null,
                     'role' => $role,

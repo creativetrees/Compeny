@@ -37,6 +37,7 @@ function initSmoothScroll() {
         smoothWheel: true,
     });
     document.documentElement.classList.add('lenis', 'lenis-smooth');
+    window.lenis = lenis;
     lenis.on('scroll', ScrollTrigger.update);
     gsap.ticker.add((time) => lenis.raf(time * 1000));
     gsap.ticker.lagSmoothing(0);
@@ -49,6 +50,8 @@ function initSmoothScroll() {
             if (!target) return;
             e.preventDefault();
             lenis.scrollTo(target, { offset: -80 });
+            target.setAttribute("tabindex", "-1");
+            target.focus({ preventScroll: true });
         });
     });
 }
@@ -364,8 +367,8 @@ function initCarousels() {
             speed: 750,
             loop: slides > 3,
             autoplay: reduce ? false : {
-                delay: 2000,
-                disableOnInteraction: false,
+                delay: 5500,
+                disableOnInteraction: true,
                 pauseOnMouseEnter: true,
             },
             navigation: { prevEl: '.t-prev', nextEl: '.t-next' },

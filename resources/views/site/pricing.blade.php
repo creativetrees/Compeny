@@ -76,7 +76,7 @@
                                 <div class="rule my-8"></div>
 
                                 <ul class="space-y-3.5">
-                                    @foreach ($tier->items as $item)
+                                    @foreach ($tier->items ?? [] as $item)
                                         <li class="flex gap-3 text-[0.95rem] leading-snug">
                                             <span class="font-mono {{ $markClass }} select-none" aria-hidden="true">+</span>
                                             <span class="{{ $featured ? 'text-paper/85' : 'text-ink' }}">{{ $item }}</span>

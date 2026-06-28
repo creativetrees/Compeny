@@ -80,7 +80,7 @@
                             </div>
                         @endif
                         @if ($project->website_url)
-                            <x-ui.button :href="$project->website_url" variant="ghost" :magnetic="false">Visit site ↗</x-ui.button>
+                            <x-ui.button :href="$project->website_url" variant="ghost" :magnetic="false">Visit site</x-ui.button>
                         @endif
                     </aside>
                 @endif
