@@ -13,8 +13,14 @@
     <div class="frame !border-0 flex h-[68px] items-center justify-between gap-6">
         {{-- Logo --}}
         <a href="/" class="group inline-flex items-center gap-2.5" aria-label="{{ $settings->brand_name ?? 'Creative Trees Group' }} — home">
-            <x-ui.logo-mark class="h-5 w-5 text-ink transition-transform duration-500 group-hover:rotate-90" />
-            <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">Creative&nbsp;Trees</span>
+            @if ($settings->logo_url)
+                <img src="{{ $settings->logo_url }}" alt="{{ $settings->brand_name ?? 'Creative Trees Group' }}" class="h-5 w-auto">
+            @else
+                <x-ui.logo-mark class="h-5 w-5 text-ink transition-transform duration-500 group-hover:rotate-90" />
+            @endif
+            @if (filled($settings->logo_text ?? 'Creative Trees'))
+                <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?? 'Creative Trees' }}</span>
+            @endif
         </a>
 
         {{-- Desktop nav --}}

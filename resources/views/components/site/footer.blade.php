@@ -35,8 +35,14 @@
             {{-- brand --}}
             <div class="md:col-span-4">
                 <a href="/" class="group inline-flex items-center gap-2.5">
-                    <x-ui.logo-mark class="h-5 w-5 text-paper transition-transform duration-500 group-hover:rotate-90" />
-                    <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">Creative&nbsp;Trees</span>
+                    @if ($settings->logo_url)
+                        <img src="{{ $settings->logo_url }}" alt="{{ $settings->brand_name ?? 'Creative Trees Group' }}" class="h-5 w-auto">
+                    @else
+                        <x-ui.logo-mark class="h-5 w-5 text-paper transition-transform duration-500 group-hover:rotate-90" />
+                    @endif
+                    @if (filled($settings->logo_text ?? 'Creative Trees'))
+                        <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?? 'Creative Trees' }}</span>
+                    @endif
                 </a>
                 <p class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96]">
                     {{ $settings->footer_tagline ?? 'Designed and built to compound.' }}
@@ -80,7 +86,7 @@
          mobile so the binary stays legible; one clean line on tablet/desktop. ── --}}
     <div class="frame !border-0 overflow-hidden pb-8 pt-8" aria-hidden="true">
         <div class="binary-text display select-none text-center text-[13.5vw] leading-[1.05] sm:whitespace-nowrap sm:text-[7.6vw] sm:leading-[0.9] lg:text-[6.8vw] lg:leading-[0.85]"
-             data-binary-text>CREATIVE TREES GROUP</div>
+             data-binary-text>{{ \Illuminate\Support\Str::upper($brand) }}</div>
     </div>
 
     {{-- ── Baseline ── --}}

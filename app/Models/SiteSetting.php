@@ -3,13 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SiteSetting extends Model
 {
     protected static ?self $cached = null;
 
     protected $fillable = [
-        'brand_name', 'hero_eyebrow', 'hero_title', 'hero_subtitle',
+        'brand_name', 'logo_path', 'logo_text', 'favicon_path',
+        'hero_eyebrow', 'hero_title', 'hero_subtitle',
         'hero_cta_label', 'hero_cta_url', 'about_heading', 'about_body',
         'contact_email', 'contact_phone', 'contact_address', 'social_links',
         'stats', 'seo_title', 'seo_description', 'seo_image_path', 'footer_tagline',
@@ -21,6 +24,38 @@ class SiteSetting extends Model
             'social_links' => 'array',
             'stats' => 'array',
         ];
+    }
+
+    /** Public URL for the uploaded logo (or null). */
+    public function getLogoUrlAttribute(): ?string
+    {
+        return static::mediaUrl($this->logo_path);
+    }
+
+    /** Public URL for the uploaded favicon (or null). */
+    public function getFaviconUrlAttribute(): ?string
+    {
+        return static::mediaUrl($this->favicon_path);
+    }
+
+    /** Public URL for the uploaded social/OG image (or null). */
+    public function getSeoImageUrlAttribute(): ?string
+    {
+        return static::mediaUrl($this->seo_image_path);
+    }
+
+    protected static function mediaUrl(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        return Str::startsWith($path, 'http') ? $path : Storage::url($path);
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => static::$cached = null);
     }
 
     /**
@@ -36,7 +71,8 @@ class SiteSetting extends Model
         try {
             return static::$cached = static::query()->firstOrCreate(['id' => 1]);
         } catch (\Throwable) {
-            return new self;
+            // Cache the fallback too, so a DB outage doesn't re-query every component.
+            return static::$cached = new self;
         }
     }
 }

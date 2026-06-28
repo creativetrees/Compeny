@@ -16,7 +16,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#ffffff">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="{{ $settings->favicon_url ?? '/favicon.svg' }}">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <title>{{ $pageTitle }}</title>
