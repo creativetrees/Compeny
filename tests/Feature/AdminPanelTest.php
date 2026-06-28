@@ -11,7 +11,6 @@ use App\Filament\Resources\Users\UserResource;
 use App\Models\PricingTier;
 use App\Models\Product;
 use App\Models\Project;
-use App\Models\SiteSetting;
 use App\Models\Testimonial;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -53,9 +52,13 @@ class AdminPanelTest extends TestCase
         $this->seed();
         $admin = User::factory()->admin()->create(['email' => 'admin@creativetrees.group']);
 
+        // Singleton settings resource opens straight into its (tabbed) edit form.
+        $this->actingAs($admin)
+            ->get(SiteSettingResource::getUrl('index'))
+            ->assertSuccessful();
+
         // Render every tabbed edit form — fails if the Tabs/Section layout API is wrong.
         $forms = [
-            [SiteSettingResource::class, SiteSetting::firstOrFail()],
             [ProjectResource::class, Project::firstOrFail()],
             [ProductResource::class, Product::firstOrFail()],
             [TestimonialResource::class, Testimonial::firstOrFail()],
