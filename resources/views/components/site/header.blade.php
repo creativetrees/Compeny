@@ -3,11 +3,10 @@
 @endphp
 
 <header
-    x-data="{ scrolled: false, open: false }"
-    x-effect="window.lenis && (open ? window.lenis.stop() : window.lenis.start())"
-    @scroll.window="scrolled = window.scrollY > 24"
-    @resize.window.debounce="window.innerWidth >= 1024 && (open = false)"
-    :class="scrolled ? 'border-line/100 bg-paper/85 backdrop-blur' : 'border-transparent bg-paper/0'"
+    x-data="siteHeader"
+    @scroll.window="onScroll()"
+    @resize.window.debounce="onResize()"
+    :class="headerClass"
     class="fixed inset-x-0 top-0 z-50 border-b transition-colors duration-500"
 >
     <div class="frame !border-0 flex h-[68px] items-center justify-between gap-6">
@@ -40,7 +39,7 @@
             <a href="/start" data-magnetic class="hidden btn sm:inline-flex">Start a project</a>
 
             <button
-                @click="open = true"
+                @click="openMenu()"
                 class="inline-flex h-10 w-10 items-center justify-center lg:hidden"
                 aria-label="Open menu"
                 aria-controls="mobile-menu"
@@ -64,18 +63,12 @@
         aria-modal="true"
         aria-label="Site menu"
         x-trap.noscroll="open"
-        x-transition:enter="transition duration-[350ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="transition duration-200 ease-in"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-50 flex flex-col bg-paper lg:hidden"
-        @keydown.escape.window="open = false"
+        class="menu-panel fixed inset-0 z-50 flex flex-col bg-paper lg:hidden"
+        @keydown.escape.window="closeMenu()"
     >
         <div class="frame !border-0 flex h-[68px] items-center justify-between">
             <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">Menu</span>
-            <button @click="open = false" class="font-mono text-xs uppercase tracking-widest" aria-label="Close menu">Close ✕</button>
+            <button @click="closeMenu()" class="font-mono text-xs uppercase tracking-widest" aria-label="Close menu">Close ✕</button>
         </div>
 
         <nav class="frame !border-0 mt-6 flex flex-1 flex-col gap-1" aria-label="Mobile">
@@ -83,12 +76,12 @@
                 <a href="{{ $item->url }}"
                    class="menu-link display flex items-baseline gap-4 border-b border-line py-5 text-3xl"
                    style="animation-delay: {{ 80 + $i * 55 }}ms"
-                   @click="open = false">
+                   @click="closeMenu()">
                     <span class="label-mono text-faint">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
                     {{ $item->label }}
                 </a>
             @endforeach
-            <a href="/start" class="menu-link btn mt-8 self-start" style="animation-delay: {{ 80 + $nav->count() * 55 }}ms" @click="open = false">Start a project</a>
+            <a href="/start" class="menu-link btn mt-8 self-start" style="animation-delay: {{ 80 + $nav->count() * 55 }}ms" @click="closeMenu()">Start a project</a>
         </nav>
     </div>
 </header>

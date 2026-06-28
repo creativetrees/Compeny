@@ -19,20 +19,20 @@
 
     {{-- ──────────────────── Filter + grid ──────────────────── --}}
     <section class="frame border-t border-line py-12 md:py-16"
-             x-data="{ cat: 'all', counts: {{ \Illuminate\Support\Js::from($counts) }} }">
+             x-data="workFilter" data-counts="{{ json_encode($counts) }}">
         @if ($categories->isNotEmpty())
             <div class="mb-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex flex-wrap gap-2.5" role="group" aria-label="Filter work by category">
-                    <button type="button" @click="cat = 'all'"
-                            :aria-pressed="cat === 'all'"
-                            :class="cat === 'all' ? 'border-ink bg-ink text-paper' : 'border-line text-muted hover:border-ink hover:text-ink'"
+                    <button type="button" @click="select('all')"
+                            :aria-pressed="isActive('all')"
+                            :class="activeClass('all')"
                             class="rounded-full border px-4 py-2 font-mono text-[0.7rem] uppercase tracking-widest transition-colors">
                         All
                     </button>
                     @foreach ($categories as $c)
-                        <button type="button" @click="cat = '{{ $c->slug }}'"
-                                :aria-pressed="cat === '{{ $c->slug }}'"
-                                :class="cat === '{{ $c->slug }}' ? 'border-ink bg-ink text-paper' : 'border-line text-muted hover:border-ink hover:text-ink'"
+                        <button type="button" @click="select('{{ $c->slug }}')"
+                                :aria-pressed="isActive('{{ $c->slug }}')"
+                                :class="activeClass('{{ $c->slug }}')"
                                 class="rounded-full border px-4 py-2 font-mono text-[0.7rem] uppercase tracking-widest transition-colors">
                             {{ $c->name }}
                         </button>
@@ -40,13 +40,13 @@
                 </div>
 
                 <span class="label-mono shrink-0 text-faint"
-                      x-text="counts[cat] + (counts[cat] === 1 ? ' project' : ' projects')">{{ $projects->count() }} {{ \Illuminate\Support\Str::plural('project', $projects->count()) }}</span>
+                      x-text="countLabel">{{ $projects->count() }} {{ \Illuminate\Support\Str::plural('project', $projects->count()) }}</span>
             </div>
         @endif
 
         <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
             @forelse ($projects as $project)
-                <div x-show="cat === 'all' || cat === '{{ $project->category?->slug }}'"
+                <div x-show="shows('{{ $project->category?->slug }}')"
                      x-transition:enter="transition duration-500 ease-out"
                      x-transition:enter-start="opacity-0 translate-y-2"
                      x-transition:enter-end="opacity-100 translate-y-0">

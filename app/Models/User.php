@@ -15,12 +15,26 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable(['name', 'username', 'email', 'nik', 'phone', 'password'])]
+#[Hidden(['password', 'remember_token', 'nik'])]
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    /**
+     * Resolve the credential field for a login value that may be a username or
+     * an email address. Usernames are stored lower-case, so the value is
+     * normalised here to keep the login case-insensitive.
+     *
+     * @return array{0: string, 1: string} [field, value]
+     */
+    public static function resolveLoginField(string $login): array
+    {
+        return filter_var($login, FILTER_VALIDATE_EMAIL)
+            ? ['email', $login]
+            : ['username', Str::lower($login)];
+    }
 
     /**
      * Determine whether the user may access the Filament admin panel.

@@ -58,7 +58,11 @@ class DatabaseSeeder extends Seeder
 
         User::updateOrCreate(
             ['email' => (string) env('ADMIN_SEED_EMAIL', 'admin@creativetrees.group')],
-            ['name' => 'CTG Admin', 'password' => Hash::make($password)],
+            [
+                'name' => 'CTG Admin',
+                'username' => (string) env('ADMIN_SEED_USERNAME', 'admin'),
+                'password' => Hash::make($password),
+            ],
         );
     }
 

@@ -5,7 +5,7 @@
    Stable data-attribute API. Degrades gracefully; respects reduced-motion.
    ───────────────────────────────────────────────────────────────────────── */
 import './echo';
-import Alpine from 'alpinejs';
+import Alpine from '@alpinejs/csp';
 import collapse from '@alpinejs/collapse';
 import intersect from '@alpinejs/intersect';
 import focus from '@alpinejs/focus';
@@ -26,6 +26,58 @@ document.querySelector('[data-error-summary]')?.focus();
 Alpine.plugin(collapse);
 Alpine.plugin(intersect);
 Alpine.plugin(focus);
+
+// ── CSP-safe Alpine components ──────────────────────────────────────────────
+// The @alpinejs/csp build forbids inline expressions (no new Function()/eval),
+// so all component state + logic lives here and templates only reference
+// properties, getters, and methods. This lets the CSP drop 'unsafe-eval'.
+Alpine.data('siteHeader', () => ({
+    scrolled: false,
+    open: false,
+    init() {
+        this.onScroll();
+        // Pause Lenis smooth-scroll while the mobile menu is open.
+        this.$watch('open', (value) => {
+            if (window.lenis) value ? window.lenis.stop() : window.lenis.start();
+        });
+    },
+    onScroll() { this.scrolled = window.scrollY > 24; },
+    onResize() { if (window.innerWidth >= 1024) this.open = false; },
+    openMenu() { this.open = true; },
+    closeMenu() { this.open = false; },
+    get headerClass() {
+        return this.scrolled
+            ? 'border-line/100 bg-paper/85 backdrop-blur'
+            : 'border-transparent bg-paper/0';
+    },
+}));
+
+Alpine.data('faqItem', () => ({
+    open: false,
+    toggle() { this.open = !this.open; },
+    get iconClass() { return this.open ? 'rotate-45' : ''; },
+}));
+
+Alpine.data('workFilter', () => ({
+    cat: 'all',
+    counts: {},
+    init() {
+        try { this.counts = JSON.parse(this.$el.dataset.counts || '{}'); } catch (e) { this.counts = {}; }
+    },
+    select(slug) { this.cat = slug; },
+    isActive(slug) { return this.cat === slug; },
+    activeClass(slug) {
+        return this.cat === slug
+            ? 'border-ink bg-ink text-paper'
+            : 'border-line text-muted hover:border-ink hover:text-ink';
+    },
+    shows(slug) { return this.cat === 'all' || this.cat === slug; },
+    get countLabel() {
+        const n = this.counts[this.cat] ?? 0;
+        return n + (n === 1 ? ' project' : ' projects');
+    },
+}));
+
 window.Alpine = Alpine;
 Alpine.start();
 

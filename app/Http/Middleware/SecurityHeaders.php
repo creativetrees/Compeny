@@ -27,21 +27,25 @@ class SecurityHeaders
             'Referrer-Policy' => 'strict-origin-when-cross-origin',
             'X-Permitted-Cross-Domain-Policies' => 'none',
             'Permissions-Policy' => 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
-            // Safe to enforce everywhere: no effect on inline scripts/styles, real
-            // clickjacking + base-tag + plugin protection. frame-ancestors
-            // supersedes X-Frame-Options on modern browsers.
-            'Content-Security-Policy' => "frame-ancestors 'self'; base-uri 'self'; object-src 'none'",
         ];
 
         foreach ($headers as $key => $value) {
             $response->headers->set($key, $value);
         }
 
-        // Full strict policy in Report-Only on the public site (admin/Filament
-        // needs its own policy). Report-Only does NOT block — it surfaces
-        // violations so we can tighten toward enforcing 'self'-only scripts.
-        if (! $request->is('admin', 'admin/*')) {
-            $response->headers->set('Content-Security-Policy-Report-Only', implode('; ', [
+        // Content-Security-Policy. A minimal, script-agnostic policy (clickjacking
+        // + base-tag + plugin lockdown; no effect on inline scripts/styles) is the
+        // floor. On the public site — Alpine runs on the @alpinejs/csp build, so
+        // there is no 'unsafe-eval', and scripts are Vite-bundled ('self') — the
+        // full strict policy is ENFORCED in production and Report-Only elsewhere
+        // (so the Vite dev server's inline HMR preamble still works). /admin
+        // (Filament) keeps the minimal policy; it ships its own asset pipeline.
+        $minimal = "frame-ancestors 'self'; base-uri 'self'; object-src 'none'";
+
+        if ($request->is('admin', 'admin/*')) {
+            $response->headers->set('Content-Security-Policy', $minimal);
+        } else {
+            $strict = implode('; ', [
                 "default-src 'self'",
                 "script-src 'self'",
                 "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
@@ -52,7 +56,14 @@ class SecurityHeaders
                 "base-uri 'self'",
                 "form-action 'self'",
                 "frame-ancestors 'self'",
-            ]));
+            ]);
+
+            if (app()->environment('production')) {
+                $response->headers->set('Content-Security-Policy', $strict);
+            } else {
+                $response->headers->set('Content-Security-Policy', $minimal);
+                $response->headers->set('Content-Security-Policy-Report-Only', $strict);
+            }
         }
 
         // HSTS only over real HTTPS so local http:// is never forced to https.
