@@ -35,8 +35,9 @@
                         {{-- Cover --}}
                         <div class="relative aspect-[16/10] overflow-hidden border border-line bg-panel">
                             @if ($product->cover_url)
-                                <img src="{{ $product->cover_url }}" alt="{{ $product->title }}" loading="lazy"
-                                     class="h-full w-full object-cover grayscale transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:grayscale-0 group-hover:scale-[1.03]">
+                                <x-ui.img :src="$product->cover_url" :alt="$product->title"
+                                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                                     class="h-full w-full object-cover grayscale transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:grayscale-0 group-hover:scale-[1.03]" />
                             @else
                                 <div class="flex h-full w-full items-center justify-center">
                                     <span class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-faint">

@@ -37,7 +37,7 @@
     @if ($project->cover_url)
         <section class="frame pb-8 md:pb-12">
             <div class="relative aspect-[16/9] overflow-hidden border border-line bg-panel" data-reveal>
-                <img src="{{ $project->cover_url }}" alt="{{ $project->title }}" fetchpriority="high" class="h-full w-full object-cover" data-parallax="0.08">
+                <x-ui.img :src="$project->cover_url" :alt="$project->title" fetchpriority="high" loading="eager" sizes="100vw" class="h-full w-full object-cover" data-parallax="0.08" />
                 <span class="tick left-3 top-3"></span>
                 <span class="tick right-3 bottom-3"></span>
             </div>

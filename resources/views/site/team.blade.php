@@ -41,8 +41,9 @@
                     {{-- Portrait --}}
                     <div class="relative aspect-[4/5] overflow-hidden bg-panel">
                         @if ($member->photo_url)
-                            <img src="{{ $member->photo_url }}" alt="{{ $member->name }}" loading="lazy"
-                                 class="h-full w-full object-cover grayscale transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] group-hover:grayscale-0">
+                            <x-ui.img :src="$member->photo_url" :alt="$member->name"
+                                 sizes="(min-width: 768px) 33vw, 50vw"
+                                 class="h-full w-full object-cover grayscale transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] group-hover:grayscale-0" />
                         @else
                             <div class="flex h-full w-full items-center justify-center">
                                 <span class="display text-6xl text-faint">{{ $initials }}</span>

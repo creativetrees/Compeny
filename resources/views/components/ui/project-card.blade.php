@@ -3,8 +3,9 @@
 <a href="/work/{{ $project->slug }}" class="group block" data-stagger-item data-cursor-grow>
     <div class="relative aspect-[16/10] overflow-hidden border border-line bg-panel">
         @if ($project->cover_url)
-            <img src="{{ $project->cover_url }}" alt="{{ $project->title }}" loading="lazy"
-                 class="h-full w-full object-cover grayscale transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:grayscale-0">
+            <x-ui.img :src="$project->cover_url" :alt="$project->title"
+                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                 class="h-full w-full object-cover grayscale transition-all duration-[900ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] group-hover:grayscale-0" />
         @endif
 
         {{-- subtle veil + corner registration tick --}}
