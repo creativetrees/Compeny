@@ -77,10 +77,10 @@ class DatabaseSeeder extends Seeder
             'contact_phone' => '+62 811 2000 700',
             'contact_address' => 'Jakarta · Remote-first',
             'social_links' => [
-                'x' => 'https://x.com/creativetrees',
-                'linkedin' => 'https://linkedin.com/company/creativetrees',
-                'github' => 'https://github.com/creativetrees',
-                'dribbble' => 'https://dribbble.com/creativetrees',
+                ['platform' => 'X', 'url' => 'https://x.com/creativetrees'],
+                ['platform' => 'LinkedIn', 'url' => 'https://linkedin.com/company/creativetrees'],
+                ['platform' => 'GitHub', 'url' => 'https://github.com/creativetrees'],
+                ['platform' => 'Dribbble', 'url' => 'https://dribbble.com/creativetrees'],
             ],
             'stats' => [
                 ['label' => 'Products shipped', 'value' => '120+'],

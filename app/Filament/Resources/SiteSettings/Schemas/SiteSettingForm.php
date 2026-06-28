@@ -3,7 +3,8 @@
 namespace App\Filament\Resources\SiteSettings\Schemas;
 
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
@@ -61,14 +62,42 @@ class SiteSettingForm
                 TextInput::make('contact_address'),
 
                 // ── Social & stats ──
-                KeyValue::make('social_links')
-                    ->keyLabel('Platform')
-                    ->valueLabel('URL')
-                    ->helperText('e.g. X → https://x.com/…  ·  LinkedIn → https://linkedin.com/…')
+                Repeater::make('social_links')
+                    ->label('Social media')
+                    ->helperText('Pilih platform & isi URL profil. Tarik untuk mengurutkan.')
+                    ->schema([
+                        Select::make('platform')
+                            ->required()
+                            ->native(false)
+                            ->options([
+                                'X' => 'X (Twitter)', 'LinkedIn' => 'LinkedIn', 'GitHub' => 'GitHub',
+                                'Instagram' => 'Instagram', 'Dribbble' => 'Dribbble', 'Behance' => 'Behance',
+                                'YouTube' => 'YouTube', 'Facebook' => 'Facebook', 'TikTok' => 'TikTok',
+                                'Threads' => 'Threads', 'WhatsApp' => 'WhatsApp', 'Email' => 'Email',
+                            ]),
+                        TextInput::make('url')
+                            ->required()
+                            ->url()
+                            ->prefixIcon('heroicon-m-link')
+                            ->placeholder('https://...'),
+                    ])
+                    ->columns(2)
+                    ->reorderable()
+                    ->collapsible()
+                    ->itemLabel(fn (array $state): ?string => $state['platform'] ?? null)
+                    ->addActionLabel('Tambah sosial media')
                     ->columnSpanFull(),
-                KeyValue::make('stats')
-                    ->keyLabel('Label')
-                    ->valueLabel('Value')
+                Repeater::make('stats')
+                    ->label('Stats (angka highlight)')
+                    ->schema([
+                        TextInput::make('label')->required(),
+                        TextInput::make('value')->required(),
+                    ])
+                    ->columns(2)
+                    ->reorderable()
+                    ->collapsible()
+                    ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
+                    ->addActionLabel('Tambah stat')
                     ->columnSpanFull(),
 
                 // ── SEO ──

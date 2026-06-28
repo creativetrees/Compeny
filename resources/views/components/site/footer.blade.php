@@ -71,9 +71,16 @@
                     </ul>
                     @if (! empty($socials))
                         <div class="mt-6 flex flex-wrap gap-x-4 gap-y-2.5">
-                            @foreach ($socials as $name => $url)
-                                <a href="{{ $url }}" target="_blank" rel="noopener"
-                                   class="link-underline font-mono text-xs uppercase tracking-wide text-[#9a9a96] hover:text-paper">{{ $name }}</a>
+                            @foreach ($socials as $key => $social)
+                                @php
+                                    // Supports both new [{platform,url}] and legacy {platform: url}.
+                                    $sUrl = is_array($social) ? ($social['url'] ?? null) : $social;
+                                    $sName = is_array($social) ? ($social['platform'] ?? null) : $key;
+                                @endphp
+                                @if ($sUrl && $sName)
+                                    <a href="{{ $sUrl }}" target="_blank" rel="noopener"
+                                       class="link-underline font-mono text-xs uppercase tracking-wide text-[#9a9a96] hover:text-paper">{{ $sName }}</a>
+                                @endif
                             @endforeach
                         </div>
                     @endif
