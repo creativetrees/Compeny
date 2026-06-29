@@ -73,14 +73,14 @@ class AdminPanelTest extends TestCase
         }
     }
 
-    public function test_edit_own_user_shows_native_two_factor_tab(): void
+    public function test_edit_own_user_shows_the_two_factor_tab(): void
     {
         $admin = User::factory()->admin()->create(['email' => 'self@creativetrees.group']);
 
         $this->actingAs($admin)
             ->get(UserResource::getUrl('edit', ['record' => $admin]))
             ->assertSuccessful()
-            ->assertSee('Authenticator', false); // the native 2FA management (in the 2FA tab)
+            ->assertSee('2FA', false); // the 2FA tab is present when editing yourself
     }
 
     public function test_edit_another_user_hides_the_two_factor_tab(): void
@@ -91,6 +91,6 @@ class AdminPanelTest extends TestCase
         $this->actingAs($admin)
             ->get(UserResource::getUrl('edit', ['record' => $other]))
             ->assertSuccessful()
-            ->assertDontSee('Authenticator', false);
+            ->assertDontSee('2FA', false);
     }
 }

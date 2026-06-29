@@ -2,16 +2,14 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Livewire\TwoFactorSetup;
 use App\Models\User;
 use App\Support\Format;
 use Closure;
-use Filament\Auth\MultiFactor\Contracts\MultiFactorAuthenticationProvider;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
@@ -173,25 +171,13 @@ class UserForm
 
                         // Native Filament 2FA — only on your OWN account (the TOTP secret
                         // belongs to the account owner; admins can't enrol it for others).
-                        // The factor's Set up / Disable actions sit in the section HEADER
-                        // (top-right) instead of as a small inline link.
+                        // Inline setup component shows the QR directly (no modal).
                         Tab::make('2FA')
                             ->icon('heroicon-o-shield-check')
                             ->visible(fn (?User $record): bool => Filament::hasMultiFactorAuthentication() && $record?->getKey() === Filament::auth()->id())
-                            ->schema(fn (): array => collect(Filament::getMultiFactorAuthenticationProviders())
-                                ->map(fn (MultiFactorAuthenticationProvider $provider): Component => Section::make('Authenticator app')
-                                    ->description('Gunakan aplikasi authenticator (Google Authenticator / Authy) untuk membuat kode sekali pakai saat login.')
-                                    ->icon('heroicon-o-device-phone-mobile')
-                                    ->headerActions(method_exists($provider, 'getActions') ? $provider->getActions() : [])
-                                    ->statePath($provider->getId())
-                                    ->schema([
-                                        Placeholder::make('status')
-                                            ->hiddenLabel()
-                                            ->content(fn (): string => $provider->isEnabled(Filament::auth()->user())
-                                                ? '✅ Two-factor authentication aktif untuk akun ini.'
-                                                : 'Belum aktif — klik tombol "Set up" di kanan atas untuk mengaktifkan dengan aplikasi authenticator.'),
-                                    ]))
-                                ->all()),
+                            ->schema([
+                                Livewire::make(TwoFactorSetup::class)->key('two-factor-setup'),
+                            ]),
                     ]),
             ]);
     }
