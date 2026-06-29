@@ -69,10 +69,10 @@ class TwoFactorSetupTest extends TestCase
         $user = User::factory()->admin()->create();
         $this->actingAs($user);
 
+        $component = Livewire::test(TwoFactorSetup::class); // mount primes the session secret
         $code = (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret'));
 
-        Livewire::test(TwoFactorSetup::class)
-            ->set('data.otp', $code)
+        $component->set('data.otp', $code)
             ->set('data.current_password', 'wrong-password')
             ->call('verifyAndEnable')
             ->assertHasErrors('data.current_password');
