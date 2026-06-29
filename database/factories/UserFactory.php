@@ -39,14 +39,14 @@ class UserFactory extends Factory
     }
 
     /**
-     * Grant the user the Shield `super_admin` role — full panel access (the
-     * role bypasses every policy via Shield's Gate::before). Tests use this.
+     * Grant the user the Shield `developer` role — full panel access (the role
+     * bypasses every policy via the super-admin Gate::before). Tests use this.
      */
     public function admin(): static
     {
         return $this->afterCreating(function (User $user): void {
             $user->assignRole(Role::firstOrCreate([
-                'name' => 'super_admin',
+                'name' => 'developer',
                 'guard_name' => 'web',
             ]));
         });

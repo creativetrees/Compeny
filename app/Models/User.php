@@ -37,7 +37,7 @@ class User extends Authenticatable implements FilamentUser, HasAppAuthentication
      * Authorization is handled by Filament Shield (spatie/laravel-permission):
      * default-deny — only users with at least one assigned role may enter, and
      * per-resource access is enforced by Shield's generated policies (the
-     * `super_admin` role bypasses every policy via Shield's Gate::before).
+     * `developer` role bypasses every policy via the super-admin Gate::before).
      */
     public function canAccessPanel(Panel $panel): bool
     {

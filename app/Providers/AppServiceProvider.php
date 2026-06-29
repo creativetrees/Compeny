@@ -43,10 +43,10 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
-        // Filament Shield super-admin: the `super_admin` role bypasses every gate
+        // Filament Shield super-admin: the `developer` role bypasses every gate
         // and policy. Registered globally here (rather than via Shield's per-panel
         // interceptor, which did not fire) so it also applies in tests & console.
-        Gate::before(fn ($user, string $ability): ?bool => ($user instanceof User && $user->hasRole('super_admin')) ? true : null);
+        Gate::before(fn ($user, string $ability): ?bool => ($user instanceof User && $user->hasRole('developer')) ? true : null);
 
         // Make the singleton site settings available to every view & component.
         View::composer('*', function ($view) {

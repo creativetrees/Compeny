@@ -80,12 +80,12 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        // Authorization is via Filament Shield: grant the `super_admin` role,
-        // which bypasses every policy (Shield's Gate::before). Permissions exist
+        // Authorization is via Filament Shield: grant the `developer` role, which
+        // bypasses every policy (the super-admin Gate::before). Permissions exist
         // after `php artisan shield:generate`; sync whatever is present.
-        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-        $superAdmin->syncPermissions(Permission::all());
-        $admin->syncRoles([$superAdmin]);
+        $developer = Role::firstOrCreate(['name' => 'developer', 'guard_name' => 'web']);
+        $developer->syncPermissions(Permission::all());
+        $admin->syncRoles([$developer]);
     }
 
     private function seedSettings(): void

@@ -5,12 +5,14 @@ namespace App\Filament\Resources\Users\Schemas;
 use App\Models\User;
 use App\Support\Format;
 use Closure;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Models\Role;
 
 class UserForm
 {
@@ -139,6 +141,29 @@ class UserForm
                                     ->dehydrated(false)
                                     ->prefixIcon('heroicon-m-key')
                                     ->helperText('Ulangi password yang sama persis.'),
+                                Select::make('roles')
+                                    ->label('Peran (Role)')
+                                    ->relationship(
+                                        name: 'roles',
+                                        titleAttribute: 'name',
+                                        // Non-developers cannot even see the developer role in the picker.
+                                        modifyQueryUsing: fn (Builder $query): Builder => auth()->user()?->hasRole('developer')
+                                            ? $query
+                                            : $query->whereKeyNot(Role::where('name', 'developer')->value('id') ?? 0),
+                                    )
+                                    ->multiple()
+                                    ->preload()
+                                    ->searchable()
+                                    ->columnSpanFull()
+                                    ->helperText('Menentukan hak akses. "Developer" = akses penuh — hanya bisa diberikan oleh sesama Developer.')
+                                    // Hard stop on privilege-escalation: a non-developer can never grant developer.
+                                    ->rule(fn (): Closure => static function (string $attribute, mixed $value, Closure $fail): void {
+                                        $developerId = Role::where('name', 'developer')->value('id');
+
+                                        if ($developerId && in_array($developerId, array_map('intval', (array) $value), true) && ! auth()->user()?->hasRole('developer')) {
+                                            $fail('Hanya Developer yang boleh memberikan peran Developer.');
+                                        }
+                                    }),
                             ]),
                     ]),
             ]);
