@@ -41,7 +41,14 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
+            // Host-relative by default so file URLs (logo, favicon, OG, Filament
+            // upload previews) load from whatever host serves the page — localhost,
+            // an ephemeral tunnel (trycloudflare), or production — instead of a
+            // fixed APP_URL host that may no longer resolve. Relative URLs also
+            // inherit the page scheme, avoiding mixed-content. Set
+            // FILESYSTEM_PUBLIC_URL to an absolute CDN/base only if assets are
+            // served from a different domain.
+            'url' => rtrim(env('FILESYSTEM_PUBLIC_URL', '/storage'), '/'),
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
