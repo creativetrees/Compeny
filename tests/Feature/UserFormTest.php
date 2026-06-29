@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Filament\Auth\EditProfile;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Models\User;
 use Filament\Facades\Filament;
@@ -90,7 +91,7 @@ class UserFormTest extends TestCase
         ]);
         $this->actingAs($admin);
 
-        Livewire::test(\App\Filament\Auth\EditProfile::class)
+        Livewire::test(EditProfile::class)
             ->fillForm([
                 'name' => 'New Name',
                 'username' => 'meadmin',          // unchanged — must ignore self on unique
