@@ -115,6 +115,7 @@ class UserForm
 
                         Tab::make('Keamanan')
                             ->icon('heroicon-o-lock-closed')
+                            ->columns(2)
                             ->schema([
                                 TextInput::make('password')
                                     ->label('Password')
@@ -123,9 +124,21 @@ class UserForm
                                     ->required(fn (string $operation): bool => $operation === 'create')
                                     ->minLength(8)
                                     ->maxLength(255)
+                                    ->confirmed()
+                                    ->live(onBlur: true)
                                     ->dehydrated(fn (?string $state): bool => filled($state))
                                     ->prefixIcon('heroicon-m-key')
-                                    ->helperText('Minimal 8 karakter. Kosongkan saat mengedit bila tidak ingin mengganti password.'),
+                                    ->helperText('Minimal 8 karakter. Kosongkan saat edit bila tak ingin mengganti.'),
+                                TextInput::make('password_confirmation')
+                                    ->label('Konfirmasi password')
+                                    ->password()
+                                    ->revealable()
+                                    ->required(fn (string $operation, callable $get): bool => $operation === 'create' || filled($get('password')))
+                                    ->minLength(8)
+                                    ->maxLength(255)
+                                    ->dehydrated(false)
+                                    ->prefixIcon('heroicon-m-key')
+                                    ->helperText('Ulangi password yang sama persis.'),
                             ]),
                     ]),
             ]);

@@ -32,6 +32,7 @@ class UserFormTest extends TestCase
                 'nik' => '1234-5678-9012-3456',
                 'phone' => '081212350164',
                 'password' => 'rahasia123',
+                'password_confirmation' => 'rahasia123',
             ])
             ->call('create')
             ->assertHasNoFormErrors();
@@ -53,6 +54,7 @@ class UserFormTest extends TestCase
                 'nik' => '3201234567890002',
                 'phone' => '+6281212350164',
                 'password' => 'rahasia123',
+                'password_confirmation' => 'rahasia123',
             ])
             ->call('create')
             ->assertHasNoFormErrors();
@@ -72,6 +74,7 @@ class UserFormTest extends TestCase
                 'nik' => '123',     // not 16 digits
                 'phone' => '12345',  // not a valid ID mobile
                 'password' => 'rahasia123',
+                'password_confirmation' => 'rahasia123',
             ])
             ->call('create')
             ->assertHasFormErrors(['nik', 'phone']);
