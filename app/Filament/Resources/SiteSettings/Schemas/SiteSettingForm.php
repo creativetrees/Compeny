@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\SiteSettings\Schemas;
 
+use App\Enums\SitePage;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -55,6 +56,17 @@ class SiteSettingForm
         return Textarea::make($path)->label($label)->placeholder($placeholder)->rows(3)->columnSpanFull();
     }
 
+    /** Page picker — constrains a URL field to a known SitePage (no typos, no unsafe schemes). */
+    private static function pageSelect(string $path, string $label = 'Halaman tujuan'): Select
+    {
+        return Select::make($path)
+            ->label($label)
+            ->native(false)
+            ->searchable()
+            ->options(SitePage::options())
+            ->prefixIcon('heroicon-m-link');
+    }
+
     // ── Brand & Logo (header identity) ──────────────────────────────────────
     private static function brandTab(): Tab
     {
@@ -98,7 +110,7 @@ class SiteSettingForm
                             ->hiddenLabel()
                             ->schema([
                                 TextInput::make('label')->label('Teks')->required()->placeholder('Work'),
-                                TextInput::make('url')->label('URL')->required()->placeholder('/work')->prefixIcon('heroicon-m-link'),
+                                self::pageSelect('url', 'Halaman tujuan')->required(),
                             ])
                             ->columns(2)->reorderable()->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
@@ -108,7 +120,7 @@ class SiteSettingForm
                     ->columns(2)
                     ->schema([
                         self::t('page_content.header.cta_label', 'Teks tombol', 'Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
-                        self::t('page_content.header.cta_url', 'URL tombol', '/start')->prefixIcon('heroicon-m-link'),
+                        self::pageSelect('page_content.header.cta_url'),
                     ]),
             ]);
     }
@@ -139,13 +151,13 @@ class SiteSettingForm
                     ->columns(2)
                     ->schema([
                         TextInput::make('hero_cta_label')->label('Teks')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
-                        TextInput::make('hero_cta_url')->label('URL')->placeholder('/start')->prefixIcon('heroicon-m-link'),
+                        self::pageSelect('hero_cta_url'),
                     ]),
                 Fieldset::make('Tombol sekunder')
                     ->columns(2)
                     ->schema([
                         TextInput::make('hero_cta_secondary_label')->label('Teks')->placeholder('View work')->prefixIcon('heroicon-m-cursor-arrow-rays'),
-                        TextInput::make('hero_cta_secondary_url')->label('URL')->placeholder('/work')->prefixIcon('heroicon-m-link'),
+                        self::pageSelect('hero_cta_secondary_url'),
                     ]),
             ]);
     }
@@ -432,7 +444,7 @@ class SiteSettingForm
                         Textarea::make('footer_cta_title')->label('Judul')->placeholder("Have something\nworth building?")->helperText('Baris baru memecah judul.')->rows(2)->columnSpanFull(),
                         Textarea::make('footer_cta_body')->label('Deskripsi')->placeholder("Tell us where you're headed.")->rows(2)->columnSpanFull(),
                         TextInput::make('footer_cta_label')->label('Teks tombol')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
-                        TextInput::make('footer_cta_url')->label('URL tombol')->placeholder('/start')->prefixIcon('heroicon-m-link'),
+                        self::pageSelect('footer_cta_url'),
                     ]),
                 Section::make('Identitas footer')
                     ->description('Tagline, lokasi, copyright & watermark.')
