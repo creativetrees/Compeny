@@ -107,7 +107,9 @@
     @if ($projects->isNotEmpty())
         <section id="work" class="frame border-t border-line py-20 md:py-28">
             <div class="flex items-end justify-between gap-6">
-                <x-ui.heading :eyebrow="content('home.work_eyebrow', 'Selected work')" :title="content('home.work_title', 'Proof, not promises.')" />
+                <x-ui.heading :eyebrow="content('home.work_eyebrow', 'Selected work')" :title="content('home.work_title', 'Proof, not promises.')">
+                    {{ content('home.work_intro', "A selection of products we've designed, built, and shipped — and the outcomes that followed.") }}
+                </x-ui.heading>
                 <a href="/work" class="link-underline hidden shrink-0 font-mono text-xs uppercase tracking-widest sm:inline-block">All work →</a>
             </div>
 
@@ -152,7 +154,9 @@
     @if ($testimonials->isNotEmpty())
         <section class="frame border-t border-line py-20 md:py-28">
             <div class="flex items-end justify-between gap-6">
-                <x-ui.heading :eyebrow="content('home.signal_eyebrow', 'Signal')" :title="content('home.signal_title', 'What partners say.')" />
+                <x-ui.heading :eyebrow="content('home.signal_eyebrow', 'Signal')" :title="content('home.signal_title', 'What partners say.')">
+                    {{ content('home.signal_intro', "Unfiltered words from the founders and teams we've embedded with.") }}
+                </x-ui.heading>
 
                 @if ($testimonials->count() > 1)
                     <div class="hidden shrink-0 items-center gap-2.5 sm:flex">

@@ -139,11 +139,13 @@ class DatabaseSeeder extends Seeder
                     'cap_intro' => 'One embedded team across strategy, design, and engineering — so nothing is lost in handoff.',
                     'work_eyebrow' => 'Selected work',
                     'work_title' => 'Proof, not promises.',
+                    'work_intro' => "A selection of products we've designed, built, and shipped — and the outcomes that followed.",
                     'process_eyebrow' => 'How we work',
                     'process_title' => 'A process built to de-risk the work.',
                     'process_intro' => 'Four phases, one continuous flow — each one de-risks the next.',
                     'signal_eyebrow' => 'Signal',
                     'signal_title' => 'What partners say.',
+                    'signal_intro' => "Unfiltered words from the founders and teams we've embedded with.",
                 ],
                 'services' => [
                     'hero_eyebrow' => 'Services',

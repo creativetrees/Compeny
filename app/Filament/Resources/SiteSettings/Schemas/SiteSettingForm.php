@@ -176,6 +176,7 @@ class SiteSettingForm
                 Section::make('Selected work')->columns(2)->schema([
                     self::t('page_content.home.work_eyebrow', 'Eyebrow', 'Selected work'),
                     self::t('page_content.home.work_title', 'Judul', 'Proof, not promises.'),
+                    self::ta('page_content.home.work_intro', 'Deskripsi', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
                 ]),
                 Section::make('Process')->columns(2)->schema([
                     self::t('page_content.home.process_eyebrow', 'Eyebrow', 'How we work'),
@@ -185,6 +186,7 @@ class SiteSettingForm
                 Section::make('Signal / testimoni')->columns(2)->schema([
                     self::t('page_content.home.signal_eyebrow', 'Eyebrow', 'Signal'),
                     self::t('page_content.home.signal_title', 'Judul', 'What partners say.'),
+                    self::ta('page_content.home.signal_intro', 'Deskripsi', "Unfiltered words from the founders and teams we've embedded with."),
                 ]),
                 Section::make('Lainnya')->columns(2)->schema([
                     self::t('page_content.home.trusted_eyebrow', 'Trusted-by eyebrow', 'Trusted by innovative teams'),
