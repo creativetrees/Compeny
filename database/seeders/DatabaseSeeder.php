@@ -126,7 +126,7 @@ class DatabaseSeeder extends Seeder
             ],
             'seo_title' => 'Creative Trees Group — Digital Product Studio',
             'seo_description' => 'We design and build SaaS products that scale. Strategy, design, and engineering as one embedded team.',
-            'footer_tagline' => 'Designed and built to compound.',
+            'footer_tagline' => '<p>Designed and built to compound.</p>',
             // Per-page editable copy, resolved by content('page.key', default).
             'page_content' => [
                 'header' => [

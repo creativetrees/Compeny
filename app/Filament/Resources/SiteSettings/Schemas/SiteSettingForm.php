@@ -321,13 +321,18 @@ class SiteSettingForm
     // ── Contact page copy ───────────────────────────────────────────────────
     private static function contactPageTab(): Tab
     {
-        return Tab::make('Halaman Contact')
+        return Tab::make('Contact & Start')
             ->icon('heroicon-o-chat-bubble-left-right')
             ->schema([
-                Section::make('Hero')->columns(2)->schema([
+                Section::make('Halaman Contact — hero')->columns(2)->schema([
                     self::t('page_content.contact.hero_eyebrow', 'Eyebrow', 'Contact'),
                     self::t('page_content.contact.hero_title', 'Judul', "Let's talk."),
                     self::ta('page_content.contact.hero_intro', 'Intro'),
+                ]),
+                Section::make('Halaman Start — hero')->columns(2)->schema([
+                    self::t('page_content.start.hero_eyebrow', 'Eyebrow', 'Start a project'),
+                    self::ta('page_content.start.hero_title', 'Judul', "Tell us where\nyou're headed."),
+                    self::ta('page_content.start.hero_intro', 'Intro'),
                 ]),
             ]);
     }

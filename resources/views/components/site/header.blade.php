@@ -13,6 +13,11 @@
             ['label' => 'About', 'url' => '/about'],
         ]);
     }
+
+    // Header CTA — block unsafe schemes (e.g. javascript:) from an admin-set value.
+    $ctaLabel = content('header.cta_label', 'Start a project');
+    $ctaUrl = content('header.cta_url', '/start');
+    $ctaUrl = \Illuminate\Support\Str::startsWith($ctaUrl, ['/', '#', 'http://', 'https://', 'mailto:', 'tel:']) ? $ctaUrl : '/start';
 @endphp
 
 <header
@@ -42,14 +47,14 @@
                    @class([
                        'link-underline font-mono text-[0.78rem] uppercase tracking-wide text-ink/80 transition-colors hover:text-ink',
                    ])
-                   @if ($item['url'] === '/' ? request()->is('/') : request()->is(ltrim($item['url'], '/').'*')) aria-current="page" @endif
+                   @if ($item['url'] === '/' ? request()->is('/') : (request()->is(ltrim($item['url'], '/')) || request()->is(ltrim($item['url'], '/').'/*'))) aria-current="page" @endif
                 >{{ $item['label'] }}</a>
             @endforeach
         </nav>
 
         {{-- CTA + mobile toggle --}}
         <div class="flex items-center gap-3">
-            <a href="{{ content('header.cta_url', '/start') }}" data-magnetic class="hidden btn sm:inline-flex">{{ content('header.cta_label', 'Start a project') }}</a>
+            <a href="{{ $ctaUrl }}" data-magnetic class="hidden btn sm:inline-flex">{{ $ctaLabel }}</a>
 
             <button
                 @click="openMenu()"
@@ -98,7 +103,7 @@
                     {{ $item['label'] }}
                 </a>
             @endforeach
-            <a href="{{ content('header.cta_url', '/start') }}" class="menu-link btn mt-8 self-start" style="animation-delay: {{ 80 + $nav->count() * 55 }}ms" @click="closeMenu()">{{ content('header.cta_label', 'Start a project') }}</a>
+            <a href="{{ $ctaUrl }}" class="menu-link btn mt-8 self-start" style="animation-delay: {{ 80 + $nav->count() * 55 }}ms" @click="closeMenu()">{{ $ctaLabel }}</a>
         </nav>
     </div>
 </header>

@@ -30,6 +30,22 @@ class EditSiteSetting extends EditRecord
         return [];
     }
 
+    /**
+     * Preserve page_content namespaces that have no form field (e.g. start.*).
+     * Filament rebuilds an array-cast column from its registered fields only, so
+     * without this merge an admin save would silently drop every un-exposed
+     * page_content key, permanently reverting those pages to hardcoded defaults.
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $existing = $this->record->page_content ?? [];
+        $submitted = $data['page_content'] ?? [];
+
+        $data['page_content'] = array_replace_recursive($existing, $submitted);
+
+        return $data;
+    }
+
     protected function getHeaderActions(): array
     {
         return [
