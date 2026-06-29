@@ -16,6 +16,8 @@ class SiteSetting extends Model
         'hero_cta_label', 'hero_cta_url', 'about_heading', 'about_body',
         'contact_email', 'contact_phone', 'contact_address', 'social_links',
         'stats', 'seo_title', 'seo_description', 'seo_image_path', 'footer_tagline',
+        'footer_cta_eyebrow', 'footer_cta_title', 'footer_cta_body', 'footer_cta_label', 'footer_cta_url',
+        'footer_location', 'footer_copyright', 'footer_watermark',
     ];
 
     protected function casts(): array

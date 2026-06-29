@@ -120,7 +120,7 @@ class UserForm
 
                         Tab::make('Keamanan')
                             ->icon('heroicon-o-lock-closed')
-                            ->columns(2)
+                            ->columns(3)
                             ->schema([
                                 TextInput::make('password')
                                     ->label('Password')
@@ -157,7 +157,6 @@ class UserForm
                                     ->multiple()
                                     ->preload()
                                     ->searchable()
-                                    ->columnSpanFull()
                                     ->helperText('Menentukan hak akses. "Developer" = akses penuh — hanya bisa diberikan oleh sesama Developer.')
                                     // Hard stop on privilege tampering: a non-developer can neither grant the
                                     // developer role to anyone, nor strip it from an existing developer.

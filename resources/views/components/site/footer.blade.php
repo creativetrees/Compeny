@@ -15,16 +15,16 @@
     <section class="frame !border-0 py-20 md:py-28">
         <div class="grid gap-y-10 md:grid-cols-12 md:items-end md:gap-x-10">
             <div class="md:col-span-7" data-reveal>
-                <x-ui.eyebrow class="mb-7">{{ content('footer.cta_eyebrow', "Let's build") }}</x-ui.eyebrow>
+                <x-ui.eyebrow class="mb-7">{{ $settings->footer_cta_eyebrow ?: "Let's build" }}</x-ui.eyebrow>
                 <h2 class="display text-[2.6rem] leading-[0.95] sm:text-5xl md:text-[4.2rem]">
-                    {!! nl2br(e(content('footer.cta_title', "Have something\nworth building?"))) !!}
+                    {!! nl2br(e($settings->footer_cta_title ?: "Have something\nworth building?")) !!}
                 </h2>
             </div>
             <div class="flex flex-col items-start md:col-span-5 md:items-end md:text-right" data-reveal data-reveal-delay="0.1">
                 <p class="mb-7 max-w-sm text-[1rem] leading-relaxed text-[#9a9a96]">
-                    {{ content('footer.cta_body', "Tell us where you're headed. We'll tell you the shortest honest path to get there.") }}
+                    {{ $settings->footer_cta_body ?: "Tell us where you're headed. We'll tell you the shortest honest path to get there." }}
                 </p>
-                <x-ui.button href="/start" variant="invert">{{ content('footer.cta_button', 'Start a project') }}</x-ui.button>
+                <x-ui.button href="{{ $settings->footer_cta_url ?: '/start' }}" variant="invert">{{ $settings->footer_cta_label ?: 'Start a project' }}</x-ui.button>
             </div>
         </div>
     </section>
@@ -93,12 +93,12 @@
          mobile so the binary stays legible; one clean line on tablet/desktop. ── --}}
     <div class="frame !border-0 overflow-hidden pb-8 pt-8" aria-hidden="true">
         <div class="binary-text display select-none text-center text-[13.5vw] leading-[1.05] sm:whitespace-nowrap sm:text-[7.6vw] sm:leading-[0.9] lg:text-[6.8vw] lg:leading-[0.85]"
-             data-binary-text>{{ \Illuminate\Support\Str::upper($brand) }}</div>
+             data-binary-text>{{ \Illuminate\Support\Str::upper($settings->footer_watermark ?: $brand) }}</div>
     </div>
 
     {{-- ── Baseline ── --}}
     <div class="frame !border-0 flex flex-col gap-2 border-t border-[#1c1c1c] py-6 font-mono text-[0.72rem] uppercase tracking-wide text-[#8a8a86] sm:flex-row sm:items-center sm:justify-between">
-        <span>© {{ date('Y') }} {{ $brand }}</span>
-        <span>{{ $address ?? 'Jakarta · Remote-first' }} — {{ $settings->footer_tagline ?? 'Built to compound' }}</span>
+        <span>{{ $settings->footer_copyright ?: ('© '.date('Y').' '.$brand) }}</span>
+        <span>{{ ($settings->footer_location ?: 'Jakarta · Remote-first').' — '.($settings->footer_tagline ?: 'Built to compound') }}</span>
     </div>
 </footer>

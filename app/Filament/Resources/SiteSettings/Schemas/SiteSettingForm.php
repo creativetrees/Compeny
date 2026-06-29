@@ -7,6 +7,7 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
@@ -23,6 +24,7 @@ class SiteSettingForm
                     ->tabs([
                         Tab::make('Brand & Logo')
                             ->icon('heroicon-o-sparkles')
+                            ->columns(2)
                             ->schema([
                                 TextInput::make('brand_name')
                                     ->label('Brand / project name')
@@ -38,7 +40,9 @@ class SiteSettingForm
                                 FileUpload::make('logo_path')
                                     ->label('Company logo')
                                     ->image()
-                                    ->directory('site')
+                                    ->disk('public')
+                                    ->directory('site/logo')
+                                    ->visibility('public')
                                     ->imageEditor()
                                     ->maxSize(2048)
                                     ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'])
@@ -46,7 +50,9 @@ class SiteSettingForm
                                 FileUpload::make('favicon_path')
                                     ->label('Favicon')
                                     ->image()
-                                    ->directory('site')
+                                    ->disk('public')
+                                    ->directory('site/favicon')
+                                    ->visibility('public')
                                     ->maxSize(1024)
                                     ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'])
                                     ->helperText('Browser tab icon (ICO/PNG/SVG, e.g. 512×512), max 1 MB. Empty = default favicon.'),
@@ -54,14 +60,19 @@ class SiteSettingForm
 
                         Tab::make('Hero')
                             ->icon('heroicon-o-megaphone')
+                            ->columns(2)
                             ->schema([
-                                TextInput::make('hero_eyebrow')->prefixIcon('heroicon-m-tag'),
+                                TextInput::make('hero_eyebrow')->prefixIcon('heroicon-m-tag')->columnSpanFull(),
                                 Textarea::make('hero_title')
                                     ->helperText('Use a new line to split the headline into two lines.')
                                     ->columnSpanFull(),
                                 Textarea::make('hero_subtitle')->columnSpanFull(),
-                                TextInput::make('hero_cta_label')->prefixIcon('heroicon-m-cursor-arrow-rays'),
-                                TextInput::make('hero_cta_url')->url()->prefixIcon('heroicon-m-link'),
+                                Fieldset::make('Tombol aksi (CTA)')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('hero_cta_label')->prefixIcon('heroicon-m-cursor-arrow-rays'),
+                                        TextInput::make('hero_cta_url')->url()->prefixIcon('heroicon-m-link'),
+                                    ]),
                             ]),
 
                         Tab::make('About')
@@ -73,10 +84,11 @@ class SiteSettingForm
 
                         Tab::make('Kontak')
                             ->icon('heroicon-o-envelope')
+                            ->columns(2)
                             ->schema([
                                 TextInput::make('contact_email')->email()->prefixIcon('heroicon-m-envelope'),
                                 TextInput::make('contact_phone')->tel()->prefixIcon('heroicon-m-phone'),
-                                TextInput::make('contact_address')->prefixIcon('heroicon-m-map-pin'),
+                                TextInput::make('contact_address')->prefixIcon('heroicon-m-map-pin')->columnSpanFull(),
                             ]),
 
                         Tab::make('Social & Stats')
@@ -129,15 +141,69 @@ class SiteSettingForm
                                 FileUpload::make('seo_image_path')
                                     ->label('Social share image (OG)')
                                     ->image()
-                                    ->directory('site')
+                                    ->disk('public')
+                                    ->directory('site/seo')
+                                    ->visibility('public')
                                     ->maxSize(2048)
                                     ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp']),
                             ]),
 
                         Tab::make('Footer')
                             ->icon('heroicon-o-bars-3-bottom-left')
+                            ->columns(2)
                             ->schema([
-                                TextInput::make('footer_tagline')->prefixIcon('heroicon-m-chat-bubble-bottom-center-text'),
+                                Fieldset::make('Ajakan (CTA)')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('footer_cta_eyebrow')
+                                            ->label('Eyebrow')
+                                            ->placeholder("Let's build")
+                                            ->prefixIcon('heroicon-m-tag')
+                                            ->columnSpanFull(),
+                                        Textarea::make('footer_cta_title')
+                                            ->label('Judul')
+                                            ->placeholder("Have something\nworth building?")
+                                            ->helperText('Gunakan baris baru untuk memecah judul menjadi dua baris.')
+                                            ->rows(2)
+                                            ->columnSpanFull(),
+                                        Textarea::make('footer_cta_body')
+                                            ->label('Deskripsi')
+                                            ->placeholder("Tell us where you're headed. We'll tell you the shortest honest path to get there.")
+                                            ->rows(2)
+                                            ->columnSpanFull(),
+                                        TextInput::make('footer_cta_label')
+                                            ->label('Teks tombol')
+                                            ->placeholder('Start a project')
+                                            ->prefixIcon('heroicon-m-cursor-arrow-rays'),
+                                        TextInput::make('footer_cta_url')
+                                            ->label('URL tombol')
+                                            ->placeholder('/start')
+                                            ->prefixIcon('heroicon-m-link'),
+                                    ]),
+                                Fieldset::make('Baris bawah & watermark')
+                                    ->columns(2)
+                                    ->schema([
+                                        TextInput::make('footer_tagline')
+                                            ->label('Tagline')
+                                            ->placeholder('Designed and built to compound.')
+                                            ->prefixIcon('heroicon-m-chat-bubble-bottom-center-text')
+                                            ->columnSpanFull(),
+                                        TextInput::make('footer_location')
+                                            ->label('Lokasi')
+                                            ->placeholder('Jakarta · Remote-first')
+                                            ->prefixIcon('heroicon-m-map-pin'),
+                                        TextInput::make('footer_copyright')
+                                            ->label('Copyright (opsional)')
+                                            ->placeholder('© '.date('Y').' Creative Trees Group')
+                                            ->helperText('Kosongkan untuk otomatis: © tahun berjalan + nama brand.')
+                                            ->prefixIcon('heroicon-m-calendar'),
+                                        TextInput::make('footer_watermark')
+                                            ->label('Teks watermark (opsional)')
+                                            ->placeholder('Creative Trees Group')
+                                            ->helperText('Teks besar di latar footer. Kosongkan = pakai nama brand.')
+                                            ->prefixIcon('heroicon-m-sparkles')
+                                            ->columnSpanFull(),
+                                    ]),
                             ]),
                     ]),
             ]);

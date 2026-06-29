@@ -54,6 +54,8 @@ class UsersTable
                     ->falseIcon('heroicon-s-x-circle')
                     ->trueColor('success')
                     ->falseColor('gray')
+                    ->alignCenter()
+                    ->tooltip(fn ($record): string => $record->email_verified_at ? 'Email terverifikasi' : 'Belum terverifikasi')
                     ->sortable(),
 
                 IconColumn::make('mfa')
@@ -63,6 +65,8 @@ class UsersTable
                     ->falseIcon('heroicon-s-lock-open')
                     ->trueColor('success')
                     ->falseColor('gray')
+                    ->alignCenter()
+                    ->tooltip(fn ($record): string => ((bool) $record->has_email_authentication || filled($record->app_authentication_secret)) ? '2FA aktif' : '2FA nonaktif')
                     ->state(fn ($record): bool => (bool) $record->has_email_authentication || filled($record->app_authentication_secret)),
 
                 TextColumn::make('phone')
