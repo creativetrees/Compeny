@@ -21,14 +21,14 @@ class TwoFactorSetupTest extends TestCase
         Filament::setCurrentPanel(Filament::getPanel('admin'));
     }
 
-    public function test_mount_primes_a_pending_secret_and_renders_the_setup_key(): void
+    public function test_mount_in_setup_view_primes_a_secret_and_renders_the_setup_key(): void
     {
         $this->actingAs(User::factory()->admin()->create());
 
         Livewire::test(TwoFactorSetup::class)
             ->assertOk()
-            ->assertSet('enabled', false)
-            ->assertSee(session('two_factor_setup.secret')); // the setup key is shown
+            ->assertSet('view', 'setup')
+            ->assertSee(session('two_factor_setup.secret')); // the manual setup key is shown
 
         $this->assertNotNull(session('two_factor_setup.secret'));
     }
@@ -43,9 +43,10 @@ class TwoFactorSetupTest extends TestCase
         $component->call('regenerate');
 
         $this->assertNotSame($first, session('two_factor_setup.secret'));
+        $this->assertNotNull(session('two_factor_setup.secret'));
     }
 
-    public function test_confirm_with_a_valid_code_enables_2fa(): void
+    public function test_verify_and_enable_with_a_valid_code_saves_the_secret(): void
     {
         $user = User::factory()->admin()->create();
         $this->actingAs($user);
@@ -53,25 +54,41 @@ class TwoFactorSetupTest extends TestCase
         $component = Livewire::test(TwoFactorSetup::class);
         $code = (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret'));
 
-        $component->set('code', $code)
-            ->call('confirm')
-            ->assertHasNoErrors()
-            ->assertSet('enabled', true);
+        $component->set('data.otp', $code)
+            ->call('verifyAndEnable')
+            ->assertHasNoErrors();
+
+        // Step 1 saves the secret but the wizard stays put for step 2 (codes).
+        $component->assertSet('view', 'setup');
+        $this->assertNotNull($user->fresh()->app_authentication_secret);
+        $this->assertNotEmpty(session('two_factor_setup.recoveryCodes'));
+    }
+
+    public function test_completing_the_wizard_switches_to_the_enabled_view(): void
+    {
+        $user = User::factory()->admin()->create();
+        $this->actingAs($user);
+
+        $component = Livewire::test(TwoFactorSetup::class);
+        $code = (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret'));
+
+        $component->set('data.otp', $code)->call('verifyAndEnable');
+        $component->call('complete')->assertSet('view', 'enabled');
 
         $this->assertNull(session('two_factor_setup'));
         $this->assertNotNull($user->fresh()->app_authentication_secret);
     }
 
-    public function test_confirm_with_an_invalid_code_is_rejected(): void
+    public function test_verify_and_enable_with_an_invalid_code_is_rejected(): void
     {
         $user = User::factory()->admin()->create();
         $this->actingAs($user);
 
         Livewire::test(TwoFactorSetup::class)
-            ->set('code', '000000')
-            ->call('confirm')
-            ->assertHasErrors('code')
-            ->assertSet('enabled', false);
+            ->set('data.otp', '000000')
+            ->call('verifyAndEnable')
+            ->assertHasErrors('data.otp')
+            ->assertSet('view', 'setup');
 
         $this->assertNull($user->fresh()->app_authentication_secret);
     }
@@ -82,12 +99,14 @@ class TwoFactorSetupTest extends TestCase
         $this->actingAs($user);
 
         $component = Livewire::test(TwoFactorSetup::class);
-        $component->set('code', (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret')))
-            ->call('confirm')
-            ->assertSet('enabled', true);
+        $component->set('data.otp', (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret')))
+            ->call('verifyAndEnable');
+        $component->call('complete')->assertSet('view', 'enabled');
 
-        $component->call('disable')->assertSet('enabled', false);
+        $component->call('disable')->assertSet('view', 'setup');
 
         $this->assertNull($user->fresh()->app_authentication_secret);
+        // A new pending secret is primed so the wizard is ready again.
+        $this->assertNotNull(session('two_factor_setup.secret'));
     }
 }

@@ -2,60 +2,232 @@
 
 namespace App\Livewire;
 
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\OneTimeCodeInput;
+use Filament\Forms\Components\ViewField;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Wizard;
+use Filament\Schemas\Components\Wizard\Step;
+use Filament\Schemas\Schema;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
- * Inline authenticator-app 2FA setup — shows the QR code directly (no modal),
- * reusing Filament's native AppAuthentication provider for every security
- * operation (secret/QR/verify/recovery codes). The pending secret + recovery
- * codes live in the SERVER session (never a tamperable Livewire property), so a
- * client can't swap in a secret of their own before confirming.
+ * Inline authenticator-app 2FA setup, rendered as a NATIVE Filament wizard.
+ *
+ * Every security operation is delegated to Filament's own AppAuthentication
+ * provider (secret / QR / verify / recovery codes). The pending secret and the
+ * plaintext recovery codes live ONLY in the server session — never in a public,
+ * client-tamperable Livewire property — so a client can't swap in a secret of
+ * their own before confirming.
+ *
+ * The visible surface is driven by the explicit {@see $view} state machine
+ * ('setup' | 'enabled'), NEVER by the provider's isEnabled() flag: step 1 saves
+ * the secret, yet the wizard must stay on screen for step 2 (recovery codes).
+ * $view flips to 'enabled' only once the user finishes the wizard.
  */
-class TwoFactorSetup extends Component
+class TwoFactorSetup extends Component implements HasActions, HasForms
 {
+    use InteractsWithActions;
+    use InteractsWithForms;
+
     private const SESSION_KEY = 'two_factor_setup';
 
-    public bool $enabled = false;
+    /** @var array<string, mixed> */
+    public ?array $data = [];
 
-    #[Validate('required|digits:6')]
-    public ?string $code = null;
+    /** Which surface to render: the enrolment wizard or the active-state panel. */
+    public string $view = 'setup';
 
     public function mount(): void
     {
-        $this->enabled = $this->provider()->isEnabled(Filament::auth()->user());
+        $this->view = $this->provider()->isEnabled(Filament::auth()->user()) ? 'enabled' : 'setup';
 
-        if (! $this->enabled) {
+        if ($this->view === 'setup') {
             $this->primePendingSecret();
         }
+
+        $this->form->fill();
     }
 
-    public function confirm(): void
+    public function form(Schema $schema): Schema
     {
-        $this->validate();
+        return $schema
+            ->statePath('data')
+            ->components($this->view === 'enabled'
+                ? [$this->enabledSection()]
+                : [$this->wizard()]);
+    }
 
-        $pending = session(self::SESSION_KEY);
+    /**
+     * Step 1 verifies a live code and saves the secret + recovery codes; step 2
+     * shows the plaintext recovery codes once. The wizard is NEVER swapped out
+     * based on isEnabled() — only the final "Selesai" submit flips $view.
+     */
+    protected function wizard(): Wizard
+    {
+        return Wizard::make([
+            Step::make('Verifikasi')
+                ->icon('heroicon-o-device-phone-mobile')
+                ->schema([
+                    ViewField::make('qr')
+                        ->view('filament.two-factor.qr')
+                        ->viewData([
+                            'qrCodeDataUri' => $this->qrCodeDataUri(),
+                            'setupKey' => session(self::SESSION_KEY.'.secret'),
+                        ]),
+                    Actions::make([
+                        Action::make('regenerate')
+                            ->label('Buat ulang QR')
+                            ->icon('heroicon-m-arrow-path')
+                            ->color('gray')
+                            ->link()
+                            ->action(fn () => $this->regenerate()),
+                    ])->alignEnd(),
+                    OneTimeCodeInput::make('otp')
+                        ->label('Kode 6 digit')
+                        ->required(),
+                ])
+                ->afterValidation(fn () => $this->verifyAndEnable()),
 
-        if (! $pending || ! $this->provider()->verifyCode($this->code, $pending['secret'])) {
+            Step::make('Kode Pemulihan')
+                ->icon('heroicon-o-key')
+                ->schema([
+                    ViewField::make('recoveryCodes')
+                        ->view('filament.two-factor.recovery-codes')
+                        ->viewData([
+                            'recoveryCodes' => session(self::SESSION_KEY.'.recoveryCodes', []),
+                        ]),
+                ]),
+        ])
+            ->nextAction(fn (Action $action) => $action
+                ->label('Konfirmasi & aktifkan')
+                ->icon('heroicon-m-check-circle'))
+            ->submitAction(new HtmlString(Blade::render(
+                <<<'BLADE'
+                    <x-filament::button
+                        wire:click="complete"
+                        wire:target="complete"
+                        wire:loading.attr="disabled"
+                        color="success"
+                        icon="heroicon-m-check-badge"
+                    >
+                        Selesai
+                    </x-filament::button>
+                BLADE
+            )));
+    }
+
+    protected function enabledSection(): Section
+    {
+        $user = Filament::auth()->user();
+
+        return Section::make('Two-factor authentication aktif')
+            ->description('Setiap login akan meminta kode dari aplikasi authenticator Anda.')
+            ->icon('heroicon-o-shield-check')
+            ->iconColor('success')
+            ->schema([
+                ViewField::make('enabled')
+                    ->view('filament.two-factor.enabled')
+                    ->viewData([
+                        // Used codes are consumed at login, so this count falls over
+                        // time — that is how the UI reflects "spent" recovery codes.
+                        'remainingCount' => count($this->provider()->getRecoveryCodes($user)),
+                        // Freshly-regenerated plaintext codes, shown once then cleared.
+                        'freshRecoveryCodes' => session(self::SESSION_KEY.'.recoveryCodes', []),
+                    ]),
+            ])
+            ->footerActions([
+                Action::make('regenerateRecoveryCodes')
+                    ->label('Buat ulang kode pemulihan')
+                    ->icon('heroicon-m-arrow-path')
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->modalHeading('Buat ulang kode pemulihan?')
+                    ->modalDescription('Semua kode pemulihan lama langsung berhenti berfungsi dan diganti dengan set yang baru.')
+                    ->modalSubmitActionLabel('Buat ulang')
+                    ->action(fn () => $this->regenerateRecoveryCodes()),
+            ]);
+    }
+
+    /**
+     * Step 1 → step 2 transition: verify the typed code against the SESSION
+     * secret, then persist. The session is deliberately kept intact so step 2
+     * can still display the plaintext recovery codes.
+     */
+    public function verifyAndEnable(): void
+    {
+        $secret = session(self::SESSION_KEY.'.secret');
+        $codes = session(self::SESSION_KEY.'.recoveryCodes', []);
+
+        if (blank($secret) || ! $this->provider()->verifyCode((string) ($this->data['otp'] ?? ''), $secret)) {
             throw ValidationException::withMessages([
-                'code' => 'Kode salah atau kedaluwarsa. Pastikan jam perangkat tepat lalu coba lagi.',
+                'data.otp' => 'Kode salah atau kedaluwarsa. Pastikan jam perangkat tepat lalu coba lagi.',
             ]);
         }
 
         $user = Filament::auth()->user();
-        $this->provider()->saveSecret($user, $pending['secret']);
-        $this->provider()->saveRecoveryCodes($user, $pending['recoveryCodes']);
+        $this->provider()->saveSecret($user, $secret);
+        $this->provider()->saveRecoveryCodes($user, $codes);
+    }
+
+    /** Final wizard submit: only finishes once the secret is genuinely saved. */
+    public function complete(): void
+    {
+        if (! $this->provider()->isEnabled(Filament::auth()->user())) {
+            return;
+        }
 
         session()->forget(self::SESSION_KEY);
-        $this->enabled = true;
-        $this->reset('code');
+        $this->view = 'enabled';
+        $this->reset('data');
 
         Notification::make()->title('Two-factor authentication aktif.')->success()->send();
+    }
+
+    /** Throw away the un-confirmed secret + codes and mint a fresh set. */
+    public function regenerate(): void
+    {
+        // Derive state from the provider, never the client-tamperable $view prop.
+        if ($this->provider()->isEnabled(Filament::auth()->user())) {
+            return;
+        }
+
+        session()->forget(self::SESSION_KEY);
+        $this->primePendingSecret();
+        $this->data['otp'] = null;
+
+        Notification::make()->title('QR & kode pemulihan baru dibuat.')->success()->send();
+    }
+
+    /** Replace the recovery codes of an already-enabled account (old set dies). */
+    public function regenerateRecoveryCodes(): void
+    {
+        $user = Filament::auth()->user();
+
+        if (! $this->provider()->isEnabled($user)) {
+            return;
+        }
+
+        $codes = $this->provider()->generateRecoveryCodes();
+        $this->provider()->saveRecoveryCodes($user, $codes);
+
+        // Stash the plaintext once so the panel can show them for copy/download.
+        session()->put(self::SESSION_KEY.'.recoveryCodes', $codes);
+
+        Notification::make()->title('Kode pemulihan baru dibuat. Simpan sekarang.')->success()->send();
     }
 
     public function disable(): void
@@ -65,33 +237,18 @@ class TwoFactorSetup extends Component
         $this->provider()->saveRecoveryCodes($user, null);
 
         session()->forget(self::SESSION_KEY);
-        $this->enabled = false;
-        $this->reset('code');
+        $this->view = 'setup';
         $this->primePendingSecret();
+        $this->reset('data');
 
         Notification::make()->title('Two-factor authentication dinonaktifkan.')->warning()->send();
     }
 
-    /** Throw away the un-confirmed secret + codes and mint a fresh set. */
-    public function regenerate(): void
-    {
-        // Derive state from the provider, never the client-tamperable $enabled prop.
-        if ($this->provider()->isEnabled(Filament::auth()->user())) {
-            return;
-        }
-
-        session()->forget(self::SESSION_KEY);
-        $this->primePendingSecret();
-        $this->reset('code');
-
-        Notification::make()->title('QR & kode pemulihan baru dibuat.')->success()->send();
-    }
-
     public function downloadRecoveryCodes(): StreamedResponse
     {
-        // Only the freshly-generated PLAINTEXT codes are downloadable. Once 2FA is
-        // confirmed the codes are stored bcrypt-hashed and can never be shown again,
-        // so there is nothing to download post-enable (avoids handing out hashes).
+        // Only the freshly-generated PLAINTEXT codes are downloadable. Once saved
+        // they are stored bcrypt-hashed and can never be shown again, so there is
+        // nothing to hand out post-enable (we never expose the hashes).
         $codes = session(self::SESSION_KEY.'.recoveryCodes');
 
         abort_if(blank($codes), 404);
@@ -103,15 +260,16 @@ class TwoFactorSetup extends Component
         );
     }
 
-    public function render()
+    public function render(): View
     {
-        $pending = session(self::SESSION_KEY, []);
+        return view('livewire.two-factor-setup');
+    }
 
-        return view('livewire.two-factor-setup', [
-            'qrCodeDataUri' => isset($pending['secret']) ? $this->provider()->generateQrCodeDataUri($pending['secret']) : null,
-            'setupKey' => $pending['secret'] ?? null,
-            'recoveryCodes' => $pending['recoveryCodes'] ?? [],
-        ]);
+    private function qrCodeDataUri(): ?string
+    {
+        $secret = session(self::SESSION_KEY.'.secret');
+
+        return filled($secret) ? $this->provider()->generateQrCodeDataUri($secret) : null;
     }
 
     private function primePendingSecret(): void

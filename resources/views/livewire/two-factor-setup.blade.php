@@ -1,267 +1,131 @@
-<div class="ctg2fa-root">
-    {{-- Scoped styles. The panel CSS is purged, so Tailwind utilities aren't compiled here —
-         this component ships its own semantic classes (ctg2fa-* prefix). Colours are built from
-         color-mix(currentColor …) so they adapt to both the light and dark zinc themes.
-         wire:ignore stops Livewire from re-morphing the <style> on every update. --}}
+<div class="ct2fa">
+    {{-- Scoped styles. The panel CSS is purged, so Tailwind utilities aren't compiled
+         for this component — it ships its own semantic classes (ct2fa-* prefix). Colours
+         are built from color-mix(currentColor …) so they adapt to both the light and dark
+         zinc themes; the QR tile stays fixed white so any scanner reads it. wire:ignore
+         stops Livewire re-morphing the <style> on every update. --}}
     <style wire:ignore>
-        .ctg2fa-root {
-            --g2-success: #22c55e;
-            --g2-amber: #f59e0b;
-            --g2-border: color-mix(in srgb, currentColor 12%, transparent);
-            --g2-border-strong: color-mix(in srgb, currentColor 22%, transparent);
-            --g2-surface: color-mix(in srgb, currentColor 4%, transparent);
-            --g2-surface-2: color-mix(in srgb, currentColor 7%, transparent);
-            --g2-muted: color-mix(in srgb, currentColor 56%, transparent);
-            --g2-faint: color-mix(in srgb, currentColor 32%, transparent);
-            --g2-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+        .ct2fa {
+            --ct-success: #16a34a;
+            --ct-amber: #d97706;
+            --ct-danger: #dc2626;
+            --ct-border: color-mix(in srgb, currentColor 12%, transparent);
+            --ct-border-strong: color-mix(in srgb, currentColor 22%, transparent);
+            --ct-surface: color-mix(in srgb, currentColor 4%, transparent);
+            --ct-surface-2: color-mix(in srgb, currentColor 7%, transparent);
+            --ct-muted: color-mix(in srgb, currentColor 56%, transparent);
+            --ct-faint: color-mix(in srgb, currentColor 34%, transparent);
+            --ct-mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
         }
-        .ctg2fa-root [x-cloak] { display: none !important; }
+        .ct2fa [x-cloak] { display: none !important; }
 
-        /* Intro header */
-        .ctg2fa-head { display: flex; align-items: flex-start; gap: .9rem; margin-bottom: 1.85rem; }
-        .ctg2fa-headicon { flex: none; width: 2.6rem; height: 2.6rem; border-radius: .8rem; display: grid; place-items: center;
-            background: color-mix(in srgb, var(--g2-success) 12%, transparent);
-            border: 1px solid color-mix(in srgb, var(--g2-success) 30%, transparent); }
-        .ctg2fa-eyebrow { text-transform: uppercase; letter-spacing: .16em; font-size: .67rem; font-weight: 700; margin: 0 0 .25rem;
-            color: color-mix(in srgb, var(--g2-success) 82%, currentColor); }
-        .ctg2fa-title { font-size: 1.05rem; font-weight: 600; margin: 0; line-height: 1.25; }
-        .ctg2fa-sub { font-size: .85rem; color: var(--g2-muted); margin: .3rem 0 0; line-height: 1.5; }
+        /* ── Step 1 · scan ─────────────────────────────────────────── */
+        .ct2fa-scan { display: grid; gap: 1.4rem; }
+        @media (min-width: 768px) {
+            .ct2fa-scan { grid-template-columns: auto minmax(0, 1fr); align-items: stretch; }
+        }
 
-        /* Stepper (real sequence: scan → save → verify) */
-        .ctg2fa-steps { list-style: none; margin: 0; padding: 0; }
-        .ctg2fa-step { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); column-gap: 1.1rem; padding-bottom: 1.85rem; }
-        .ctg2fa-step:last-child { padding-bottom: 0; }
-        .ctg2fa-rail { display: flex; flex-direction: column; align-items: center; }
-        .ctg2fa-node { flex: none; width: 2.5rem; height: 2.5rem; border-radius: 50%; display: grid; place-items: center;
-            font-weight: 700; font-size: .95rem; font-variant-numeric: tabular-nums;
-            color: color-mix(in srgb, currentColor 78%, transparent);
-            background: var(--g2-surface-2); border: 1px solid var(--g2-border-strong);
-            box-shadow: 0 1px 2px color-mix(in srgb, currentColor 9%, transparent); }
-        .ctg2fa-node--goal { color: var(--g2-success);
-            background: color-mix(in srgb, var(--g2-success) 13%, transparent);
-            border-color: color-mix(in srgb, var(--g2-success) 40%, transparent); }
-        .ctg2fa-line { flex: 1 1 auto; width: 2px; min-height: 1rem; margin: .4rem 0; border-radius: 2px;
-            background: linear-gradient(to bottom, var(--g2-border-strong), color-mix(in srgb, currentColor 4%, transparent)); }
+        .ct2fa-tilewrap { display: flex; flex-direction: column; align-items: center; gap: .7rem; }
+        .ct2fa-tile {
+            position: relative; background: #fff; padding: .7rem; border-radius: 1.1rem;
+            box-shadow: 0 14px 34px -16px rgba(0, 0, 0, .55), 0 0 0 1px color-mix(in srgb, currentColor 9%, transparent);
+        }
+        /* Corner ticks — a credential-card cue framing the code. */
+        .ct2fa-tile::before, .ct2fa-tile::after {
+            content: ""; position: absolute; width: .85rem; height: .85rem; pointer-events: none;
+            border: 2px solid color-mix(in srgb, var(--ct-success) 65%, transparent);
+        }
+        .ct2fa-tile::before { top: .3rem; left: .3rem; border-right: 0; border-bottom: 0; border-top-left-radius: .4rem; }
+        .ct2fa-tile::after { bottom: .3rem; right: .3rem; border-left: 0; border-top: 0; border-bottom-right-radius: .4rem; }
+        .ct2fa-qr { display: block; width: 208px; height: 208px; max-width: 56vw; border-radius: .4rem; }
+        .ct2fa-tilehint {
+            display: inline-flex; align-items: center; gap: .35rem; font-size: .73rem; font-weight: 600;
+            letter-spacing: .02em; color: var(--ct-muted);
+        }
 
-        .ctg2fa-stepbody { min-width: 0; padding-top: .12rem; }
-        .ctg2fa-stepeyebrow { text-transform: uppercase; letter-spacing: .14em; font-size: .65rem; font-weight: 700;
-            color: var(--g2-muted); margin: 0 0 .2rem; }
-        .ctg2fa-steptitle { font-size: 1rem; font-weight: 600; margin: 0; line-height: 1.25; }
-        .ctg2fa-stepsub { font-size: .84rem; color: var(--g2-muted); margin: .3rem 0 0; line-height: 1.5; }
+        .ct2fa-manual {
+            min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: .55rem;
+            padding: 1rem 1.15rem; border: 1px solid var(--ct-border); border-radius: 1rem; background: var(--ct-surface);
+        }
+        .ct2fa-step { display: flex; align-items: center; gap: .6rem; }
+        .ct2fa-num {
+            flex: none; width: 1.4rem; height: 1.4rem; border-radius: 50%; display: grid; place-items: center;
+            font-size: .72rem; font-weight: 700; font-variant-numeric: tabular-nums;
+            color: color-mix(in srgb, var(--ct-success) 90%, currentColor);
+            background: color-mix(in srgb, var(--ct-success) 14%, transparent);
+            border: 1px solid color-mix(in srgb, var(--ct-success) 32%, transparent);
+        }
+        .ct2fa-steptxt { font-size: .82rem; line-height: 1.45; color: var(--ct-muted); }
+        .ct2fa-steptxt b { color: inherit; font-weight: 600; }
 
-        .ctg2fa-panel { margin-top: .95rem; border: 1px solid var(--g2-border); background: var(--g2-surface);
-            border-radius: .95rem; padding: 1.15rem; }
+        .ct2fa-manlabel {
+            text-transform: uppercase; letter-spacing: .13em; font-size: .64rem; font-weight: 700;
+            color: var(--ct-faint); margin: .35rem 0 0;
+        }
+        .ct2fa-keyrow { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+        .ct2fa-key {
+            flex: 1 1 11rem; min-width: 0; font-family: var(--ct-mono); font-size: .9rem; font-weight: 600;
+            letter-spacing: .12em; padding: .55rem .7rem; border-radius: .6rem; word-break: break-all;
+            background: color-mix(in srgb, currentColor 6%, transparent); border: 1px solid var(--ct-border);
+        }
 
-        /* Step 1 — scan */
-        .ctg2fa-scan { display: grid; gap: 1.3rem; }
-        @media (min-width: 1024px) { .ctg2fa-scan { grid-template-columns: auto minmax(0, 1fr); align-items: center; } }
-        .ctg2fa-qrwrap { display: flex; flex-direction: column; align-items: center; gap: .85rem; }
-        .ctg2fa-qrbox { background: #fff; padding: .6rem; border-radius: 1rem; max-width: 100%;
-            box-shadow: 0 10px 28px -12px rgba(0,0,0,.45), 0 0 0 1px color-mix(in srgb, currentColor 8%, transparent); }
-        .ctg2fa-qr { display: block; width: 224px; height: 224px; max-width: 100%; border-radius: .35rem; }
+        /* ── Step 2 · recovery codes ───────────────────────────────── */
+        .ct2fa-codeshead {
+            display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .65rem;
+            margin-bottom: 1rem;
+        }
+        .ct2fa-codestitle { display: flex; align-items: center; gap: .55rem; font-size: .9rem; font-weight: 600; }
+        .ct2fa-chip {
+            display: inline-flex; align-items: center; gap: .25rem; padding: .14rem .5rem; border-radius: 999px;
+            font-size: .64rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+            color: color-mix(in srgb, var(--ct-amber) 88%, currentColor);
+            background: color-mix(in srgb, var(--ct-amber) 14%, transparent);
+            border: 1px solid color-mix(in srgb, var(--ct-amber) 30%, transparent);
+        }
 
-        .ctg2fa-manual { min-width: 0; }
-        .ctg2fa-manlabel { font-size: .82rem; color: var(--g2-muted); margin: 0 0 .55rem; }
-        .ctg2fa-keyrow { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
-        .ctg2fa-keypill { flex: 1 1 12rem; min-width: 0; font-family: var(--g2-mono); font-size: .85rem; letter-spacing: .07em;
-            padding: .58rem .75rem; border-radius: .6rem; background: var(--g2-surface-2);
-            border: 1px solid var(--g2-border); word-break: break-all; }
+        .ct2fa-codes { display: grid; grid-template-columns: 1fr; gap: .5rem; }
+        @media (min-width: 560px) { .ct2fa-codes { grid-template-columns: 1fr 1fr; } }
+        .ct2fa-code {
+            display: flex; align-items: center; gap: .55rem; padding: .3rem .3rem .3rem .55rem;
+            border-radius: .6rem; border: 1px solid var(--ct-border); background: var(--ct-surface-2);
+        }
+        .ct2fa-codeidx {
+            flex: none; font-family: var(--ct-mono); font-size: .68rem; font-weight: 700; width: 1.15rem;
+            text-align: right; color: var(--ct-faint); font-variant-numeric: tabular-nums;
+        }
+        .ct2fa-codeval { flex: 1 1 auto; font-family: var(--ct-mono); font-size: .86rem; letter-spacing: .04em; }
+        .ct2fa-copy {
+            flex: none; display: grid; place-items: center; width: 1.95rem; height: 1.95rem; border: 0;
+            border-radius: .45rem; cursor: pointer; color: var(--ct-muted); background: transparent;
+            transition: background .15s ease, color .15s ease;
+        }
+        .ct2fa-copy:hover { background: color-mix(in srgb, currentColor 10%, transparent); color: inherit; }
+        .ct2fa-copy:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent); }
+        .ct2fa-codesfoot { display: flex; justify-content: flex-end; margin-top: 1rem; }
 
-        /* Step 2 — recovery codes */
-        .ctg2fa-chip { display: inline-flex; align-items: center; gap: .25rem; vertical-align: middle; margin-left: .35rem;
-            padding: .12rem .5rem; border-radius: 999px; font-size: .67rem; font-weight: 600;
-            color: color-mix(in srgb, var(--g2-amber) 92%, currentColor);
-            background: color-mix(in srgb, var(--g2-amber) 14%, transparent);
-            border: 1px solid color-mix(in srgb, var(--g2-amber) 32%, transparent); }
-        .ctg2fa-codes { display: grid; grid-template-columns: 1fr; gap: .5rem; }
-        @media (min-width: 560px) { .ctg2fa-codes { grid-template-columns: 1fr 1fr; } }
-        .ctg2fa-codepill { display: flex; align-items: center; justify-content: space-between; gap: .5rem;
-            padding: .35rem .35rem .35rem .75rem; border-radius: .55rem;
-            border: 1px solid var(--g2-border); background: var(--g2-surface-2); }
-        .ctg2fa-codeval { font-family: var(--g2-mono); font-size: .82rem; letter-spacing: .05em; }
-        .ctg2fa-iconbtn { flex: none; display: grid; place-items: center; width: 1.9rem; height: 1.9rem; border: 0;
-            border-radius: .45rem; cursor: pointer; color: var(--g2-muted); background: transparent;
-            transition: background .15s, color .15s; }
-        .ctg2fa-iconbtn:hover { background: color-mix(in srgb, currentColor 10%, transparent); color: inherit; }
-        .ctg2fa-iconbtn:focus-visible { outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 18%, transparent); }
-        .ctg2fa-codesfoot { margin-top: 1rem; display: flex; justify-content: flex-end; }
-
-        /* Step 3 — verify */
-        .ctg2fa-verify { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem; }
-        .ctg2fa-otplabel { display: block; font-size: .8rem; font-weight: 600; margin-bottom: .4rem; color: var(--g2-muted); }
-        .ctg2fa-otp { width: min(15rem, 100%); text-align: center; font-family: var(--g2-mono); font-size: 1.5rem; font-weight: 700;
-            letter-spacing: .45em; text-indent: .45em; font-variant-numeric: tabular-nums;
-            padding: .65rem .8rem; border-radius: .7rem; color: inherit;
-            border: 1px solid var(--g2-border-strong); background: var(--g2-surface);
-            transition: border-color .15s, box-shadow .15s; }
-        .ctg2fa-otp::placeholder { color: var(--g2-faint); }
-        .ctg2fa-otp:focus { outline: none; border-color: color-mix(in srgb, var(--g2-success) 55%, transparent);
-            box-shadow: 0 0 0 4px color-mix(in srgb, var(--g2-success) 16%, transparent); }
-        .ctg2fa-err { display: flex; align-items: center; gap: .3rem; color: #ef4444; font-size: .8rem; margin: .5rem 0 0; }
-
-        /* Enabled state */
-        .ctg2fa-active { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.25rem;
-            border-radius: 1rem; padding: 1.3rem 1.45rem;
-            border: 1px solid color-mix(in srgb, var(--g2-success) 38%, transparent);
-            background: color-mix(in srgb, var(--g2-success) 10%, transparent); }
-        .ctg2fa-activeinfo { display: flex; align-items: center; gap: .95rem; min-width: 0; }
-        .ctg2fa-activeicon { flex: none; width: 3rem; height: 3rem; border-radius: .85rem; display: grid; place-items: center;
-            background: color-mix(in srgb, var(--g2-success) 16%, transparent);
-            border: 1px solid color-mix(in srgb, var(--g2-success) 32%, transparent); }
-        .ctg2fa-activebtns { display: flex; flex-wrap: wrap; gap: .6rem; }
+        /* ── Enabled state ─────────────────────────────────────────── */
+        .ct2fa-enabled { display: flex; flex-direction: column; gap: 1.25rem; }
+        .ct2fa-meter {
+            display: flex; align-items: center; gap: .85rem; padding: .95rem 1.1rem; border-radius: .9rem;
+            border: 1px solid color-mix(in srgb, var(--ct-success) 28%, transparent);
+            background: color-mix(in srgb, var(--ct-success) 8%, transparent);
+        }
+        .ct2fa-metericon {
+            flex: none; width: 2.4rem; height: 2.4rem; border-radius: .7rem; display: grid; place-items: center;
+            color: var(--ct-success);
+            background: color-mix(in srgb, var(--ct-success) 15%, transparent);
+            border: 1px solid color-mix(in srgb, var(--ct-success) 30%, transparent);
+        }
+        .ct2fa-metercount { font-size: 1.4rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+        .ct2fa-meterlabel { font-size: .8rem; color: var(--ct-muted); margin-top: .2rem; }
+        .ct2fa-enabledactions { display: flex; flex-wrap: wrap; gap: .6rem; }
 
         @media (prefers-reduced-motion: reduce) {
-            .ctg2fa-otp, .ctg2fa-iconbtn { transition: none; }
+            .ct2fa-copy { transition: none; }
         }
     </style>
 
-    @if ($enabled)
-        <div class="ctg2fa-active">
-            <div class="ctg2fa-activeinfo">
-                <span class="ctg2fa-activeicon">
-                    <x-filament::icon icon="heroicon-o-shield-check" style="width:1.6rem;height:1.6rem;color:var(--g2-success)" />
-                </span>
-                <div>
-                    <p class="ctg2fa-eyebrow">Aktif</p>
-                    <h3 class="ctg2fa-title">Two-factor authentication aktif</h3>
-                    <p class="ctg2fa-sub">Setiap login meminta kode dari aplikasi authenticator Anda.</p>
-                </div>
-            </div>
-            <div class="ctg2fa-activebtns">
-                @if (filled($recoveryCodes))
-                    <x-filament::button color="gray" icon="heroicon-m-arrow-down-tray" wire:click="downloadRecoveryCodes">
-                        Download codes
-                    </x-filament::button>
-                @endif
-                <x-filament::button color="danger" icon="heroicon-m-lock-open" wire:click="disable"
-                    wire:confirm="Nonaktifkan 2FA untuk akun ini?">
-                    Nonaktifkan
-                </x-filament::button>
-            </div>
-        </div>
-    @else
-        <div class="ctg2fa-head">
-            <span class="ctg2fa-headicon">
-                <x-filament::icon icon="heroicon-o-shield-check" style="width:1.4rem;height:1.4rem;color:var(--g2-success)" />
-            </span>
-            <div>
-                <p class="ctg2fa-eyebrow">Verifikasi dua langkah</p>
-                <h3 class="ctg2fa-title">Aktifkan aplikasi authenticator</h3>
-                <p class="ctg2fa-sub">Tambahkan lapisan kedua — setiap login meminta kode 6 digit dari aplikasi di ponsel Anda. Selesaikan tiga langkah di bawah.</p>
-            </div>
-        </div>
+    {{ $this->form }}
 
-        <ol class="ctg2fa-steps">
-            {{-- Step 1: scan --}}
-            <li class="ctg2fa-step">
-                <div class="ctg2fa-rail">
-                    <span class="ctg2fa-node">1</span>
-                    <span class="ctg2fa-line"></span>
-                </div>
-                <div class="ctg2fa-stepbody">
-                    <p class="ctg2fa-stepeyebrow">Aplikasi authenticator</p>
-                    <h4 class="ctg2fa-steptitle">Pindai kode QR</h4>
-                    <p class="ctg2fa-stepsub">Buka Google Authenticator, Authy, atau 1Password, lalu pindai kode ini.</p>
-
-                    <div class="ctg2fa-panel ctg2fa-scan">
-                        <div class="ctg2fa-qrwrap">
-                            @if ($qrCodeDataUri)
-                                <div class="ctg2fa-qrbox">
-                                    <img src="{{ $qrCodeDataUri }}" alt="Kode QR untuk menambahkan akun 2FA" class="ctg2fa-qr" />
-                                </div>
-                            @endif
-                            <x-filament::button color="gray" size="sm" icon="heroicon-m-arrow-path"
-                                wire:click="regenerate" wire:target="regenerate" wire:loading.attr="disabled"
-                                wire:confirm="Buat QR & kode pemulihan baru? Kode lama akan dibatalkan.">
-                                Buat ulang QR
-                            </x-filament::button>
-                        </div>
-
-                        <div class="ctg2fa-manual">
-                            <p class="ctg2fa-manlabel">Tidak bisa scan? Masukkan kunci manual:</p>
-                            @if ($setupKey)
-                                <div class="ctg2fa-keyrow" x-data="{ copied: false }">
-                                    <code class="ctg2fa-keypill">{{ $setupKey }}</code>
-                                    <x-filament::button color="gray" size="sm" icon="heroicon-m-clipboard"
-                                        x-on:click="navigator.clipboard.writeText(@js($setupKey)); copied = true; setTimeout(() => copied = false, 1600)">
-                                        <span x-show="!copied">Salin kode</span>
-                                        <span x-show="copied" x-cloak>Tersalin</span>
-                                    </x-filament::button>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </li>
-
-            {{-- Step 2: recovery codes --}}
-            <li class="ctg2fa-step">
-                <div class="ctg2fa-rail">
-                    <span class="ctg2fa-node">2</span>
-                    <span class="ctg2fa-line"></span>
-                </div>
-                <div class="ctg2fa-stepbody">
-                    <p class="ctg2fa-stepeyebrow">Cadangan akses</p>
-                    <h4 class="ctg2fa-steptitle">Simpan kode pemulihan</h4>
-                    <p class="ctg2fa-stepsub">
-                        Dipakai untuk masuk jika ponsel hilang.
-                        <span class="ctg2fa-chip">
-                            <x-filament::icon icon="heroicon-m-exclamation-triangle" style="width:.85rem;height:.85rem" />
-                            Ditampilkan sekali
-                        </span>
-                    </p>
-
-                    <div class="ctg2fa-panel">
-                        <div class="ctg2fa-codes">
-                            @foreach ($recoveryCodes as $recoveryCode)
-                                <div class="ctg2fa-codepill" x-data="{ copied: false }">
-                                    <code class="ctg2fa-codeval">{{ $recoveryCode }}</code>
-                                    <button type="button" class="ctg2fa-iconbtn" aria-label="Salin kode pemulihan"
-                                        x-on:click="navigator.clipboard.writeText(@js($recoveryCode)); copied = true; setTimeout(() => copied = false, 1400)">
-                                        <x-filament::icon x-show="!copied" icon="heroicon-m-clipboard" style="width:.95rem;height:.95rem" />
-                                        <x-filament::icon x-show="copied" x-cloak icon="heroicon-m-check" style="width:.95rem;height:.95rem;color:var(--g2-success)" />
-                                    </button>
-                                </div>
-                            @endforeach
-                        </div>
-                        <div class="ctg2fa-codesfoot">
-                            <x-filament::button color="gray" size="sm" icon="heroicon-m-arrow-down-tray" wire:click="downloadRecoveryCodes">
-                                Download codes
-                            </x-filament::button>
-                        </div>
-                    </div>
-                </div>
-            </li>
-
-            {{-- Step 3: verify --}}
-            <li class="ctg2fa-step">
-                <div class="ctg2fa-rail">
-                    <span class="ctg2fa-node ctg2fa-node--goal">3</span>
-                </div>
-                <div class="ctg2fa-stepbody">
-                    <p class="ctg2fa-stepeyebrow">Konfirmasi</p>
-                    <h4 class="ctg2fa-steptitle">Masukkan kode verifikasi</h4>
-                    <p class="ctg2fa-stepsub">Ketik 6 digit yang sedang tampil di aplikasi untuk menyalakan 2FA.</p>
-
-                    <div class="ctg2fa-panel ctg2fa-verify">
-                        <div>
-                            <label for="ctg2fa-code" class="ctg2fa-otplabel">Kode 6 digit</label>
-                            <input id="ctg2fa-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6"
-                                wire:model="code" wire:keydown.enter="confirm" class="ctg2fa-otp" placeholder="000000" />
-                            @error('code')
-                                <p class="ctg2fa-err">
-                                    <x-filament::icon icon="heroicon-m-exclamation-circle" style="width:.95rem;height:.95rem" />
-                                    {{ $message }}
-                                </p>
-                            @enderror
-                        </div>
-                        <x-filament::button color="success" icon="heroicon-m-check-circle" wire:click="confirm"
-                            wire:target="confirm" wire:loading.attr="disabled">
-                            Konfirmasi &amp; aktifkan
-                        </x-filament::button>
-                    </div>
-                </div>
-            </li>
-        </ol>
-    @endif
+    <x-filament-actions::modals />
 </div>
