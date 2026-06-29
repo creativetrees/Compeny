@@ -24,6 +24,8 @@ class PricingTierResource extends Resource
 
     protected static ?int $navigationSort = 10;
 
+    protected static ?string $navigationParentItem = 'Pricing';
+
     public static function form(Schema $schema): Schema
     {
         return PricingTierForm::configure($schema);

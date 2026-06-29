@@ -24,6 +24,8 @@ class PricingIncludeResource extends Resource
 
     protected static ?int $navigationSort = 11;
 
+    protected static ?string $navigationParentItem = 'Pricing';
+
     public static function form(Schema $schema): Schema
     {
         return PricingIncludeForm::configure($schema);

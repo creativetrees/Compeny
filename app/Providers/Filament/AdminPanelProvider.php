@@ -4,16 +4,22 @@ namespace App\Providers\Filament;
 
 use App\Filament\Auth\ForgotPassword;
 use App\Filament\Auth\Login;
+use App\Filament\Resources\Clients\ClientResource;
+use App\Filament\Resources\PricingIncludes\PricingIncludeResource;
+use App\Filament\Resources\PricingTiers\PricingTierResource;
+use App\Filament\Resources\Testimonials\TestimonialResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -48,13 +54,17 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Zinc,
             ])
-            // Premium polish for the segmented OTP input (2FA setup modal): centre
-            // the boxes and enlarge them with rounded corners.
+            // Segmented OTP input (2FA setup + login challenge). The digits are
+            // painted by a single overlaid <input> whose letter-spacing is
+            // calibrated against Filament's 2rem box width — so we DON'T resize the
+            // boxes (that desyncs the digits). We only centre the whole group as one
+            // unit (fit-content + auto margins keeps the overlay aligned) and tint
+            // the filled boxes with the brand orange instead of the zinc primary.
             ->renderHook(
                 PanelsRenderHook::STYLES_AFTER,
                 fn (): string => '<style>'
-                    .'.fi-one-time-code-input-ctn{justify-content:center;gap:.5rem;}'
-                    .'.fi-one-time-code-input-digit-field{width:3rem;height:3.5rem;border-radius:.75rem;font-size:1.375rem;font-weight:600;}'
+                    .'.fi-one-time-code-input-ctn{width:-moz-fit-content;width:fit-content;margin-inline:auto;}'
+                    .'.fi-one-time-code-input-ctn>.fi-one-time-code-input-digit-field.fi-active{border-color:#f97316;}'
                     .'</style>',
             )
             ->navigationGroups([
@@ -63,6 +73,24 @@ class AdminPanelProvider extends PanelProvider
                 'Content',
                 'Inbox',
                 'Settings',
+            ])
+            // Synthetic sidebar parents: group related Content resources into
+            // expandable sub-menus. The child resources point back here via their
+            // navigationParentItem; the parent is hidden when the user can view
+            // none of its children, and otherwise links to the primary child.
+            ->navigationItems([
+                NavigationItem::make('Pricing')
+                    ->group('Content')
+                    ->icon(Heroicon::OutlinedBanknotes)
+                    ->sort(10)
+                    ->visible(fn (): bool => PricingTierResource::canViewAny() || PricingIncludeResource::canViewAny())
+                    ->url(fn (): string => PricingTierResource::getUrl()),
+                NavigationItem::make('Showcase')
+                    ->group('Content')
+                    ->icon(Heroicon::OutlinedStar)
+                    ->sort(3)
+                    ->visible(fn (): bool => ClientResource::canViewAny() || TestimonialResource::canViewAny())
+                    ->url(fn (): string => ClientResource::getUrl()),
             ])
             ->databaseNotifications()
             ->databaseNotificationsPolling('20s')
