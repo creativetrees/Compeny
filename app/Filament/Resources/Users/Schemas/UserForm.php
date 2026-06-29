@@ -5,8 +5,12 @@ namespace App\Filament\Resources\Users\Schemas;
 use App\Models\User;
 use App\Support\Format;
 use Closure;
+use Filament\Auth\MultiFactor\Contracts\MultiFactorAuthenticationProvider;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
@@ -165,6 +169,16 @@ class UserForm
                                         }
                                     }),
                             ]),
+
+                        // Native Filament 2FA — only on your OWN account (the TOTP secret
+                        // belongs to the account owner; admins can't enrol it for others).
+                        Tab::make('2FA')
+                            ->icon('heroicon-o-shield-check')
+                            ->visible(fn (?User $record): bool => Filament::hasMultiFactorAuthentication() && $record?->getKey() === Filament::auth()->id())
+                            ->schema(fn (): array => collect(Filament::getMultiFactorAuthenticationProviders())
+                                ->map(fn (MultiFactorAuthenticationProvider $provider): Component => Group::make($provider->getManagementSchemaComponents())
+                                    ->statePath($provider->getId()))
+                                ->all()),
                     ]),
             ]);
     }
