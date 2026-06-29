@@ -24,31 +24,11 @@ enum SitePage: string
     case Start = '/start';
     case Contact = '/contact';
 
-    /** Human label for the admin dropdown. */
-    public function label(): string
-    {
-        return match ($this) {
-            self::Home => 'Home (Beranda)',
-            self::Work => 'Work',
-            self::Services => 'Services',
-            self::Products => 'Products',
-            self::Pricing => 'Pricing',
-            self::Process => 'Process',
-            self::Team => 'Team',
-            self::About => 'About',
-            self::Start => 'Start a project',
-            self::Contact => 'Contact',
-        };
-    }
-
-    /**
-     * Options for a Filament Select: [path => "Label — /path"], so the admin sees
-     * both the page name and the exact URL it stores.
-     */
+    /** Options for a Filament Select: [path => path] — just the clean URL. */
     public static function options(): array
     {
         return collect(self::cases())
-            ->mapWithKeys(fn (self $page): array => [$page->value => $page->label().' — '.$page->value])
+            ->mapWithKeys(fn (self $page): array => [$page->value => $page->value])
             ->all();
     }
 }
