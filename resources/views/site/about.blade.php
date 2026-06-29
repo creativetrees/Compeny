@@ -1,6 +1,7 @@
 @php
-    $aboutBody = $settings->about_body
-        ?? "Creative Trees Group is a digital product studio. We design and engineer software the way the best in-house teams do — close to the problem, fast to ship, and obsessed with the details users actually feel.";
+    $aboutBody = filled($settings->about_body)
+        ? $settings->about_body
+        : '<p>Creative Trees Group is a digital product studio. We design and engineer software the way the best in-house teams do — close to the problem, fast to ship, and obsessed with the details users actually feel.</p>';
 @endphp
 
 <x-layouts.app title="About" :description="$settings->seo_description">
@@ -14,7 +15,7 @@
             <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]" data-reveal data-reveal-delay="0.08">
                 {{ $settings->about_heading ?? 'A studio built like a product team.' }}
             </h1>
-            <p class="measure mt-7 whitespace-pre-line text-[1.05rem] leading-relaxed text-muted" data-reveal data-reveal-delay="0.24">{{ $aboutBody }}</p>
+            <div class="measure mt-7 space-y-5 text-[1.05rem] leading-relaxed text-muted [&_a]:underline [&_a]:decoration-from-font [&_a:hover]:text-ink [&_blockquote]:border-l-2 [&_blockquote]:border-line [&_blockquote]:pl-5 [&_blockquote]:italic [&_h2]:font-mono [&_h2]:text-lg [&_h2]:font-bold [&_h2]:uppercase [&_h2]:tracking-tight [&_h2]:text-ink [&_h3]:font-semibold [&_h3]:text-ink [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_strong]:text-ink [&_ul]:list-disc [&_ul]:pl-5" data-reveal data-reveal-delay="0.24">{!! $aboutBody !!}</div>
         </div>
     </section>
 

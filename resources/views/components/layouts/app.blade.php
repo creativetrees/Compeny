@@ -21,6 +21,10 @@
 
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDescription }}">
+    @if (filled($settings->seo_keywords ?? null))
+        <meta name="keywords" content="{{ $settings->seo_keywords }}">
+    @endif
+    <meta name="robots" content="{{ ($settings->seo_noindex ?? false) ? 'noindex, nofollow' : 'index, follow' }}">
 
     {{-- Open Graph / Twitter --}}
     <meta property="og:site_name" content="{{ $brand }}">
@@ -38,6 +42,20 @@
         <meta name="twitter:card" content="summary_large_image">
     @else
         <meta name="twitter:card" content="summary">
+    @endif
+
+    {{-- Google Analytics (GA4) — id whitelisted to [A-Za-z0-9-], safe in URL & JS string contexts --}}
+    @php
+        $gaId = preg_replace('/[^A-Za-z0-9\-]/', '', (string) ($settings->google_analytics_id ?? ''));
+    @endphp
+    @if ($gaId !== '')
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ $gaId }}');
+        </script>
     @endif
 
     @stack('head')

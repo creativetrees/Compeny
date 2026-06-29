@@ -15,7 +15,8 @@ class SiteSetting extends Model
         'hero_eyebrow', 'hero_title', 'hero_subtitle',
         'hero_cta_label', 'hero_cta_url', 'about_heading', 'about_body',
         'contact_email', 'contact_phone', 'contact_address', 'social_links',
-        'stats', 'seo_title', 'seo_description', 'seo_image_path', 'footer_tagline',
+        'stats', 'seo_title', 'seo_description', 'seo_keywords', 'seo_image_path',
+        'google_analytics_id', 'seo_noindex', 'footer_tagline',
         'footer_cta_eyebrow', 'footer_cta_title', 'footer_cta_body', 'footer_cta_label', 'footer_cta_url',
         'footer_location', 'footer_copyright', 'footer_watermark',
     ];
@@ -25,6 +26,7 @@ class SiteSetting extends Model
         return [
             'social_links' => 'array',
             'stats' => 'array',
+            'seo_noindex' => 'boolean',
         ];
     }
 
@@ -72,8 +74,12 @@ class SiteSetting extends Model
 
         try {
             return static::$cached = static::query()->firstOrCreate(['id' => 1]);
-        } catch (\Throwable) {
-            // Cache the fallback too, so a DB outage doesn't re-query every component.
+        } catch (\Throwable $e) {
+            // Surface the failure (pending migration / DB outage) instead of silently
+            // serving a blank model, then cache the fallback so a sustained outage
+            // doesn't re-query on every rendered component.
+            report($e);
+
             return static::$cached = new self;
         }
     }

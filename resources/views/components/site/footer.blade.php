@@ -4,6 +4,11 @@
     $phone = $settings->contact_phone;
     $address = $settings->contact_address;
     $socials = $settings->social_links ?? [];
+    // Plain-text tagline for the baseline: turn block boundaries into spaces so
+    // multi-paragraph rich HTML doesn't smash words together ("Built tocompound").
+    $taglinePlain = trim(preg_replace('/\s+/', ' ', strip_tags(
+        str_replace(['</p>', '<br>', '<br/>', '<br />'], ' ', (string) $settings->footer_tagline)
+    )));
     $cols = [
         'Studio' => \App\Models\NavLink::query()->where('location', 'footer_studio')->ordered()->get(),
         'Company' => \App\Models\NavLink::query()->where('location', 'footer_company')->ordered()->get(),
@@ -44,9 +49,9 @@
                         <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?? 'Creative Trees' }}</span>
                     @endif
                 </a>
-                <p class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96]">
-                    {{ $settings->footer_tagline ?? 'Designed and built to compound.' }}
-                </p>
+                <div class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96] [&_a]:text-paper [&_a]:underline [&_p]:m-0 [&_p+p]:mt-2 [&_strong]:text-paper">
+                    {!! filled($settings->footer_tagline) ? $settings->footer_tagline : 'Designed and built to compound.' !!}
+                </div>
                 <a href="mailto:{{ $email }}" class="link-underline mt-7 inline-block font-mono text-sm text-paper">{{ $email }}</a>
             </div>
 
@@ -98,7 +103,7 @@
 
     {{-- ── Baseline ── --}}
     <div class="frame !border-0 flex flex-col gap-2 border-t border-[#1c1c1c] py-6 font-mono text-[0.72rem] uppercase tracking-wide text-[#8a8a86] sm:flex-row sm:items-center sm:justify-between">
-        <span>{{ $settings->footer_copyright ?: ('© '.date('Y').' '.$brand) }}</span>
-        <span>{{ ($settings->footer_location ?: 'Jakarta · Remote-first').' — '.($settings->footer_tagline ?: 'Built to compound') }}</span>
+        <span>© {{ date('Y') }} {{ $settings->footer_copyright ?: $brand }}</span>
+        <span>{{ ($settings->footer_location ?: 'Jakarta · Remote-first').' — '.($taglinePlain ?: 'Built to compound') }}</span>
     </div>
 </footer>
