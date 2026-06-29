@@ -77,18 +77,12 @@ class SiteSettingForm
                             ->placeholder('Creative Trees Group')
                             ->prefixIcon('heroicon-m-pencil')
                             ->helperText('Override teks di samping logo. Kosong = pakai nama brand lengkap.'),
-                        Textarea::make('header_description')
-                            ->label('Deskripsi header')
-                            ->placeholder('Digital product studio & IT ecosystem.')
-                            ->helperText('Baris singkat di bawah nama brand (tampil di menu mobile).')
-                            ->rows(2)
-                            ->columnSpanFull(),
                         FileUpload::make('logo_path')
-                            ->label('Logo perusahaan')
+                            ->label('Icon / Logo')
                             ->image()->disk('public')->directory('site/logo')->visibility('public')
                             ->imageEditor()->maxSize(2048)
                             ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'])
-                            ->helperText('PNG/SVG transparan, maks 2 MB. Kosong = mark bawaan.'),
+                            ->helperText('Ikon brand di samping wordmark (header & footer). PNG/SVG transparan, maks 2 MB. Kosong = mark bawaan.'),
                         FileUpload::make('favicon_path')
                             ->label('Favicon')
                             ->image()->disk('public')->directory('site/favicon')->visibility('public')

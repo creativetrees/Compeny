@@ -11,7 +11,7 @@ class SiteSetting extends Model
     protected static ?self $cached = null;
 
     protected $fillable = [
-        'brand_name', 'logo_path', 'logo_text', 'favicon_path', 'header_description', 'nav_menu',
+        'brand_name', 'logo_path', 'logo_text', 'favicon_path', 'nav_menu',
         'hero_eyebrow', 'hero_title', 'hero_subtitle',
         'hero_cta_label', 'hero_cta_url', 'hero_cta_secondary_label', 'hero_cta_secondary_url',
         'about_heading', 'about_body',

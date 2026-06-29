@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('logo_path')->nullable();        // uploaded company logo
             $table->string('logo_text')->nullable();        // optional wordmark override (empty = brand_name)
             $table->string('favicon_path')->nullable();     // uploaded favicon
-            $table->text('header_description')->nullable();  // short line under the brand (mobile menu)
             $table->json('nav_menu')->nullable();           // header nav list [{label, url}]
 
             // ── Hero (home) ──

@@ -91,7 +91,6 @@ class DatabaseSeeder extends Seeder
     {
         SiteSetting::updateOrCreate(['id' => 1], [
             'brand_name' => 'Creative Trees Group',
-            'header_description' => 'Digital product studio & IT ecosystem.',
             'nav_menu' => [
                 ['label' => 'Work', 'url' => '/work'],
                 ['label' => 'Services', 'url' => '/services'],
