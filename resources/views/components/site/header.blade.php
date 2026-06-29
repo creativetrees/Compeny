@@ -89,10 +89,6 @@
             <button @click="closeMenu()" class="font-mono text-xs uppercase tracking-widest" aria-label="Close menu">Close ✕</button>
         </div>
 
-        @if (filled($settings->header_description))
-            <p class="frame !border-0 -mt-1 max-w-sm text-sm text-muted">{{ $settings->header_description }}</p>
-        @endif
-
         <nav class="frame !border-0 mt-6 flex flex-1 flex-col gap-1" aria-label="Mobile">
             @foreach ($nav as $i => $item)
                 <a href="{{ $item['url'] }}"
