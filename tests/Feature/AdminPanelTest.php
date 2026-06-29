@@ -72,4 +72,26 @@ class AdminPanelTest extends TestCase
                 ->assertSuccessful();
         }
     }
+
+    public function test_edit_own_user_shows_native_two_factor_section(): void
+    {
+        $admin = User::factory()->admin()->create(['email' => 'self@creativetrees.group']);
+
+        $this->actingAs($admin)
+            ->get(UserResource::getUrl('edit', ['record' => $admin]))
+            ->assertSuccessful()
+            ->assertSee('Two-Factor Authentication', false)
+            ->assertSee('Authenticator', false);
+    }
+
+    public function test_edit_another_user_hides_the_two_factor_section(): void
+    {
+        $admin = User::factory()->admin()->create(['email' => 'admin2@creativetrees.group']);
+        $other = User::factory()->create(['email' => 'other@creativetrees.group']);
+
+        $this->actingAs($admin)
+            ->get(UserResource::getUrl('edit', ['record' => $other]))
+            ->assertSuccessful()
+            ->assertDontSee('Two-Factor Authentication', false);
+    }
 }
