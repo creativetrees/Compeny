@@ -8,6 +8,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\OneTimeCodeInput;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -19,6 +20,7 @@ use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -50,6 +52,9 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
 
     /** Which surface to render: the enrolment wizard or the active-state panel. */
     public string $view = 'setup';
+
+    /** Current-password re-auth for disabling 2FA (transient; reset after use). */
+    public ?string $disablePassword = null;
 
     public function mount(): void
     {
@@ -99,6 +104,13 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
                     OneTimeCodeInput::make('otp')
                         ->label('Kode 6 digit')
                         ->required(),
+                    TextInput::make('current_password')
+                        ->label('Konfirmasi dengan password Anda')
+                        ->helperText('Demi keamanan, masukkan password akun ini untuk mengaktifkan 2FA.')
+                        ->password()
+                        ->revealable()
+                        ->required()
+                        ->autocomplete('current-password'),
                 ])
                 ->afterValidation(fn () => $this->verifyAndEnable()),
 
@@ -169,6 +181,16 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
      */
     public function verifyAndEnable(): void
     {
+        $user = Filament::auth()->user();
+
+        // Re-auth: the account password is required to enrol a second factor, so a
+        // hijacked session alone can't add an attacker's authenticator.
+        if (! Hash::check((string) ($this->data['current_password'] ?? ''), $user->password)) {
+            throw ValidationException::withMessages([
+                'data.current_password' => 'Password Anda salah.',
+            ]);
+        }
+
         $secret = session(self::SESSION_KEY.'.secret');
         $codes = session(self::SESSION_KEY.'.recoveryCodes', []);
 
@@ -178,9 +200,9 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
             ]);
         }
 
-        $user = Filament::auth()->user();
         $this->provider()->saveSecret($user, $secret);
         $this->provider()->saveRecoveryCodes($user, $codes);
+        $this->data['current_password'] = null; // don't let it linger in form state
     }
 
     /** Final wizard submit: only finishes once the secret is genuinely saved. */
@@ -233,13 +255,22 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
     public function disable(): void
     {
         $user = Filament::auth()->user();
+
+        // Re-auth before stripping the factor — a stolen session alone can't
+        // silently turn 2FA off without the account password.
+        if (! Hash::check((string) $this->disablePassword, $user->password)) {
+            throw ValidationException::withMessages([
+                'disablePassword' => 'Password Anda salah.',
+            ]);
+        }
+
         $this->provider()->saveSecret($user, null);
         $this->provider()->saveRecoveryCodes($user, null);
 
         session()->forget(self::SESSION_KEY);
         $this->view = 'setup';
         $this->primePendingSecret();
-        $this->reset('data');
+        $this->reset('data', 'disablePassword');
 
         Notification::make()->title('Two-factor authentication dinonaktifkan.')->warning()->send();
     }
