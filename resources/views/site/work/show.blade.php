@@ -44,20 +44,6 @@
         </section>
     @endif
 
-    {{-- ──────────────────── Results (dark band) ──────────────────── --}}
-    @if (! empty($project->results))
-        <section class="surface-dark">
-            <div class="frame py-20 md:py-24">
-                <x-ui.eyebrow plain class="mb-12">Results</x-ui.eyebrow>
-                <div class="grid grid-cols-2 gap-x-10 gap-y-12 lg:grid-cols-4" data-stagger>
-                    @foreach ($project->results as $r)
-                        <x-ui.stat :value="$r['value'] ?? ''" :label="$r['label'] ?? ''" />
-                    @endforeach
-                </div>
-            </div>
-        </section>
-    @endif
-
     {{-- ──────────────────── Body + aside ──────────────────── --}}
     @if ($project->body || ! empty($project->services) || $project->website_url)
         <section class="frame border-t border-line py-20 md:py-28">
