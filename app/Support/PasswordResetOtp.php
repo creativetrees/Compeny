@@ -95,7 +95,11 @@ class PasswordResetOtp
     {
         $state = session(self::SESSION_KEY);
 
-        return (is_array($state) && ($state['verified'] ?? false))
+        // Re-enforce the code TTL at the final step too — verifying in time must not
+        // grant an unbounded window (up to the session lifetime) to set the password.
+        return (is_array($state)
+            && ($state['verified'] ?? false)
+            && now()->timestamp <= ($state['expires_at'] ?? 0))
             ? User::find($state['user_id'])
             : null;
     }

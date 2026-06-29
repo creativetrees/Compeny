@@ -10,9 +10,9 @@
         <span class="ct2fa-metericon">
             <x-filament::icon icon="heroicon-m-key" style="width:1.3rem;height:1.3rem" />
         </span>
-        <div style="flex:1 1 auto;min-width:0">
-            <div class="ct2fa-metercount">{{ $remainingCount }}</div>
-            <p class="ct2fa-meterlabel">kode pemulihan tersisa</p>
+        <div style="flex:1 1 auto;min-width:0" role="group" aria-label="{{ $remainingCount }} kode pemulihan tersisa">
+            <div class="ct2fa-metercount" aria-hidden="true">{{ $remainingCount }}</div>
+            <p class="ct2fa-meterlabel" aria-hidden="true">kode pemulihan tersisa</p>
         </div>
     </div>
 
@@ -31,6 +31,7 @@
                 type="password"
                 wire:model="disablePassword"
                 wire:keydown.enter="disable"
+                aria-label="Password akun Anda"
                 placeholder="Password Anda"
                 autocomplete="current-password"
                 style="margin-top:.55rem;width:min(17rem,100%);padding:.52rem .72rem;border-radius:.55rem;font-size:.9rem;color:inherit;border:1px solid color-mix(in srgb,currentColor 20%,transparent);background:color-mix(in srgb,currentColor 4%,transparent)"

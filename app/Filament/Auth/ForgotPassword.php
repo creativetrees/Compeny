@@ -17,6 +17,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
@@ -130,16 +131,27 @@ class ForgotPassword extends RequestPasswordReset
 
     protected function sendCode(): void
     {
-        $user = User::query()
-            ->where('email', $this->data['email'] ?? null)
-            ->whereRaw('LOWER(username) = ?', [Str::lower((string) ($this->data['username'] ?? ''))])
-            ->first();
+        // Per-IP throttle on top of the per-account issue cap (PasswordResetOtp):
+        // stops an attacker with a list of email+username pairs from spraying OTP
+        // emails account by account. Over the limit → same non-enumerating outcome.
+        $ipKey = 'pw-reset-ip:'.request()->ip();
 
-        if ($user && $user->is_admin) {
-            $code = PasswordResetOtp::issue($user);
+        if (! RateLimiter::tooManyAttempts($ipKey, 10)) {
+            RateLimiter::hit($ipKey, 60);
 
-            if ($code !== null) {
-                Mail::to($user->email)->send(new PasswordResetOtpMail($user->name, $code));
+            $user = User::query()
+                ->where('email', $this->data['email'] ?? null)
+                ->whereRaw('LOWER(username) = ?', [Str::lower((string) ($this->data['username'] ?? ''))])
+                ->first();
+
+            // Gate on real panel access (roles), matching User::canAccessPanel(), and
+            // never hand the plaintext OTP to a mailer that would write it to a log.
+            if ($user && $user->roles()->exists() && ! $this->mailerLeaksToLog()) {
+                $code = PasswordResetOtp::issue($user);
+
+                if ($code !== null) {
+                    Mail::to($user->email)->send(new PasswordResetOtpMail($user->name, $code));
+                }
             }
         }
 
@@ -149,6 +161,13 @@ class ForgotPassword extends RequestPasswordReset
             ->title('Jika data cocok, kode OTP telah dikirim ke email Anda.')
             ->success()
             ->send();
+    }
+
+    /** In production, the log/array mailers would write the plaintext OTP to disk. */
+    private function mailerLeaksToLog(): bool
+    {
+        return app()->environment('production')
+            && in_array(config('mail.default'), ['log', 'array'], true);
     }
 
     protected function verifyCode(): void

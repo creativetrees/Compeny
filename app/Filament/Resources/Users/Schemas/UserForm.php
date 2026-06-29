@@ -159,12 +159,28 @@ class UserForm
                                     ->searchable()
                                     ->columnSpanFull()
                                     ->helperText('Menentukan hak akses. "Developer" = akses penuh — hanya bisa diberikan oleh sesama Developer.')
-                                    // Hard stop on privilege-escalation: a non-developer can never grant developer.
-                                    ->rule(fn (): Closure => static function (string $attribute, mixed $value, Closure $fail): void {
+                                    // Hard stop on privilege tampering: a non-developer can neither grant the
+                                    // developer role to anyone, nor strip it from an existing developer.
+                                    ->rule(fn (?Model $record): Closure => static function (string $attribute, mixed $value, Closure $fail) use ($record): void {
                                         $developerId = Role::where('name', 'developer')->value('id');
 
-                                        if ($developerId && in_array($developerId, array_map('intval', (array) $value), true) && ! auth()->user()?->hasRole('developer')) {
+                                        // Developers may manage any roles; only non-developers are constrained.
+                                        if (! $developerId || auth()->user()?->hasRole('developer')) {
+                                            return;
+                                        }
+
+                                        $submitted = array_map('intval', (array) $value);
+
+                                        // …cannot GRANT developer to anyone…
+                                        if (in_array((int) $developerId, $submitted, true)) {
                                             $fail('Hanya Developer yang boleh memberikan peran Developer.');
+
+                                            return;
+                                        }
+
+                                        // …and cannot STRIP developer from an existing developer (would revoke access).
+                                        if ($record instanceof User && $record->hasRole('developer')) {
+                                            $fail('Hanya Developer yang boleh mengubah peran pengguna Developer.');
                                         }
                                     }),
                             ]),
