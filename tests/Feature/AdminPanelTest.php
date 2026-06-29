@@ -47,31 +47,6 @@ class AdminPanelTest extends TestCase
         }
     }
 
-    public function test_profile_page_shows_identity_fields_and_two_factor(): void
-    {
-        $admin = User::factory()->admin()->create(['email' => 'profile@creativetrees.group']);
-
-        $this->actingAs($admin)
-            ->get('/admin/profile')
-            ->assertSuccessful()
-            ->assertSee('NIK', false)            // custom identity fields (no password)
-            ->assertSee('Username', false)
-            ->assertSee('Authenticator', false); // 2FA section retained
-    }
-
-    public function test_admin_without_nik_is_forced_to_complete_the_profile(): void
-    {
-        $admin = User::factory()->admin()->create(['email' => 'nonik@creativetrees.group', 'nik' => null]);
-
-        $response = $this->actingAs($admin)->get('/admin');
-
-        $response->assertRedirect();
-        $this->assertStringContainsString('/admin/profile', (string) $response->headers->get('Location'));
-
-        // The profile page itself stays reachable so the NIK can be filled.
-        $this->actingAs($admin)->get('/admin/profile')->assertSuccessful();
-    }
-
     public function test_tabbed_resource_edit_forms_render(): void
     {
         $this->seed();

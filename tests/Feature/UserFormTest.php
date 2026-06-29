@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Filament\Auth\EditProfile;
 use App\Filament\Resources\Users\Pages\CreateUser;
 use App\Models\User;
 use Filament\Facades\Filament;
@@ -79,32 +78,5 @@ class UserFormTest extends TestCase
             ])
             ->call('create')
             ->assertHasFormErrors(['nik', 'phone']);
-    }
-
-    public function test_profile_saves_identity_without_password_and_normalizes(): void
-    {
-        $admin = User::factory()->admin()->create([
-            'email' => 'me@ctg.test',
-            'username' => 'meadmin',
-            'name' => 'Old Name',
-            'nik' => '1111222233334444',
-        ]);
-        $this->actingAs($admin);
-
-        Livewire::test(EditProfile::class)
-            ->fillForm([
-                'name' => 'New Name',
-                'username' => 'meadmin',          // unchanged — must ignore self on unique
-                'email' => 'me@ctg.test',         // unchanged — must ignore self on unique
-                'phone' => '081299998888',
-                'nik' => '3201234567890009',
-            ])
-            ->call('save')
-            ->assertHasNoFormErrors();
-
-        $admin->refresh();
-        $this->assertSame('New Name', $admin->name);
-        $this->assertSame('3201234567890009', $admin->nik);          // stored 16 raw digits
-        $this->assertSame('+62 812 9999 8888', $admin->phone);       // normalized
     }
 }

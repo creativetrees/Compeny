@@ -2,10 +2,8 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Auth\EditProfile;
 use App\Filament\Auth\ForgotPassword;
 use App\Filament\Auth\Login;
-use App\Http\Middleware\RequireNik;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Http\Middleware\Authenticate;
@@ -35,7 +33,6 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->passwordReset(ForgotPassword::class)
-            ->profile(EditProfile::class, isSimple: false)
             // 2FA = authenticator app (TOTP) + recovery codes — the native
             // Filament v5 factor, fully offline. Email OTP was dropped because the
             // host's mail relay rejects transactional mail as spam (rSPAM bounce).
@@ -86,7 +83,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                RequireNik::class,
             ]);
     }
 }
