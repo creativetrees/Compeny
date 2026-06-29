@@ -46,38 +46,21 @@ class TwoFactorSetupTest extends TestCase
         $this->assertNotNull(session('two_factor_setup.secret'));
     }
 
-    public function test_verify_and_enable_with_a_valid_code_and_password_saves_the_secret(): void
+    public function test_verify_and_enable_with_a_valid_code_saves_the_secret(): void
     {
-        $user = User::factory()->admin()->create(); // factory password is "password"
+        $user = User::factory()->admin()->create();
         $this->actingAs($user);
 
         $component = Livewire::test(TwoFactorSetup::class);
         $code = (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret'));
 
         $component->set('data.otp', $code)
-            ->set('data.current_password', 'password')
             ->call('verifyAndEnable')
             ->assertHasNoErrors();
 
         $component->assertSet('view', 'setup'); // stays for step 2 (codes)
         $this->assertNotNull($user->fresh()->app_authentication_secret);
         $this->assertNotEmpty(session('two_factor_setup.recoveryCodes'));
-    }
-
-    public function test_enable_is_rejected_without_the_correct_password(): void
-    {
-        $user = User::factory()->admin()->create();
-        $this->actingAs($user);
-
-        $component = Livewire::test(TwoFactorSetup::class); // mount primes the session secret
-        $code = (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret'));
-
-        $component->set('data.otp', $code)
-            ->set('data.current_password', 'wrong-password')
-            ->call('verifyAndEnable')
-            ->assertHasErrors('data.current_password');
-
-        $this->assertNull($user->fresh()->app_authentication_secret);
     }
 
     public function test_completing_the_wizard_switches_to_the_enabled_view(): void
@@ -88,7 +71,7 @@ class TwoFactorSetupTest extends TestCase
         $component = Livewire::test(TwoFactorSetup::class);
         $code = (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret'));
 
-        $component->set('data.otp', $code)->set('data.current_password', 'password')->call('verifyAndEnable');
+        $component->set('data.otp', $code)->call('verifyAndEnable');
         $component->call('complete')->assertSet('view', 'enabled');
 
         $this->assertNull(session('two_factor_setup'));
@@ -102,7 +85,6 @@ class TwoFactorSetupTest extends TestCase
 
         Livewire::test(TwoFactorSetup::class)
             ->set('data.otp', '000000')
-            ->set('data.current_password', 'password')
             ->call('verifyAndEnable')
             ->assertHasErrors('data.otp')
             ->assertSet('view', 'setup');
@@ -112,12 +94,11 @@ class TwoFactorSetupTest extends TestCase
 
     public function test_disable_turns_2fa_off_with_the_password(): void
     {
-        $user = User::factory()->admin()->create();
+        $user = User::factory()->admin()->create(); // factory password is "password"
         $this->actingAs($user);
 
         $component = Livewire::test(TwoFactorSetup::class);
         $component->set('data.otp', (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret')))
-            ->set('data.current_password', 'password')
             ->call('verifyAndEnable');
         $component->call('complete')->assertSet('view', 'enabled');
 
@@ -134,7 +115,6 @@ class TwoFactorSetupTest extends TestCase
 
         $component = Livewire::test(TwoFactorSetup::class);
         $component->set('data.otp', (new Google2FA)->getCurrentOtp(session('two_factor_setup.secret')))
-            ->set('data.current_password', 'password')
             ->call('verifyAndEnable');
         $component->call('complete')->assertSet('view', 'enabled');
 

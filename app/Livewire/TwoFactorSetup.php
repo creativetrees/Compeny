@@ -8,12 +8,13 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\OneTimeCodeInput;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
@@ -87,11 +88,19 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
             Step::make('Verifikasi')
                 ->icon('heroicon-o-device-phone-mobile')
                 ->schema([
-                    ViewField::make('qr')
-                        ->view('filament.two-factor.qr')
-                        ->viewData([
-                            'qrCodeDataUri' => $this->qrCodeDataUri(),
-                            'setupKey' => session(self::SESSION_KEY.'.secret'),
+                    Grid::make(['default' => 1, 'md' => 2])
+                        ->schema([
+                            ViewField::make('qr')
+                                ->view('filament.two-factor.qr')
+                                ->viewData(['qrCodeDataUri' => $this->qrCodeDataUri()]),
+                            Group::make([
+                                ViewField::make('manualKey')
+                                    ->view('filament.two-factor.manual-key')
+                                    ->viewData(['setupKey' => session(self::SESSION_KEY.'.secret')]),
+                                OneTimeCodeInput::make('otp')
+                                    ->label('Kode 6 digit')
+                                    ->required(),
+                            ]),
                         ]),
                     Actions::make([
                         Action::make('regenerate')
@@ -101,16 +110,6 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
                             ->link()
                             ->action(fn () => $this->regenerate()),
                     ])->alignEnd(),
-                    OneTimeCodeInput::make('otp')
-                        ->label('Kode 6 digit')
-                        ->required(),
-                    TextInput::make('current_password')
-                        ->label('Konfirmasi dengan password Anda')
-                        ->helperText('Demi keamanan, masukkan password akun ini untuk mengaktifkan 2FA.')
-                        ->password()
-                        ->revealable()
-                        ->required()
-                        ->autocomplete('current-password'),
                 ])
                 ->afterValidation(fn () => $this->verifyAndEnable()),
 
@@ -181,16 +180,6 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
      */
     public function verifyAndEnable(): void
     {
-        $user = Filament::auth()->user();
-
-        // Re-auth: the account password is required to enrol a second factor, so a
-        // hijacked session alone can't add an attacker's authenticator.
-        if (! Hash::check((string) ($this->data['current_password'] ?? ''), $user->password)) {
-            throw ValidationException::withMessages([
-                'data.current_password' => 'Password Anda salah.',
-            ]);
-        }
-
         $secret = session(self::SESSION_KEY.'.secret');
         $codes = session(self::SESSION_KEY.'.recoveryCodes', []);
 
@@ -200,9 +189,9 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
             ]);
         }
 
+        $user = Filament::auth()->user();
         $this->provider()->saveSecret($user, $secret);
         $this->provider()->saveRecoveryCodes($user, $codes);
-        $this->data['current_password'] = null; // don't let it linger in form state
     }
 
     /** Final wizard submit: only finishes once the secret is genuinely saved. */
