@@ -28,6 +28,8 @@
             <span class="hidden font-mono text-xs uppercase tracking-widest text-faint sm:inline-block">{{ content('services.disciplines_label', 'Pick one — or the full stack') }}</span>
         </div>
 
+        <p class="measure mt-6 text-[1rem] text-muted">{{ content('services.disciplines_intro', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.') }}</p>
+
         {{-- Disciplines — clean capability cards --}}
         <div class="mt-12 grid border-l border-t border-line sm:grid-cols-2 md:mt-16" data-stagger>
             @forelse ($services as $service)

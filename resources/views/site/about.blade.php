@@ -21,7 +21,9 @@
 
     {{-- Values --}}
     <section class="frame border-t border-line py-20 md:py-28">
-        <x-ui.heading :eyebrow="content('about.values_eyebrow', 'What we value')" :title="content('about.values_title', 'How we think.')" />
+        <x-ui.heading :eyebrow="content('about.values_eyebrow', 'What we value')" :title="content('about.values_title', 'How we think.')">
+            {{ content('about.values_intro', 'The handful of beliefs that shape how we design, build, and decide.') }}
+        </x-ui.heading>
         <div class="mt-14 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4" data-stagger>
             @foreach ($values as $i => $value)
                 <div class="group flex flex-col border-b border-r border-line p-8 transition-colors duration-500 hover:bg-panel md:p-9" data-stagger-item>
@@ -37,7 +39,9 @@
     @if ($members->isNotEmpty())
         <section class="frame border-t border-line py-20 md:py-28">
             <div class="flex items-end justify-between gap-6">
-                <x-ui.heading :eyebrow="content('about.team_eyebrow', 'The team')" :title="content('about.team_title', 'Senior, embedded, accountable.')" />
+                <x-ui.heading :eyebrow="content('about.team_eyebrow', 'The team')" :title="content('about.team_title', 'Senior, embedded, accountable.')">
+                    {{ content('about.team_intro', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.') }}
+                </x-ui.heading>
                 <a href="/team" class="link-underline hidden shrink-0 font-mono text-xs uppercase tracking-widest sm:inline-block">{{ content('about.team_link', 'Meet everyone') }} →</a>
             </div>
             <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4" data-stagger>
@@ -61,9 +65,10 @@
     {{-- Clients --}}
     @if ($clients->isNotEmpty())
         <section class="frame border-t border-line py-14">
-            <div class="mb-8 flex justify-center">
+            <div class="mb-4 flex justify-center">
                 <x-ui.eyebrow plain>▪ {{ content('about.clients_eyebrow', 'In good company') }}</x-ui.eyebrow>
             </div>
+            <p class="mx-auto mb-10 max-w-xl text-center text-sm text-muted">{{ content('about.clients_intro', "A few of the teams we've designed and built alongside.") }}</p>
             <x-ui.marquee :clients="$clients" />
         </section>
     @endif

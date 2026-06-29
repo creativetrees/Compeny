@@ -231,6 +231,7 @@ class SiteSettingForm
                 Section::make('Disciplines')->columns(2)->schema([
                     self::t('page_content.services.disciplines_eyebrow', 'Eyebrow', 'The disciplines'),
                     self::t('page_content.services.disciplines_label', 'Label', 'Pick one — or the full stack'),
+                    self::ta('page_content.services.disciplines_intro', 'Deskripsi', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.'),
                 ]),
             ]);
     }
@@ -249,6 +250,7 @@ class SiteSettingForm
                 Section::make('Tiers')->columns(2)->schema([
                     self::t('page_content.pricing.tiers_eyebrow', 'Eyebrow', 'Engagement tiers'),
                     self::t('page_content.pricing.tiers_note', 'Catatan', 'Lead-based · scoped per project · no checkout'),
+                    self::ta('page_content.pricing.tiers_intro', 'Deskripsi', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.'),
                 ]),
                 Section::make('Included')->columns(2)->schema([
                     self::t('page_content.pricing.included_eyebrow', 'Eyebrow', 'No fine print'),
@@ -258,6 +260,7 @@ class SiteSettingForm
                 Section::make('FAQ')->columns(2)->schema([
                     self::t('page_content.pricing.faq_eyebrow', 'Eyebrow', 'FAQ'),
                     self::t('page_content.pricing.faq_title', 'Judul', 'Questions, answered.'),
+                    self::ta('page_content.pricing.faq_intro', 'Deskripsi', 'The questions we hear most, answered straight — before you ever send a brief.'),
                 ]),
             ]);
     }
@@ -275,6 +278,7 @@ class SiteSettingForm
                 ]),
                 Section::make('Sequence & principles')->columns(2)->schema([
                     self::t('page_content.process.sequence_eyebrow', 'Sequence eyebrow', 'The sequence'),
+                    self::ta('page_content.process.sequence_intro', 'Sequence deskripsi', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.'),
                     self::t('page_content.process.phases_label', 'Label jumlah fase', 'phases'),
                     self::t('page_content.process.principles_eyebrow', 'Principles eyebrow', 'Operating principles'),
                     self::t('page_content.process.principles_title', 'Principles judul', 'The rules that keep the work honest.'),
@@ -294,6 +298,7 @@ class SiteSettingForm
                     self::ta('page_content.team.hero_title', 'Judul', "The people behind\nthe work."),
                     self::ta('page_content.team.hero_intro', 'Intro'),
                     self::t('page_content.team.studio_eyebrow', 'Studio eyebrow', 'The studio'),
+                    self::ta('page_content.team.studio_intro', 'Studio deskripsi', "The senior people who'll actually do your work — no account layers, no handoffs."),
                 ]),
             ]);
     }
@@ -316,12 +321,15 @@ class SiteSettingForm
                 Section::make('Values')->columns(2)->schema([
                     self::t('page_content.about.values_eyebrow', 'Eyebrow', 'What we value'),
                     self::t('page_content.about.values_title', 'Judul', 'How we think.'),
+                    self::ta('page_content.about.values_intro', 'Deskripsi', 'The handful of beliefs that shape how we design, build, and decide.'),
                 ]),
                 Section::make('Team & clients')->columns(2)->schema([
                     self::t('page_content.about.team_eyebrow', 'Team eyebrow', 'The team'),
                     self::t('page_content.about.team_title', 'Team judul', 'Senior, embedded, accountable.'),
+                    self::ta('page_content.about.team_intro', 'Team deskripsi', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.'),
                     self::t('page_content.about.team_link', 'Team link', 'Meet everyone'),
                     self::t('page_content.about.clients_eyebrow', 'Clients eyebrow', 'In good company'),
+                    self::ta('page_content.about.clients_intro', 'Clients deskripsi', "A few of the teams we've designed and built alongside."),
                 ]),
             ]);
     }

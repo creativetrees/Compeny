@@ -37,6 +37,8 @@
             </div>
         </div>
 
+        <p class="measure mt-6 text-[1rem] text-muted">{{ content('pricing.tiers_intro', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.') }}</p>
+
         <div class="mt-12" data-reveal>
             <div class="swiper pricing-swiper">
                 <div class="swiper-wrapper">
@@ -123,7 +125,9 @@
     {{-- ───────────────────────── FAQ ───────────────────────── --}}
     @if (isset($faqs) && $faqs->isNotEmpty())
         <section class="frame border-t border-line py-20 md:py-28">
-            <x-ui.heading :eyebrow="content('pricing.faq_eyebrow', 'FAQ')" :title="content('pricing.faq_title', 'Questions, answered.')" />
+            <x-ui.heading :eyebrow="content('pricing.faq_eyebrow', 'FAQ')" :title="content('pricing.faq_title', 'Questions, answered.')">
+                {{ content('pricing.faq_intro', 'The questions we hear most, answered straight — before you ever send a brief.') }}
+            </x-ui.heading>
 
             <div class="mx-auto mt-12 max-w-3xl border-t border-line" data-stagger>
                 @foreach ($faqs as $faq)

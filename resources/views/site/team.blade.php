@@ -27,6 +27,8 @@
             <span class="label-mono shrink-0">{{ str_pad($members->count(), 2, '0', STR_PAD_LEFT) }} / People</span>
         </div>
 
+        <p class="measure mt-6 text-[1rem] text-muted">{{ content('team.studio_intro', "The senior people who'll actually do your work — no account layers, no handoffs.") }}</p>
+
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
             @forelse ($members as $member)
                 @php
