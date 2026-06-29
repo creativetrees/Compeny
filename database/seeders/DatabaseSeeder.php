@@ -15,6 +15,8 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -78,8 +80,12 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        // is_admin is guarded (not mass-assignable) — set it explicitly in code.
-        $admin->forceFill(['is_admin' => true])->save();
+        // Authorization is via Filament Shield: grant the `super_admin` role,
+        // which bypasses every policy (Shield's Gate::before). Permissions exist
+        // after `php artisan shield:generate`; sync whatever is present.
+        $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        $superAdmin->syncPermissions(Permission::all());
+        $admin->syncRoles([$superAdmin]);
     }
 
     private function seedSettings(): void

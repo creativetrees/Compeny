@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
@@ -38,13 +39,13 @@ class UsersTable
                     ->searchable()
                     ->sortable(),
 
-                TextColumn::make('is_admin')
+                TextColumn::make('roles.name')
                     ->label('Peran')
                     ->badge()
-                    ->formatStateUsing(fn (bool $state): string => $state ? 'Admin' : 'Member')
-                    ->icon(fn (bool $state): string => $state ? 'heroicon-m-shield-check' : 'heroicon-m-user')
-                    ->color(fn (bool $state): string => $state ? 'success' : 'gray')
-                    ->sortable(),
+                    ->icon('heroicon-m-shield-check')
+                    ->color('success')
+                    ->formatStateUsing(fn (string $state): string => Str::headline($state))
+                    ->placeholder('— belum ada peran'),
 
                 IconColumn::make('email_verified_at')
                     ->label('Verifikasi')
@@ -84,11 +85,11 @@ class UsersTable
                     ->toggleable(),
             ])
             ->filters([
-                TernaryFilter::make('is_admin')
+                SelectFilter::make('roles')
                     ->label('Peran')
-                    ->placeholder('Semua peran')
-                    ->trueLabel('Admin')
-                    ->falseLabel('Member'),
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload(),
                 TernaryFilter::make('email_verified_at')
                     ->label('Verifikasi email')
                     ->placeholder('Semua')

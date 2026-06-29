@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Role;
 
 /**
  * @extends Factory<User>
@@ -38,14 +39,17 @@ class UserFactory extends Factory
     }
 
     /**
-     * Flag the user as an admin (Filament panel access). Factories bypass
-     * mass-assignment protection, so this is how tests set the guarded flag.
+     * Grant the user the Shield `super_admin` role — full panel access (the
+     * role bypasses every policy via Shield's Gate::before). Tests use this.
      */
     public function admin(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'is_admin' => true,
-        ]);
+        return $this->afterCreating(function (User $user): void {
+            $user->assignRole(Role::firstOrCreate([
+                'name' => 'super_admin',
+                'guard_name' => 'web',
+            ]));
+        });
     }
 
     /**

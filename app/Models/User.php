@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 // NOTE: `is_admin` is deliberately NOT in the fillable allow-list — it can only
 // be set in code (seeder/console), never via a mass-assigned form or
@@ -28,16 +29,19 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable implements FilamentUser, HasAppAuthentication, HasAppAuthenticationRecovery, HasEmailAuthentication
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, InteractsWithEmailAuthentication, Notifiable;
+    use HasFactory, HasRoles, InteractsWithAppAuthentication, InteractsWithAppAuthenticationRecovery, InteractsWithEmailAuthentication, Notifiable;
 
     /**
      * Determine whether the user may access the Filament admin panel.
      *
-     * Default-deny: only users explicitly flagged `is_admin = true` are allowed.
+     * Authorization is handled by Filament Shield (spatie/laravel-permission):
+     * default-deny — only users with at least one assigned role may enter, and
+     * per-resource access is enforced by Shield's generated policies (the
+     * `super_admin` role bypasses every policy via Shield's Gate::before).
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        return (bool) $this->is_admin;
+        return $this->roles()->exists();
     }
 
     /**

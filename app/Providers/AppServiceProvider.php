@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\SiteSetting;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -40,6 +42,11 @@ class AppServiceProvider extends ServiceProvider
                 logger()->warning('MAIL_MAILER is "'.config('mail.default').'" in production — auth OTP / reset emails will be logged, not delivered. Configure a real SMTP transport.');
             }
         }
+
+        // Filament Shield super-admin: the `super_admin` role bypasses every gate
+        // and policy. Registered globally here (rather than via Shield's per-panel
+        // interceptor, which did not fire) so it also applies in tests & console.
+        Gate::before(fn ($user, string $ability): ?bool => ($user instanceof User && $user->hasRole('super_admin')) ? true : null);
 
         // Make the singleton site settings available to every view & component.
         View::composer('*', function ($view) {
