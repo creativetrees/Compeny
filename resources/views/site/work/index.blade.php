@@ -1,12 +1,12 @@
 <x-layouts.app title="Work" description="Selected work from Creative Trees Group — design and engineering for products that scale.">
     {{-- ──────────────────── Header ──────────────────── --}}
     <section class="frame pt-32 pb-12 md:pt-40">
-        <x-ui.eyebrow data-scramble>Selected work</x-ui.eyebrow>
+        <x-ui.eyebrow data-scramble>{{ content('work.hero_eyebrow', 'Selected work') }}</x-ui.eyebrow>
         <h1 class="display mt-6 text-[2.6rem] leading-[0.98] sm:text-6xl md:text-7xl" data-reveal>
-            Proof, not<br>promises.
+            {!! nl2br(e(content('work.hero_title', "Proof, not\npromises."))) !!}
         </h1>
         <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.1">
-            A selection of products we've designed and engineered — for founders, teams, and the people who use what they ship.
+            {{ content('work.hero_intro', "A selection of products we've designed and engineered — for founders, teams, and the people who use what they ship.") }}
         </p>
     </section>
 

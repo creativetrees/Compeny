@@ -41,7 +41,6 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             StartStepSeeder::class,
             NavLinkSeeder::class,
-            SiteContentSeeder::class,
         ]);
     }
 
@@ -92,11 +91,22 @@ class DatabaseSeeder extends Seeder
     {
         SiteSetting::updateOrCreate(['id' => 1], [
             'brand_name' => 'Creative Trees Group',
+            'header_description' => 'Digital product studio & IT ecosystem.',
+            'nav_menu' => [
+                ['label' => 'Work', 'url' => '/work'],
+                ['label' => 'Services', 'url' => '/services'],
+                ['label' => 'Pricing', 'url' => '/pricing'],
+                ['label' => 'Process', 'url' => '/process'],
+                ['label' => 'Team', 'url' => '/team'],
+                ['label' => 'About', 'url' => '/about'],
+            ],
             'hero_eyebrow' => 'DIGITAL PRODUCT STUDIO & IT ECOSYSTEM',
             'hero_title' => "WE GROW DIGITAL\nPRODUCTS THAT SCALE",
             'hero_subtitle' => 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.',
             'hero_cta_label' => 'Start a project',
             'hero_cta_url' => '/start',
+            'hero_cta_secondary_label' => 'View work',
+            'hero_cta_secondary_url' => '/work',
             'about_heading' => 'A studio built like a product team.',
             'about_body' => "Creative Trees Group is a digital product studio. We design and engineer software the way the best in-house teams do — close to the problem, fast to ship, and obsessed with the details users actually feel.\n\nWe work as one embedded team across strategy, design, and engineering, so nothing gets lost in handoff.",
             'contact_email' => 'hello@creativetrees.group',
@@ -117,6 +127,97 @@ class DatabaseSeeder extends Seeder
             'seo_title' => 'Creative Trees Group — Digital Product Studio',
             'seo_description' => 'We design and build SaaS products that scale. Strategy, design, and engineering as one embedded team.',
             'footer_tagline' => 'Designed and built to compound.',
+            // Per-page editable copy, resolved by content('page.key', default).
+            'page_content' => [
+                'header' => [
+                    'cta_label' => 'Start a project',
+                    'cta_url' => '/start',
+                ],
+                'home' => [
+                    'trusted_eyebrow' => 'Trusted by innovative teams',
+                    'cap_eyebrow' => 'Capabilities',
+                    'cap_title' => 'Everything you need to launch and scale.',
+                    'cap_intro' => 'One embedded team across strategy, design, and engineering — so nothing is lost in handoff.',
+                    'work_eyebrow' => 'Selected work',
+                    'work_title' => 'Proof, not promises.',
+                    'process_eyebrow' => 'How we work',
+                    'process_title' => 'A process built to de-risk the work.',
+                    'process_intro' => 'Four phases, one continuous flow — each one de-risks the next.',
+                    'signal_eyebrow' => 'Signal',
+                    'signal_title' => 'What partners say.',
+                ],
+                'services' => [
+                    'hero_eyebrow' => 'Services',
+                    'hero_line1' => 'Capabilities',
+                    'hero_line2' => 'that compound.',
+                    'hero_intro' => "We keep strategy, design, and engineering under one roof. Each capability below stands on its own — and gets sharper the moment it's paired with the next.",
+                    'disciplines_eyebrow' => 'The disciplines',
+                    'disciplines_label' => 'Pick one — or the full stack',
+                ],
+                'work' => [
+                    'hero_eyebrow' => 'Selected work',
+                    'hero_title' => "Proof, not\npromises.",
+                    'hero_intro' => "A selection of products we've designed and engineered — for founders, teams, and the people who use what they ship.",
+                ],
+                'products' => [
+                    'hero_eyebrow' => 'Products',
+                    'hero_line1' => 'Starters that ship',
+                    'hero_line2' => 'in days, not months.',
+                    'hero_intro' => "Productized building blocks — SaaS foundations, design-system templates, and embedded services — each engineered to the same standard as our custom work. Pick a starting point, tell us where you're headed, and we tailor it to your roadmap.",
+                    'empty_eyebrow' => 'Catalog in progress',
+                    'empty_message' => "We're packaging our next set of starters. Tell us what you're building and we'll scope a custom path in the meantime.",
+                ],
+                'pricing' => [
+                    'hero_eyebrow' => 'Pricing',
+                    'hero_title' => "Engagements,\npriced honestly.",
+                    'hero_intro' => 'We are a studio, not a checkout. Every engagement is scoped to the work in front of it — the numbers below are honest starting points, where most projects begin rather than where they are capped.',
+                    'tiers_eyebrow' => 'Engagement tiers',
+                    'tiers_note' => 'Lead-based · scoped per project · no checkout',
+                    'included_eyebrow' => 'No fine print',
+                    'included_title' => "What's always included.",
+                    'included_intro' => 'However we work together, a few things never change — the reasons engagements stay honest.',
+                    'faq_eyebrow' => 'FAQ',
+                    'faq_title' => 'Questions, answered.',
+                ],
+                'process' => [
+                    'hero_eyebrow' => 'How we work',
+                    'hero_title' => 'A process built to de-risk the work.',
+                    'hero_intro' => 'Four phases, one embedded team, zero handoffs. We spend the riskiest assumptions first and ship working software every week — so the path from idea to scale is something you can see, not something you have to trust.',
+                    'sequence_eyebrow' => 'The sequence',
+                    'phases_label' => 'phases',
+                    'principles_eyebrow' => 'Operating principles',
+                    'principles_title' => 'The rules that keep the work honest.',
+                    'principles_intro' => 'Four constraints we hold on every engagement — the reason the process stays honest when the deadlines get loud.',
+                ],
+                'team' => [
+                    'hero_eyebrow' => 'Team',
+                    'hero_title' => "The people behind\nthe work.",
+                    'hero_intro' => 'No account layers, no handoffs. Creative Trees is a small, senior team of strategists, designers, and engineers who embed directly with yours — and stay accountable from the first sketch to production traffic.',
+                    'studio_eyebrow' => 'The studio',
+                ],
+                'about' => [
+                    'hero_eyebrow' => 'About',
+                    'values_eyebrow' => 'What we value',
+                    'values_title' => 'How we think.',
+                    'team_eyebrow' => 'The team',
+                    'team_title' => 'Senior, embedded, accountable.',
+                    'team_link' => 'Meet everyone',
+                    'clients_eyebrow' => 'In good company',
+                ],
+                'contact' => [
+                    'hero_eyebrow' => 'Contact',
+                    'hero_title' => "Let's talk.",
+                    'hero_intro' => "A fully-scoped build or a half-formed idea — either is a good place to start. Tell us where you're headed and we'll come back with the shortest honest path to get there.",
+                ],
+                'start' => [
+                    'hero_eyebrow' => 'Start a project',
+                    'hero_title' => "Tell us where\nyou're headed.",
+                    'hero_intro' => "Share a few details about what you're building. We'll tell you the shortest honest path to get there.",
+                ],
+                'footer' => [
+                    'contact_label' => 'Contact',
+                ],
+            ],
         ]);
     }
 

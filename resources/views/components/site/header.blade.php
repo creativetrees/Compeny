@@ -1,5 +1,18 @@
 @php
-    $nav = \App\Models\NavLink::query()->where('location', 'header')->ordered()->get();
+    // Header nav is managed in Site Settings → Brand & Logo → "Menu header".
+    $nav = collect($settings->nav_menu ?? [])
+        ->filter(fn ($i) => filled($i['label'] ?? null) && filled($i['url'] ?? null))
+        ->values();
+    if ($nav->isEmpty()) {
+        $nav = collect([
+            ['label' => 'Work', 'url' => '/work'],
+            ['label' => 'Services', 'url' => '/services'],
+            ['label' => 'Pricing', 'url' => '/pricing'],
+            ['label' => 'Process', 'url' => '/process'],
+            ['label' => 'Team', 'url' => '/team'],
+            ['label' => 'About', 'url' => '/about'],
+        ]);
+    }
 @endphp
 
 <header
@@ -25,18 +38,18 @@
         {{-- Desktop nav --}}
         <nav class="hidden items-center gap-7 lg:flex" aria-label="Primary">
             @foreach ($nav as $item)
-                <a href="{{ $item->url }}"
+                <a href="{{ $item['url'] }}"
                    @class([
                        'link-underline font-mono text-[0.78rem] uppercase tracking-wide text-ink/80 transition-colors hover:text-ink',
                    ])
-                   @if ($item->url === '/' ? request()->is('/') : request()->is(ltrim($item->url, '/').'*')) aria-current="page" @endif
-                >{{ $item->label }}</a>
+                   @if ($item['url'] === '/' ? request()->is('/') : request()->is(ltrim($item['url'], '/').'*')) aria-current="page" @endif
+                >{{ $item['label'] }}</a>
             @endforeach
         </nav>
 
         {{-- CTA + mobile toggle --}}
         <div class="flex items-center gap-3">
-            <a href="/start" data-magnetic class="hidden btn sm:inline-flex">Start a project</a>
+            <a href="{{ content('header.cta_url', '/start') }}" data-magnetic class="hidden btn sm:inline-flex">{{ content('header.cta_label', 'Start a project') }}</a>
 
             <button
                 @click="openMenu()"
@@ -67,21 +80,25 @@
         @keydown.escape.window="closeMenu()"
     >
         <div class="frame !border-0 flex h-[68px] items-center justify-between">
-            <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">Menu</span>
+            <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">{{ $settings->brand_name ?? 'Creative Trees Group' }}</span>
             <button @click="closeMenu()" class="font-mono text-xs uppercase tracking-widest" aria-label="Close menu">Close ✕</button>
         </div>
 
+        @if (filled($settings->header_description))
+            <p class="frame !border-0 -mt-1 max-w-sm text-sm text-muted">{{ $settings->header_description }}</p>
+        @endif
+
         <nav class="frame !border-0 mt-6 flex flex-1 flex-col gap-1" aria-label="Mobile">
             @foreach ($nav as $i => $item)
-                <a href="{{ $item->url }}"
+                <a href="{{ $item['url'] }}"
                    class="menu-link display flex items-baseline gap-4 border-b border-line py-5 text-3xl"
                    style="animation-delay: {{ 80 + $i * 55 }}ms"
                    @click="closeMenu()">
                     <span class="label-mono text-faint">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                    {{ $item->label }}
+                    {{ $item['label'] }}
                 </a>
             @endforeach
-            <a href="/start" class="menu-link btn mt-8 self-start" style="animation-delay: {{ 80 + $nav->count() * 55 }}ms" @click="closeMenu()">Start a project</a>
+            <a href="{{ content('header.cta_url', '/start') }}" class="menu-link btn mt-8 self-start" style="animation-delay: {{ 80 + $nav->count() * 55 }}ms" @click="closeMenu()">{{ content('header.cta_label', 'Start a project') }}</a>
         </nav>
     </div>
 </header>

@@ -42,8 +42,10 @@
                 </div>
 
                 <div class="mt-9 flex items-center justify-center gap-3" data-reveal data-reveal-delay="0.4">
-                    <x-ui.button href="/start">{{ $settings->hero_cta_label ?? 'Start a project' }}</x-ui.button>
-                    <x-ui.button href="/work" variant="ghost" :magnetic="false">View work</x-ui.button>
+                    <x-ui.button href="{{ $settings->hero_cta_url ?: '/start' }}">{{ $settings->hero_cta_label ?: 'Start a project' }}</x-ui.button>
+                    @if (filled($settings->hero_cta_secondary_label ?? 'View work'))
+                        <x-ui.button href="{{ $settings->hero_cta_secondary_url ?: '/work' }}" variant="ghost" :magnetic="false">{{ $settings->hero_cta_secondary_label ?: 'View work' }}</x-ui.button>
+                    @endif
                 </div>
             </div>
         </div>

@@ -3,8 +3,11 @@
 namespace Tests\Unit;
 
 use App\Models\SiteContent;
+use App\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase; // app TestCase, not PHPUnit's — value() touches the DB
+use Tests\TestCase;
+
+ // app TestCase, not PHPUnit's — value() touches the DB
 
 class SiteContentTest extends TestCase
 {
@@ -37,10 +40,14 @@ class SiteContentTest extends TestCase
         $this->assertSame('Edited in CMS', SiteContent::value('hero.title', 'Fallback copy'));
     }
 
-    public function test_content_helper_delegates_to_site_content(): void
+    public function test_content_helper_reads_from_site_setting_page_content(): void
     {
-        SiteContent::create(['group' => 'hero', 'key' => 'hero.cta', 'label' => 'Hero CTA', 'value' => 'Start now', 'sort' => 0]);
-        SiteContent::flushCache();
+        // The content() helper now resolves dotted keys from the Site Settings
+        // page_content store (per-page copy), falling back to the given default.
+        SiteSetting::query()->updateOrCreate(
+            ['id' => 1],
+            ['page_content' => ['hero' => ['cta' => 'Start now']]],
+        );
 
         $this->assertSame('Start now', content('hero.cta', 'Start a project'));
         $this->assertSame('Default CTA', content('missing.key', 'Default CTA'));

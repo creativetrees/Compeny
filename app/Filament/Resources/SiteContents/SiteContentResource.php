@@ -28,6 +28,16 @@ class SiteContentResource extends Resource
 
     protected static ?string $modelLabel = 'Site Content';
 
+    /**
+     * Per-page copy is now edited in Site Settings (the page_content store the
+     * content() helper reads). This legacy key-value resource is retired from the
+     * admin to avoid duplicate, dead editing surfaces.
+     */
+    public static function shouldRegisterNavigation(): bool
+    {
+        return false;
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SiteContentForm::configure($schema);
