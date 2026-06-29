@@ -47,6 +47,16 @@ class AdminPanelTest extends TestCase
         }
     }
 
+    public function test_profile_page_exposes_two_factor_setup(): void
+    {
+        $admin = User::factory()->admin()->create(['email' => 'profile@creativetrees.group']);
+
+        $this->actingAs($admin)
+            ->get('/admin/profile')
+            ->assertSuccessful()
+            ->assertSee('Authenticator', false);
+    }
+
     public function test_tabbed_resource_edit_forms_render(): void
     {
         $this->seed();

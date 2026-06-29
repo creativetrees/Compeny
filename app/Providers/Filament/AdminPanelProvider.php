@@ -6,7 +6,6 @@ use App\Filament\Auth\ForgotPassword;
 use App\Filament\Auth\Login;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Auth\MultiFactor\App\AppAuthentication;
-use Filament\Auth\MultiFactor\Email\EmailAuthentication;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -34,16 +33,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->passwordReset(ForgotPassword::class)
-            // Two-step login MFA, REQUIRED. PRIMARY = email OTP: a 6-char
-            // alphanumeric code (e.g. 3H9J4D) emailed to the admin and entered in
-            // the segmented code input. This uses Filament's built-in email flow,
-            // which hashes the code in the session, expires it (~4 min), makes it
-            // single-use, and rate-limits both sending and verification.
-            // FALLBACK = authenticator app (TOTP) + recovery codes, so the forced
-            // enrolment never locks the admin out if email is temporarily down
-            // (they can enrol the offline app factor instead).
+            ->profile(isSimple: false)
+            // 2FA = authenticator app (TOTP) + recovery codes — the native
+            // Filament v5 factor, fully offline. Email OTP was dropped because the
+            // host's mail relay rejects transactional mail as spam (rSPAM bounce).
+            // Enrol it from the Profile page; once enrolled, set
+            // PANEL_MFA_REQUIRED=true to enforce (recovery codes prevent lock-out).
             ->multiFactorAuthentication([
-                EmailAuthentication::make(),
                 AppAuthentication::make()
                     ->recoverable()
                     ->brandName('Creative Trees Group'),
