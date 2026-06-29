@@ -14,6 +14,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -47,6 +48,15 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Color::Zinc,
             ])
+            // Premium polish for the segmented OTP input (2FA setup modal): centre
+            // the boxes and enlarge them with rounded corners.
+            ->renderHook(
+                PanelsRenderHook::STYLES_AFTER,
+                fn (): string => '<style>'
+                    .'.fi-one-time-code-input-ctn{justify-content:center;gap:.5rem;}'
+                    .'.fi-one-time-code-input-digit-field{width:3rem;height:3.5rem;border-radius:.75rem;font-size:1.375rem;font-weight:600;}'
+                    .'</style>',
+            )
             ->navigationGroups([
                 'Work',
                 'Catalog',
