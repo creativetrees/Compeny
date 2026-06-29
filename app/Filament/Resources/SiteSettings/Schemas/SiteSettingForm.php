@@ -41,10 +41,10 @@ class SiteSettingForm
                                             ->prefixIcon('heroicon-m-building-office-2')
                                             ->helperText('Nama lengkap — dipakai di judul halaman, OG tag, dan footer.'),
                                         TextInput::make('logo_text')
-                                            ->label('Teks wordmark logo')
-                                            ->default('Creative Trees')
+                                            ->label('Teks wordmark (opsional)')
+                                            ->placeholder('Creative Trees Group')
                                             ->prefixIcon('heroicon-m-pencil')
-                                            ->helperText('Teks pendek di samping logo (header & footer). Kosongkan untuk menyembunyikan.'),
+                                            ->helperText('Override teks di samping logo (header & footer). Kosong = pakai nama brand lengkap.'),
                                         FileUpload::make('logo_path')
                                             ->label('Logo perusahaan')
                                             ->image()
@@ -82,15 +82,19 @@ class SiteSettingForm
                                             ->prefixIcon('heroicon-m-tag')
                                             ->helperText('Label kecil di atas judul hero.')
                                             ->columnSpanFull(),
-                                        Textarea::make('hero_title')
+                                        RichEditor::make('hero_title')
                                             ->label('Judul hero')
-                                            ->rows(2)
-                                            ->helperText('Gunakan baris baru untuk memecah judul menjadi dua baris.')
+                                            ->fileAttachmentsDisk('public')
+                                            ->fileAttachmentsDirectory('site/hero')
+                                            ->fileAttachmentsVisibility('public')
+                                            ->helperText('Tiap paragraf (tekan Enter) menjadi satu baris judul beranimasi. Format inline tidak tampil pada judul beranimasi.')
                                             ->columnSpanFull(),
-                                        Textarea::make('hero_subtitle')
+                                        RichEditor::make('hero_subtitle')
                                             ->label('Subjudul')
-                                            ->rows(2)
-                                            ->helperText('Kalimat pendukung di bawah judul hero.')
+                                            ->fileAttachmentsDisk('public')
+                                            ->fileAttachmentsDirectory('site/hero')
+                                            ->fileAttachmentsVisibility('public')
+                                            ->helperText('Kalimat pendukung di bawah judul — mendukung teks kaya (tebal, miring, tautan).')
                                             ->columnSpanFull(),
                                     ]),
                                 Fieldset::make('Tombol aksi (CTA) hero')

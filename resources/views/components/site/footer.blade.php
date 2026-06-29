@@ -41,12 +41,12 @@
             <div class="md:col-span-4">
                 <a href="/" class="group inline-flex items-center gap-2.5">
                     @if ($settings->logo_url)
-                        <img src="{{ $settings->logo_url }}" alt="{{ $settings->brand_name ?? 'Creative Trees Group' }}" class="h-5 w-auto">
+                        <img src="{{ $settings->logo_url }}" alt="{{ $settings->brand_name ?? 'Creative Trees Group' }}" class="h-8 w-auto">
                     @else
-                        <x-ui.logo-mark class="h-5 w-5 text-paper transition-transform duration-500 group-hover:rotate-90" />
+                        <x-ui.logo-mark class="h-7 w-7 text-paper transition-transform duration-500 group-hover:rotate-90" />
                     @endif
-                    @if (filled($settings->logo_text ?? 'Creative Trees'))
-                        <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?? 'Creative Trees' }}</span>
+                    @if (filled($settings->logo_text ?: $settings->brand_name))
+                        <span class="font-mono text-[0.95rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?: ($settings->brand_name ?? 'Creative Trees Group') }}</span>
                     @endif
                 </a>
                 <div class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96] [&_a]:text-paper [&_a]:underline [&_p]:m-0 [&_p+p]:mt-2 [&_strong]:text-paper">

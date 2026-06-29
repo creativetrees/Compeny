@@ -13,12 +13,12 @@
         {{-- Logo --}}
         <a href="/" class="group inline-flex items-center gap-2.5" aria-label="{{ $settings->brand_name ?? 'Creative Trees Group' }} — home">
             @if ($settings->logo_url)
-                <img src="{{ $settings->logo_url }}" alt="{{ $settings->brand_name ?? 'Creative Trees Group' }}" class="h-5 w-auto">
+                <img src="{{ $settings->logo_url }}" alt="{{ $settings->brand_name ?? 'Creative Trees Group' }}" class="h-8 w-auto">
             @else
-                <x-ui.logo-mark class="h-5 w-5 text-ink transition-transform duration-500 group-hover:rotate-90" />
+                <x-ui.logo-mark class="h-7 w-7 text-ink transition-transform duration-500 group-hover:rotate-90" />
             @endif
-            @if (filled($settings->logo_text ?? 'Creative Trees'))
-                <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?? 'Creative Trees' }}</span>
+            @if (filled($settings->logo_text ?: $settings->brand_name))
+                <span class="font-mono text-[0.95rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?: ($settings->brand_name ?? 'Creative Trees Group') }}</span>
             @endif
         </a>
 

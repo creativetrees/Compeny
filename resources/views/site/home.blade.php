@@ -1,5 +1,20 @@
 @php
-    $titleLines = preg_split('/\r\n|\r|\n/', trim($settings->hero_title ?? "WE GROW DIGITAL\nPRODUCTS THAT SCALE"));
+    // Hero title is a RichEditor field. Turn block boundaries (</p>, <br>, …) into
+    // line breaks, strip inline tags (the scramble headline animates plain text),
+    // and split into the per-line spans the headline renders.
+    $heroTitleRaw = filled($settings->hero_title) ? $settings->hero_title : "WE GROW DIGITAL\nPRODUCTS THAT SCALE";
+    $heroTitleText = html_entity_decode(strip_tags(preg_replace(
+        ['#</(?:p|div|h[1-6]|li)>#i', '#<br\s*/?>#i'],
+        "\n",
+        $heroTitleRaw
+    )), ENT_QUOTES);
+    $titleLines = array_values(array_filter(
+        array_map('trim', preg_split('/\r\n|\r|\n/', $heroTitleText)),
+        fn ($line) => $line !== ''
+    ));
+    if (empty($titleLines)) {
+        $titleLines = ['WE GROW DIGITAL', 'PRODUCTS THAT SCALE'];
+    }
 @endphp
 
 <x-layouts.app>
@@ -22,9 +37,9 @@
                     @endforeach
                 </h1>
 
-                <p class="measure mx-auto mt-8 text-[1rem] text-muted sm:text-[1.05rem]" data-reveal data-reveal-delay="0.3">
-                    {{ $settings->hero_subtitle ?? 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.' }}
-                </p>
+                <div class="measure mx-auto mt-8 text-[1rem] text-muted sm:text-[1.05rem] [&_a]:underline [&_a:hover]:text-ink [&_p]:m-0 [&_p+p]:mt-3 [&_strong]:font-semibold [&_strong]:text-ink" data-reveal data-reveal-delay="0.3">
+                    {!! filled($settings->hero_subtitle) ? $settings->hero_subtitle : 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.' !!}
+                </div>
 
                 <div class="mt-9 flex items-center justify-center gap-3" data-reveal data-reveal-delay="0.4">
                     <x-ui.button href="/start">{{ $settings->hero_cta_label ?? 'Start a project' }}</x-ui.button>
