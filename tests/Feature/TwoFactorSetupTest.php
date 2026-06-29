@@ -21,15 +21,28 @@ class TwoFactorSetupTest extends TestCase
         Filament::setCurrentPanel(Filament::getPanel('admin'));
     }
 
-    public function test_mount_primes_a_pending_secret_and_renders_the_qr_inline(): void
+    public function test_mount_primes_a_pending_secret_and_renders_the_setup_key(): void
     {
         $this->actingAs(User::factory()->admin()->create());
 
         Livewire::test(TwoFactorSetup::class)
+            ->assertOk()
             ->assertSet('enabled', false)
-            ->assertSee('Aktifkan dengan aplikasi authenticator');
+            ->assertSee(session('two_factor_setup.secret')); // the setup key is shown
 
         $this->assertNotNull(session('two_factor_setup.secret'));
+    }
+
+    public function test_regenerate_mints_a_fresh_secret(): void
+    {
+        $this->actingAs(User::factory()->admin()->create());
+
+        $component = Livewire::test(TwoFactorSetup::class);
+        $first = session('two_factor_setup.secret');
+
+        $component->call('regenerate');
+
+        $this->assertNotSame($first, session('two_factor_setup.secret'));
     }
 
     public function test_confirm_with_a_valid_code_enables_2fa(): void

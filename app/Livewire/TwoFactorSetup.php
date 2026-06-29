@@ -8,6 +8,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Inline authenticator-app 2FA setup — shows the QR code directly (no modal),
@@ -69,6 +70,37 @@ class TwoFactorSetup extends Component
         $this->primePendingSecret();
 
         Notification::make()->title('Two-factor authentication dinonaktifkan.')->warning()->send();
+    }
+
+    /** Throw away the un-confirmed secret + codes and mint a fresh set. */
+    public function regenerate(): void
+    {
+        // Derive state from the provider, never the client-tamperable $enabled prop.
+        if ($this->provider()->isEnabled(Filament::auth()->user())) {
+            return;
+        }
+
+        session()->forget(self::SESSION_KEY);
+        $this->primePendingSecret();
+        $this->reset('code');
+
+        Notification::make()->title('QR & kode pemulihan baru dibuat.')->success()->send();
+    }
+
+    public function downloadRecoveryCodes(): StreamedResponse
+    {
+        // Only the freshly-generated PLAINTEXT codes are downloadable. Once 2FA is
+        // confirmed the codes are stored bcrypt-hashed and can never be shown again,
+        // so there is nothing to download post-enable (avoids handing out hashes).
+        $codes = session(self::SESSION_KEY.'.recoveryCodes');
+
+        abort_if(blank($codes), 404);
+
+        return response()->streamDownload(
+            fn () => print ("Creative Trees Group — Kode Pemulihan 2FA\n".str_repeat('=', 44)."\n\n".implode("\n", $codes)."\n\nSimpan file ini di tempat aman. Setiap kode hanya bisa dipakai sekali.\n"),
+            'creative-trees-2fa-recovery-codes.txt',
+            ['Content-Type' => 'text/plain'],
+        );
     }
 
     public function render()
