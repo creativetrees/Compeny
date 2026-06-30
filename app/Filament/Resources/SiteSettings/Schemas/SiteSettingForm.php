@@ -500,7 +500,7 @@ class SiteSettingForm
                     ->schema([
                         TextInput::make('footer_cta_eyebrow')->label('Eyebrow')->placeholder("Let's build")->prefixIcon('heroicon-m-tag')->columnSpanFull(),
                         Textarea::make('footer_cta_title')->label('Judul')->placeholder("Have something\nworth building?")->helperText('Baris baru memecah judul.')->rows(2)->columnSpanFull(),
-                        Textarea::make('footer_cta_body')->label('Deskripsi')->placeholder("Tell us where you're headed.")->rows(2)->columnSpanFull(),
+                        RichEditor::make('footer_cta_body')->label('Deskripsi')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->columnSpanFull(),
                         TextInput::make('footer_cta_label')->label('Teks tombol')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('footer_cta_url'),
                     ]),

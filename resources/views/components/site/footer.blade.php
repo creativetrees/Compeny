@@ -26,9 +26,9 @@
                 </h2>
             </div>
             <div class="flex flex-col items-start md:col-span-5 md:items-end md:text-right" data-reveal data-reveal-delay="0.1">
-                <p class="mb-7 max-w-sm text-[1rem] leading-relaxed text-[#9a9a96]">
-                    {{ $settings->footer_cta_body ?: "Tell us where you're headed. We'll tell you the shortest honest path to get there." }}
-                </p>
+                <div class="mb-7 max-w-sm text-[1rem] leading-relaxed text-[#9a9a96] [&_a]:text-paper [&_a]:underline [&_p]:m-0 [&_p+p]:mt-3 [&_strong]:text-paper">
+                    {!! $settings->footer_cta_body ?: "Tell us where you're headed. We'll tell you the shortest honest path to get there." !!}
+                </div>
                 <x-ui.button href="{{ $settings->footer_cta_url ?: '/start' }}" variant="invert">{{ $settings->footer_cta_label ?: 'Start a project' }}</x-ui.button>
             </div>
         </div>
