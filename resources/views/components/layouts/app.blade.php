@@ -16,6 +16,22 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#ffffff">
+
+    {{-- Google Analytics (GA4) — placed high in <head> per Google's recommendation.
+         id whitelisted to [A-Za-z0-9-], safe in URL & JS string contexts. --}}
+    @php
+        $gaId = preg_replace('/[^A-Za-z0-9\-]/', '', (string) ($settings->google_analytics_id ?? ''));
+    @endphp
+    @if ($gaId !== '')
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ $gaId }}');
+        </script>
+    @endif
+
     <link rel="icon" href="{{ $settings->favicon_url ?? '/favicon.svg' }}">
     <link rel="canonical" href="{{ url()->current() }}">
 
@@ -68,20 +84,6 @@
     @endphp
     <script type="application/ld+json">{!! json_encode($ldOrg, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
     <script type="application/ld+json">{!! json_encode($ldSite, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
-
-    {{-- Google Analytics (GA4) — id whitelisted to [A-Za-z0-9-], safe in URL & JS string contexts --}}
-    @php
-        $gaId = preg_replace('/[^A-Za-z0-9\-]/', '', (string) ($settings->google_analytics_id ?? ''));
-    @endphp
-    @if ($gaId !== '')
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '{{ $gaId }}');
-        </script>
-    @endif
 
     @stack('head')
 
