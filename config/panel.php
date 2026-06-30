@@ -23,4 +23,19 @@ return [
 
     'mfa_required' => (bool) env('PANEL_MFA_REQUIRED', false),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Admin panel domain
+    |--------------------------------------------------------------------------
+    |
+    | When set (e.g. ADMIN_PANEL_DOMAIN=dev.creativetreesgroup.com) the admin
+    | panel responds ONLY on that host — /admin is hidden from the main domain
+    | (returns 404 there). Leave empty for the default (panel on every host).
+    | Point the subdomain at the SAME document root (cPanel "Share document
+    | root") so it serves this same Laravel app.
+    |
+    */
+
+    'domain' => env('ADMIN_PANEL_DOMAIN') ?: null,
+
 ];

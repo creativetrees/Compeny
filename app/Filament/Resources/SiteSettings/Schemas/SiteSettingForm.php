@@ -124,11 +124,11 @@ class SiteSettingForm
                             ->addActionLabel('Tambah menu'),
                     ]),
                 Fieldset::make('Tombol header (CTA)')
-                    ->columns(2)
+                    ->columns(3)
                     ->schema([
                         self::t('page_content.header.cta_label', 'Teks tombol', 'Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('page_content.header.cta_url'),
-                        self::t('page_content.header.close_label', 'Teks tombol tutup (menu mobile)', 'Close'),
+                        self::t('page_content.header.close_label', 'Teks tombol tutup (menu mobile)', 'Close')->prefixIcon('heroicon-m-x-mark'),
                     ]),
             ]);
     }
@@ -492,6 +492,7 @@ class SiteSettingForm
                     ->columns(2)
                     ->schema([
                         TextInput::make('google_analytics_id')->label('Google Analytics ID (GA4)')->placeholder('G-XXXXXXXXXX')->prefixIcon('heroicon-m-presentation-chart-line')->helperText('Measurement ID GA4. Kosong = nonaktif.')->rule('regex:/^(G|UA|GT|AW)-?[A-Z0-9\-]+$/i')->validationMessages(['regex' => 'Format ID tidak valid (contoh: G-XXXXXXXXXX).']),
+                        self::t('page_content.seo.google_verification', 'Google Search Console — kode verifikasi', 'abcd1234efgh...')->helperText('Isi nilai "content" dari meta tag google-site-verification (tanpa tag <meta>).'),
                         Toggle::make('seo_noindex')->label('Sembunyikan dari mesin pencari (noindex)')->helperText('Aktifkan untuk staging/privat.')->inline(false),
                     ]),
             ]);

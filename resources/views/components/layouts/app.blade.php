@@ -25,6 +25,9 @@
         <meta name="keywords" content="{{ $settings->seo_keywords }}">
     @endif
     <meta name="robots" content="{{ ($settings->seo_noindex ?? false) ? 'noindex, nofollow' : 'index, follow' }}">
+    @if (filled(content('seo.google_verification', '')))
+        <meta name="google-site-verification" content="{{ content('seo.google_verification', '') }}">
+    @endif
 
     {{-- Open Graph / Twitter --}}
     <meta property="og:site_name" content="{{ $brand }}">
@@ -43,6 +46,28 @@
     @else
         <meta name="twitter:card" content="summary">
     @endif
+
+    {{-- Structured data (Schema.org) — richer Google results --}}
+    @php
+        $ldOrg = array_filter([
+            '@context' => 'https://schema.org',
+            '@type' => 'Organization',
+            'name' => $brand,
+            'url' => url('/'),
+            'logo' => $settings->logo_url ? url($settings->logo_url) : null,
+            'email' => $settings->contact_email ?? null,
+            'telephone' => $settings->contact_phone ?? null,
+            'sameAs' => collect($settings->social_links ?? [])->pluck('url')->filter()->values()->all() ?: null,
+        ]);
+        $ldSite = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => $brand,
+            'url' => url('/'),
+        ];
+    @endphp
+    <script type="application/ld+json">{!! json_encode($ldOrg, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
+    <script type="application/ld+json">{!! json_encode($ldSite, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG) !!}</script>
 
     {{-- Google Analytics (GA4) — id whitelisted to [A-Za-z0-9-], safe in URL & JS string contexts --}}
     @php

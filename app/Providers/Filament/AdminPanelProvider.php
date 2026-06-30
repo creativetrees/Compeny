@@ -38,6 +38,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            // Restrict the panel to a host (e.g. dev.creativetreesgroup.com) when
+            // ADMIN_PANEL_DOMAIN is set — /admin then 404s on the main domain.
+            ->domain(config('panel.domain'))
             ->login(Login::class)
             ->passwordReset(ForgotPassword::class)
             // 2FA = authenticator app (TOTP) + recovery codes — the native
