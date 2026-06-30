@@ -436,7 +436,7 @@ class SiteSettingForm
                     self::t('page_content.process.hero_title', 'Title', 'A process built to de-risk the work.'),
                     self::rich('page_content.process.hero_intro', 'Intro'),
                 ]),
-                Section::make('Sequence & principles')->icon('heroicon-m-list-bullet')->columns(2)->schema([
+                Section::make('Sequence & principles')->icon('heroicon-m-list-bullet')->columns(3)->schema([
                     self::t('page_content.process.sequence_eyebrow', 'Sequence eyebrow', 'The sequence'),
                     self::t('page_content.process.phases_label', 'Phase count label', 'phases'),
                     self::t('page_content.process.principles_eyebrow', 'Principles eyebrow', 'Operating principles'),
