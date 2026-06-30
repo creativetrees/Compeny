@@ -20,7 +20,7 @@ class PricingIncludeResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCheckCircle;
 
-    protected static string|\UnitEnum|null $navigationGroup = 'Content';
+    protected static string|\UnitEnum|null $navigationGroup = 'Catalog';
 
     protected static ?int $navigationSort = 11;
 

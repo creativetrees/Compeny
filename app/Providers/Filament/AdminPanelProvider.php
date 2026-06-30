@@ -83,13 +83,13 @@ class AdminPanelProvider extends PanelProvider
             // none of its children, and otherwise links to the primary child.
             ->navigationItems([
                 NavigationItem::make('Pricing')
-                    ->group('Content')
+                    ->group('Catalog')
                     ->icon(Heroicon::OutlinedBanknotes)
                     ->sort(10)
                     ->visible(fn (): bool => PricingTierResource::canViewAny() || PricingIncludeResource::canViewAny())
                     ->url(fn (): string => PricingTierResource::getUrl()),
                 NavigationItem::make('Showcase')
-                    ->group('Content')
+                    ->group('Work')
                     ->icon(Heroicon::OutlinedStar)
                     ->sort(3)
                     ->visible(fn (): bool => ClientResource::canViewAny() || TestimonialResource::canViewAny())
