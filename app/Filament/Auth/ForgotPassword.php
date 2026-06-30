@@ -47,7 +47,7 @@ class ForgotPassword extends RequestPasswordReset
         return $schema
             ->components([
                 Wizard::make([
-                    Step::make('Identitas')
+                    Step::make('Identity')
                         ->description('Email & username')
                         ->schema([
                             TextInput::make('email')->label('Email')->email()->required()->autofocus(),
@@ -55,14 +55,14 @@ class ForgotPassword extends RequestPasswordReset
                         ])
                         ->afterValidation(fn () => $this->sendCode()),
 
-                    Step::make('Verifikasi')
-                        ->description('Kode OTP & KTP')
+                    Step::make('Verification')
+                        ->description('OTP code & National ID')
                         ->schema([
                             OneTimeCodeInput::make('otp')
-                                ->label('Kode OTP (6 digit, dikirim ke email)')
+                                ->label('OTP code (6 digits, sent to your email)')
                                 ->required(),
                             TextInput::make('nik')
-                                ->label('NIK (No. KTP)')
+                                ->label('NIK (National ID)')
                                 ->length(16)
                                 ->rule('regex:/^\d{16}$/')
                                 ->visible(fn (): bool => PasswordResetOtp::requiresNik())
@@ -70,18 +70,18 @@ class ForgotPassword extends RequestPasswordReset
                         ])
                         ->afterValidation(fn () => $this->verifyCode()),
 
-                    Step::make('Password baru')
-                        ->description('Buat password baru')
+                    Step::make('New password')
+                        ->description('Create a new password')
                         ->schema([
                             TextInput::make('password')
-                                ->label('Password baru')
+                                ->label('New password')
                                 ->password()
                                 ->revealable()
                                 ->required()
                                 ->rule(Password::default())
                                 ->same('password_confirmation'),
                             TextInput::make('password_confirmation')
-                                ->label('Ulangi password baru')
+                                ->label('Repeat new password')
                                 ->password()
                                 ->revealable()
                                 ->required()
@@ -101,7 +101,7 @@ class ForgotPassword extends RequestPasswordReset
     protected function getRequestFormAction(): Action
     {
         return Action::make('request')
-            ->label('Simpan password baru')
+            ->label('Save new password')
             ->submit('request');
     }
 
@@ -114,7 +114,7 @@ class ForgotPassword extends RequestPasswordReset
             PasswordResetOtp::clear();
 
             throw ValidationException::withMessages([
-                'data.password' => 'Sesi reset kedaluwarsa. Silakan ulangi dari awal.',
+                'data.password' => 'Your reset session expired. Please start over.',
             ]);
         }
 
@@ -122,7 +122,8 @@ class ForgotPassword extends RequestPasswordReset
         PasswordResetOtp::clear();
 
         Notification::make()
-            ->title('Password berhasil diperbarui. Silakan login dengan password baru.')
+            ->title('Password updated')
+            ->body('Sign in with your new password.')
             ->success()
             ->send();
 
@@ -158,7 +159,8 @@ class ForgotPassword extends RequestPasswordReset
         // Non-enumerating: identical outcome (and we never throw) whether or not
         // the account exists, so step 1 cannot be used to probe for valid users.
         Notification::make()
-            ->title('Jika data cocok, kode OTP telah dikirim ke email Anda.')
+            ->title('Check your email')
+            ->body('If the details match an account, a one-time code is on its way.')
             ->success()
             ->send();
     }
@@ -174,18 +176,18 @@ class ForgotPassword extends RequestPasswordReset
     {
         if (! PasswordResetOtp::verify((string) ($this->data['otp'] ?? ''), $this->data['nik'] ?? null)) {
             throw ValidationException::withMessages([
-                'data.otp' => 'Kode atau NIK salah, atau kode sudah kedaluwarsa.',
+                'data.otp' => 'The code or NIK is incorrect, or the code has expired.',
             ]);
         }
     }
 
     public function getTitle(): string|Htmlable
     {
-        return 'Lupa password';
+        return 'Forgot password';
     }
 
     public function getHeading(): string|Htmlable|null
     {
-        return 'Reset password admin';
+        return 'Reset admin password';
     }
 }

@@ -17,7 +17,7 @@ class LeadForm
     {
         return $schema
             ->components([
-                Section::make('Kontak')
+                Section::make('Contact')
                     ->icon('heroicon-o-user')
                     ->columns(2)
                     ->schema([

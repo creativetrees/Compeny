@@ -102,8 +102,8 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
     protected function scanStep(): array
     {
         return [
-            Section::make('Autentikasi dua faktor (2FA)')
-                ->description('Minta kode dari aplikasi authenticator setiap kali login — lapisan keamanan kedua untuk akun Anda.')
+            Section::make('Two-factor authentication (2FA)')
+                ->description('Require a code from your authenticator app every time you sign in — a second security layer for your account.')
                 ->icon('heroicon-o-shield-check')
                 ->columns(['default' => 1, 'lg' => 2])
                 ->schema([
@@ -131,8 +131,8 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
     protected function backupCodesStep(): array
     {
         return [
-            Section::make('Simpan kode cadangan')
-                ->description('Simpan kode ini di tempat aman — dipakai untuk masuk bila kehilangan perangkat authenticator. Setiap kode hanya berlaku sekali.')
+            Section::make('Save backup codes')
+                ->description('Store these codes somewhere safe — use them to sign in if you lose your authenticator device. Each code works only once.')
                 ->icon('heroicon-o-key')
                 ->schema([
                     ViewField::make('backup')
@@ -149,8 +149,8 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
     {
         $user = Filament::auth()->user();
 
-        return Section::make('Two-factor authentication aktif')
-            ->description('Setiap login akan meminta kode dari aplikasi authenticator Anda.')
+        return Section::make('Two-factor authentication active')
+            ->description('Every sign-in will require a code from your authenticator app.')
             ->icon('heroicon-o-shield-check')
             ->iconColor('success')
             ->schema([
@@ -166,13 +166,13 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
             ])
             ->footerActions([
                 Action::make('regenerateRecoveryCodes')
-                    ->label('Buat ulang kode pemulihan')
+                    ->label('Regenerate recovery codes')
                     ->icon('heroicon-m-arrow-path')
                     ->color('gray')
                     ->requiresConfirmation()
-                    ->modalHeading('Buat ulang kode pemulihan?')
-                    ->modalDescription('Semua kode pemulihan lama langsung berhenti berfungsi dan diganti dengan set yang baru.')
-                    ->modalSubmitActionLabel('Buat ulang')
+                    ->modalHeading('Regenerate recovery codes?')
+                    ->modalDescription('All old recovery codes stop working immediately and are replaced with a new set.')
+                    ->modalSubmitActionLabel('Regenerate')
                     ->action(fn () => $this->regenerateRecoveryCodes()),
             ]);
     }
@@ -188,7 +188,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
         // (defence-in-depth alongside the #[Locked] $view; blocks secret rotation).
         if ($this->provider()->isEnabled(Filament::auth()->user())) {
             throw ValidationException::withMessages([
-                'data.otp' => '2FA sudah aktif untuk akun ini.',
+                'data.otp' => '2FA is already enabled for this account.',
             ]);
         }
 
@@ -198,13 +198,13 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
 
         if (blank($otp)) {
             throw ValidationException::withMessages([
-                'data.otp' => 'Masukkan 6 digit kode dari aplikasi authenticator Anda.',
+                'data.otp' => 'Enter the 6-digit code from your authenticator app.',
             ]);
         }
 
         if (blank($secret) || ! $this->provider()->verifyCode($otp, $secret)) {
             throw ValidationException::withMessages([
-                'data.otp' => 'Kode salah atau kedaluwarsa. Pastikan jam perangkat tepat lalu coba lagi.',
+                'data.otp' => 'The code is incorrect or expired. Make sure your device clock is accurate and try again.',
             ]);
         }
 
@@ -229,7 +229,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
         $this->reset('data');
         $this->step = 1;
 
-        Notification::make()->title('Penyiapan diatur ulang.')->send();
+        Notification::make()->title('Setup reset')->send();
     }
 
     /** Final submit on screen 2: only finishes once the secret is genuinely saved. */
@@ -244,7 +244,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
         $this->step = 1;
         $this->reset('data');
 
-        Notification::make()->title('Two-factor authentication aktif.')->success()->send();
+        Notification::make()->title('Two-factor authentication enabled')->success()->send();
     }
 
     /** Throw away the un-confirmed secret + codes and mint a fresh set. */
@@ -260,7 +260,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
         $this->step = 1;
         $this->data['otp'] = null;
 
-        Notification::make()->title('QR & kode pemulihan baru dibuat.')->success()->send();
+        Notification::make()->title('New QR code and recovery codes generated')->success()->send();
     }
 
     /** Replace the recovery codes of an already-enabled account (old set dies). */
@@ -282,7 +282,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
             'recoveryCodes' => $codes,
         ]);
 
-        Notification::make()->title('Kode pemulihan baru dibuat. Simpan sekarang.')->success()->send();
+        Notification::make()->title('New recovery codes generated')->body("Save them now — they won't be shown again.")->success()->send();
     }
 
     public function disable(): void
@@ -294,7 +294,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
         // the account password by hammering this endpoint (5 tries / minute).
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             throw ValidationException::withMessages([
-                'disablePassword' => 'Terlalu banyak percobaan. Coba lagi dalam '.RateLimiter::availableIn($throttleKey).' detik.',
+                'disablePassword' => 'Too many attempts. Try again in '.RateLimiter::availableIn($throttleKey).' seconds.',
             ]);
         }
 
@@ -305,7 +305,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
             $this->disablePassword = null; // never retain the wrong password in the snapshot
 
             throw ValidationException::withMessages([
-                'disablePassword' => 'Password Anda salah.',
+                'disablePassword' => 'Your password is incorrect.',
             ]);
         }
 
@@ -320,7 +320,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
         $this->primePendingSecret();
         $this->reset('data', 'disablePassword');
 
-        Notification::make()->title('Two-factor authentication dinonaktifkan.')->warning()->send();
+        Notification::make()->title('Two-factor authentication disabled')->warning()->send();
     }
 
     public function downloadRecoveryCodes(): StreamedResponse
@@ -333,7 +333,7 @@ class TwoFactorSetup extends Component implements HasActions, HasForms
         abort_if(blank($codes), 404);
 
         return response()->streamDownload(
-            fn () => print ("Creative Trees Group — Kode Pemulihan 2FA\n".str_repeat('=', 44)."\n\n".implode("\n", $codes)."\n\nSimpan file ini di tempat aman. Setiap kode hanya bisa dipakai sekali.\n"),
+            fn () => print ("Creative Trees Group — 2FA Recovery Codes\n".str_repeat('=', 44)."\n\n".implode("\n", $codes)."\n\nSave this file somewhere safe. Each code can only be used once.\n"),
             'creative-trees-2fa-recovery-codes.txt',
             ['Content-Type' => 'text/plain'],
         );

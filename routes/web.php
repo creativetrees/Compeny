@@ -32,3 +32,14 @@ Route::get('/img/{path}', [ImageController::class, 'show'])->where('path', '.*')
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
+// TEMP (local only) — visual preview of the error/maintenance/security designs. Remove after review.
+if (app()->environment('local')) {
+    Route::get('/__error-preview/{code}', function (string $code) {
+        $codes = ['401', '403', '404', '419', '429', '500', '503', 'maintenance', 'security'];
+        abort_unless(in_array($code, $codes, true), 404);
+        $status = match ($code) { 'maintenance' => 503, 'security' => 403, default => (int) $code };
+
+        return response()->view("errors.{$code}", [], $status);
+    })->name('error.preview');
+}

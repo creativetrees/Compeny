@@ -23,7 +23,7 @@ class UsersTable
             ->striped()
             ->columns([
                 TextColumn::make('name')
-                    ->label('Nama')
+                    ->label('Name')
                     ->weight(FontWeight::SemiBold)
                     ->icon('heroicon-m-user-circle')
                     ->iconColor('primary')
@@ -35,27 +35,27 @@ class UsersTable
                     ->label('Email')
                     ->icon('heroicon-m-envelope')
                     ->copyable()
-                    ->copyMessage('Email disalin')
+                    ->copyMessage('Email copied')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('roles.name')
-                    ->label('Peran')
+                    ->label('Role(s)')
                     ->badge()
                     ->icon('heroicon-m-shield-check')
                     ->color('success')
                     ->formatStateUsing(fn (string $state): string => Str::headline($state))
-                    ->placeholder('— belum ada peran'),
+                    ->placeholder('— no roles yet'),
 
                 IconColumn::make('email_verified_at')
-                    ->label('Verifikasi')
+                    ->label('Verification')
                     ->boolean()
                     ->trueIcon('heroicon-s-check-badge')
                     ->falseIcon('heroicon-s-x-circle')
                     ->trueColor('success')
                     ->falseColor('gray')
                     ->alignCenter()
-                    ->tooltip(fn ($record): string => $record->email_verified_at ? 'Email terverifikasi' : 'Belum terverifikasi')
+                    ->tooltip(fn ($record): string => $record->email_verified_at ? 'Email verified' : 'Not verified')
                     ->sortable(),
 
                 IconColumn::make('mfa')
@@ -66,11 +66,11 @@ class UsersTable
                     ->trueColor('success')
                     ->falseColor('gray')
                     ->alignCenter()
-                    ->tooltip(fn ($record): string => ((bool) $record->has_email_authentication || filled($record->app_authentication_secret)) ? '2FA aktif' : '2FA nonaktif')
+                    ->tooltip(fn ($record): string => ((bool) $record->has_email_authentication || filled($record->app_authentication_secret)) ? '2FA enabled' : '2FA disabled')
                     ->state(fn ($record): bool => (bool) $record->has_email_authentication || filled($record->app_authentication_secret)),
 
                 TextColumn::make('phone')
-                    ->label('No. HP')
+                    ->label('Phone')
                     ->icon('heroicon-m-phone')
                     ->searchable()
                     ->placeholder('—')
@@ -82,7 +82,7 @@ class UsersTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
-                    ->label('Bergabung')
+                    ->label('Joined')
                     ->dateTime('d M Y')
                     ->color('gray')
                     ->sortable()
@@ -90,15 +90,15 @@ class UsersTable
             ])
             ->filters([
                 SelectFilter::make('roles')
-                    ->label('Peran')
+                    ->label('Role(s)')
                     ->relationship('roles', 'name')
                     ->multiple()
                     ->preload(),
                 TernaryFilter::make('email_verified_at')
-                    ->label('Verifikasi email')
-                    ->placeholder('Semua')
-                    ->trueLabel('Terverifikasi')
-                    ->falseLabel('Belum terverifikasi')
+                    ->label('Email verification')
+                    ->placeholder('All')
+                    ->trueLabel('Verified')
+                    ->falseLabel('Not verified')
                     ->nullable(),
             ])
             ->recordActions([
@@ -112,7 +112,7 @@ class UsersTable
                 ]),
             ])
             ->emptyStateIcon('heroicon-o-users')
-            ->emptyStateHeading('Belum ada pengguna')
-            ->emptyStateDescription('Tambahkan admin atau anggota tim untuk mengakses panel ini.');
+            ->emptyStateHeading('No users yet')
+            ->emptyStateDescription('Add an admin or team member to access this panel.');
     }
 }
