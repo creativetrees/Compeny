@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Testimonials\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -14,49 +15,36 @@ class TestimonialForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema
-            ->components([
-                Tabs::make('Testimonial')
-                    ->columnSpanFull()
-                    ->persistTabInQueryString()
-                    ->tabs([
-                        Tab::make('Detail')
-                            ->icon('heroicon-o-user-circle')
-                            ->schema([
-                                Select::make('project_id')
-                                    ->relationship('project', 'title'),
-                                TextInput::make('author')
-                                    ->required()
-                                    ->prefixIcon('heroicon-m-identification'),
-                                TextInput::make('role'),
-                                TextInput::make('company')
-                                    ->prefixIcon('heroicon-m-building-office-2'),
-                            ]),
-
-                        Tab::make('Konten')
-                            ->icon('heroicon-o-chat-bubble-left-right')
-                            ->schema([
-                                Textarea::make('quote')
-                                    ->required()
-                                    ->columnSpanFull(),
-                                TextInput::make('avatar_path')
-                                    ->prefixIcon('heroicon-m-photo'),
-                            ]),
-
-                        Tab::make('Pengaturan')
-                            ->icon('heroicon-o-cog-6-tooth')
-                            ->schema([
-                                TextInput::make('rating')
-                                    ->numeric()
-                                    ->prefixIcon('heroicon-m-star'),
-                                Toggle::make('is_featured')
-                                    ->required(),
-                                TextInput::make('sort')
-                                    ->required()
-                                    ->numeric()
-                                    ->default(0),
-                            ]),
-                    ]),
-            ]);
+        return $schema->components([
+            Tabs::make('Testimonial')->columnSpanFull()->persistTabInQueryString()->tabs([
+                Tab::make('Detail')->icon('heroicon-o-user-circle')->columns(2)->schema([
+                    Select::make('project_id')->label('Project')->relationship('project', 'title')
+                        ->searchable()->preload()->prefixIcon('heroicon-m-rectangle-stack')
+                        ->placeholder('Link to a project')
+                        ->helperText('Optional — the project this testimonial relates to.'),
+                    TextInput::make('author')->required()->prefixIcon('heroicon-m-user')
+                        ->placeholder('Jane Doe')->helperText('Name of the person quoted.'),
+                    TextInput::make('role')->prefixIcon('heroicon-m-briefcase')
+                        ->placeholder('Head of Product')->helperText('Their job title.'),
+                    TextInput::make('company')->prefixIcon('heroicon-m-building-office-2')
+                        ->placeholder('Acme Inc.')->helperText('Their organisation.'),
+                ]),
+                Tab::make('Content')->icon('heroicon-o-chat-bubble-left-right')->columns(2)->schema([
+                    Textarea::make('quote')->required()->rows(5)->columnSpanFull()
+                        ->placeholder('Working with the team was…')
+                        ->helperText('The testimonial text shown on the site.'),
+                    TextInput::make('rating')->numeric()->minValue(1)->maxValue(5)
+                        ->prefixIcon('heroicon-m-star')->placeholder('5')->helperText('1–5 stars.'),
+                ]),
+                Tab::make('Settings')->icon('heroicon-o-cog-6-tooth')->columns(2)->schema([
+                    FileUpload::make('avatar_path')->label('Avatar')
+                        ->avatar()->imageEditor()->disk('public')->directory('site/testimonials')->visibility('public')
+                        ->maxSize(2048)->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                        ->helperText('Author photo. PNG/JPG/WEBP, max 2 MB.'),
+                    Toggle::make('is_featured')->label('Featured')->inline(false)
+                        ->helperText('Show this testimonial in featured slots on the site.'),
+                ]),
+            ]),
+        ]);
     }
 }

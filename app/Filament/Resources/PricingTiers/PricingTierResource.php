@@ -5,7 +5,9 @@ namespace App\Filament\Resources\PricingTiers;
 use App\Filament\Resources\PricingTiers\Pages\CreatePricingTier;
 use App\Filament\Resources\PricingTiers\Pages\EditPricingTier;
 use App\Filament\Resources\PricingTiers\Pages\ListPricingTiers;
+use App\Filament\Resources\PricingTiers\Pages\ViewPricingTier;
 use App\Filament\Resources\PricingTiers\Schemas\PricingTierForm;
+use App\Filament\Resources\PricingTiers\Schemas\PricingTierInfolist;
 use App\Filament\Resources\PricingTiers\Tables\PricingTiersTable;
 use App\Models\PricingTier;
 use BackedEnum;
@@ -26,9 +28,16 @@ class PricingTierResource extends Resource
 
     protected static ?string $navigationParentItem = 'Pricing';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Schema $schema): Schema
     {
         return PricingTierForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return PricingTierInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -48,6 +57,7 @@ class PricingTierResource extends Resource
         return [
             'index' => ListPricingTiers::route('/'),
             'create' => CreatePricingTier::route('/create'),
+            'view' => ViewPricingTier::route('/{record}'),
             'edit' => EditPricingTier::route('/{record}/edit'),
         ];
     }

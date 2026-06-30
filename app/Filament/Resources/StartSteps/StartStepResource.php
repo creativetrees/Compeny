@@ -5,7 +5,9 @@ namespace App\Filament\Resources\StartSteps;
 use App\Filament\Resources\StartSteps\Pages\CreateStartStep;
 use App\Filament\Resources\StartSteps\Pages\EditStartStep;
 use App\Filament\Resources\StartSteps\Pages\ListStartSteps;
+use App\Filament\Resources\StartSteps\Pages\ViewStartStep;
 use App\Filament\Resources\StartSteps\Schemas\StartStepForm;
+use App\Filament\Resources\StartSteps\Schemas\StartStepInfolist;
 use App\Filament\Resources\StartSteps\Tables\StartStepsTable;
 use App\Models\StartStep;
 use BackedEnum;
@@ -24,9 +26,16 @@ class StartStepResource extends Resource
 
     protected static ?int $navigationSort = 15;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     public static function form(Schema $schema): Schema
     {
         return StartStepForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return StartStepInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -46,6 +55,7 @@ class StartStepResource extends Resource
         return [
             'index' => ListStartSteps::route('/'),
             'create' => CreateStartStep::route('/create'),
+            'view' => ViewStartStep::route('/{record}'),
             'edit' => EditStartStep::route('/{record}/edit'),
         ];
     }

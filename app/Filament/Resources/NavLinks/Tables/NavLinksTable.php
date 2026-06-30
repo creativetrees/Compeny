@@ -2,10 +2,14 @@
 
 namespace App\Filament\Resources\NavLinks\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class NavLinksTable
@@ -13,7 +17,8 @@ class NavLinksTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->defaultSort('location')
+            ->defaultSort('sort')
+            ->reorderable('sort')
             ->columns([
                 TextColumn::make('location')
                     ->badge()
@@ -25,7 +30,8 @@ class NavLinksTable
                     ->searchable(),
                 TextColumn::make('sort')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -36,15 +42,29 @@ class NavLinksTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('location')
+                    ->options([
+                        'header' => 'Header',
+                        'footer_studio' => 'Footer · Studio',
+                        'footer_company' => 'Footer · Company',
+                    ]),
             ])
             ->recordActions([
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateIcon('heroicon-o-link')
+            ->emptyStateHeading('No navigation links yet')
+            ->emptyStateDescription('Add links to show in the header and footer navigation.')
+            ->emptyStateActions([
+                CreateAction::make(),
             ]);
     }
 }

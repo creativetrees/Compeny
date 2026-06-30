@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\PricingTiers\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class PricingTiersTable
@@ -14,21 +18,25 @@ class PricingTiersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('sort')
+            ->reorderable('sort')
             ->columns([
                 TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->weight('bold'),
                 TextColumn::make('term')
-                    ->searchable(),
+                    ->searchable()
+                    ->color('gray'),
                 TextColumn::make('price')
                     ->icon('heroicon-m-banknotes')
                     ->searchable(),
                 IconColumn::make('is_featured')
-                    ->boolean()
-                    ->trueIcon('heroicon-s-star')
-                    ->falseIcon('heroicon-s-x-mark'),
+                    ->label('Featured')
+                    ->boolean(),
                 TextColumn::make('sort')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -39,15 +47,28 @@ class PricingTiersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_featured')
+                    ->label('Featured')
+                    ->placeholder('All')
+                    ->trueLabel('Featured only')
+                    ->falseLabel('Not featured'),
             ])
             ->recordActions([
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateIcon('heroicon-o-banknotes')
+            ->emptyStateHeading('No pricing tiers yet')
+            ->emptyStateDescription('Add engagement tiers to show on the pricing page.')
+            ->emptyStateActions([
+                CreateAction::make(),
             ]);
     }
 }

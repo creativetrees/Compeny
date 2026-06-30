@@ -2,11 +2,15 @@
 
 namespace App\Filament\Resources\Services\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class ServicesTable
@@ -14,22 +18,30 @@ class ServicesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('sort')
+            ->reorderable('sort')
             ->columns([
                 TextColumn::make('title')
                     ->searchable(),
                 TextColumn::make('slug')
-                    ->searchable(),
+                    ->color('gray')
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('icon')
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('summary')
-                    ->searchable(),
+                    ->limit(50)
+                    ->color('gray')
+                    ->searchable()
+                    ->toggleable(),
                 IconColumn::make('is_featured')
-                    ->boolean()
-                    ->trueIcon('heroicon-s-star')
-                    ->falseIcon('heroicon-s-x-mark'),
+                    ->label('Featured')
+                    ->boolean(),
                 TextColumn::make('sort')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -40,15 +52,28 @@ class ServicesTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                TernaryFilter::make('is_featured')
+                    ->label('Featured')
+                    ->placeholder('All')
+                    ->trueLabel('Featured only')
+                    ->falseLabel('Not featured'),
             ])
             ->recordActions([
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
+            ])
+            ->emptyStateIcon('heroicon-o-swatch')
+            ->emptyStateHeading('No services yet')
+            ->emptyStateDescription('Add the disciplines your studio offers.')
+            ->emptyStateActions([
+                CreateAction::make(),
             ]);
     }
 }

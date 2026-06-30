@@ -5,7 +5,9 @@ namespace App\Filament\Resources\PricingIncludes;
 use App\Filament\Resources\PricingIncludes\Pages\CreatePricingInclude;
 use App\Filament\Resources\PricingIncludes\Pages\EditPricingInclude;
 use App\Filament\Resources\PricingIncludes\Pages\ListPricingIncludes;
+use App\Filament\Resources\PricingIncludes\Pages\ViewPricingInclude;
 use App\Filament\Resources\PricingIncludes\Schemas\PricingIncludeForm;
+use App\Filament\Resources\PricingIncludes\Schemas\PricingIncludeInfolist;
 use App\Filament\Resources\PricingIncludes\Tables\PricingIncludesTable;
 use App\Models\PricingInclude;
 use BackedEnum;
@@ -26,9 +28,16 @@ class PricingIncludeResource extends Resource
 
     protected static ?string $navigationParentItem = 'Pricing';
 
+    protected static ?string $recordTitleAttribute = 'label';
+
     public static function form(Schema $schema): Schema
     {
         return PricingIncludeForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return PricingIncludeInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -48,6 +57,7 @@ class PricingIncludeResource extends Resource
         return [
             'index' => ListPricingIncludes::route('/'),
             'create' => CreatePricingInclude::route('/create'),
+            'view' => ViewPricingInclude::route('/{record}'),
             'edit' => EditPricingInclude::route('/{record}/edit'),
         ];
     }

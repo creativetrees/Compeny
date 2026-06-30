@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Testimonials;
 use App\Filament\Resources\Testimonials\Pages\CreateTestimonial;
 use App\Filament\Resources\Testimonials\Pages\EditTestimonial;
 use App\Filament\Resources\Testimonials\Pages\ListTestimonials;
+use App\Filament\Resources\Testimonials\Pages\ViewTestimonial;
 use App\Filament\Resources\Testimonials\Schemas\TestimonialForm;
+use App\Filament\Resources\Testimonials\Schemas\TestimonialInfolist;
 use App\Filament\Resources\Testimonials\Tables\TestimonialsTable;
 use App\Models\Testimonial;
 use BackedEnum;
@@ -26,9 +28,16 @@ class TestimonialResource extends Resource
 
     protected static ?string $navigationParentItem = 'Showcase';
 
+    protected static ?string $recordTitleAttribute = 'author';
+
     public static function form(Schema $schema): Schema
     {
         return TestimonialForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return TestimonialInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -48,6 +57,7 @@ class TestimonialResource extends Resource
         return [
             'index' => ListTestimonials::route('/'),
             'create' => CreateTestimonial::route('/create'),
+            'view' => ViewTestimonial::route('/{record}'),
             'edit' => EditTestimonial::route('/{record}/edit'),
         ];
     }

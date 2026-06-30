@@ -13,28 +13,33 @@ class NavLinkForm
     {
         return $schema
             ->components([
-                Section::make('Tautan navigasi')
-                    ->icon('heroicon-o-link')
+                Section::make('Navigation link')
+                    ->description('A single link shown in the header or footer navigation.')
+                    ->icon('heroicon-m-link')
                     ->columns(2)
                     ->schema([
                         Select::make('location')
                             ->required()
+                            ->native(false)
+                            ->default('header')
+                            ->prefixIcon('heroicon-m-map-pin')
                             ->options([
                                 'header' => 'Header',
-                                'footer_studio' => 'Footer — Studio',
-                                'footer_company' => 'Footer — Company',
+                                'footer_studio' => 'Footer · Studio',
+                                'footer_company' => 'Footer · Company',
                             ])
-                            ->default('header'),
+                            ->helperText('Where this link appears.'),
                         TextInput::make('label')
                             ->required()
-                            ->prefixIcon('heroicon-m-tag'),
+                            ->prefixIcon('heroicon-m-bookmark')
+                            ->placeholder('Work')
+                            ->helperText('The text shown for this link.'),
                         TextInput::make('url')
                             ->required()
-                            ->default('/')
-                            ->prefixIcon('heroicon-m-link'),
-                        TextInput::make('sort')
-                            ->numeric()
-                            ->default(0),
+                            ->prefixIcon('heroicon-m-link')
+                            ->placeholder('/work')
+                            ->helperText('Path or full URL.')
+                            ->columnSpanFull(),
                     ]),
             ]);
     }

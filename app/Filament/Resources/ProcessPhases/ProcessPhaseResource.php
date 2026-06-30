@@ -5,7 +5,9 @@ namespace App\Filament\Resources\ProcessPhases;
 use App\Filament\Resources\ProcessPhases\Pages\CreateProcessPhase;
 use App\Filament\Resources\ProcessPhases\Pages\EditProcessPhase;
 use App\Filament\Resources\ProcessPhases\Pages\ListProcessPhases;
+use App\Filament\Resources\ProcessPhases\Pages\ViewProcessPhase;
 use App\Filament\Resources\ProcessPhases\Schemas\ProcessPhaseForm;
+use App\Filament\Resources\ProcessPhases\Schemas\ProcessPhaseInfolist;
 use App\Filament\Resources\ProcessPhases\Tables\ProcessPhasesTable;
 use App\Models\ProcessPhase;
 use BackedEnum;
@@ -24,9 +26,16 @@ class ProcessPhaseResource extends Resource
 
     protected static ?int $navigationSort = 12;
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     public static function form(Schema $schema): Schema
     {
         return ProcessPhaseForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return ProcessPhaseInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -46,6 +55,7 @@ class ProcessPhaseResource extends Resource
         return [
             'index' => ListProcessPhases::route('/'),
             'create' => CreateProcessPhase::route('/create'),
+            'view' => ViewProcessPhase::route('/{record}'),
             'edit' => EditProcessPhase::route('/{record}/edit'),
         ];
     }

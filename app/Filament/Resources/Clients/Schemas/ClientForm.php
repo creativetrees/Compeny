@@ -14,14 +14,17 @@ class ClientForm
     {
         return $schema
             ->components([
-                Section::make('Klien')
+                Section::make('Client')
+                    ->description('Logos shown in the "trusted by" strip.')
                     ->icon('heroicon-o-building-office-2')
                     ->columns(2)
                     ->schema([
                         TextInput::make('name')
                             ->required()
                             ->maxLength(120)
-                            ->prefixIcon('heroicon-m-identification'),
+                            ->prefixIcon('heroicon-m-identification')
+                            ->placeholder('Acme Inc.')
+                            ->helperText('The client or brand name.'),
                         TextInput::make('website_url')
                             ->label('Website / link')
                             ->url()
@@ -39,11 +42,8 @@ class ClientForm
                             ->helperText('Optional — leave empty to show the name as text only.'),
                         Toggle::make('is_featured')
                             ->label('Show in the marquee')
-                            ->default(true),
-                        TextInput::make('sort')
-                            ->numeric()
-                            ->default(0)
-                            ->helperText('Lower numbers appear first.'),
+                            ->default(true)
+                            ->helperText('Featured logos appear in the "trusted by" strip.'),
                     ]),
             ]);
     }

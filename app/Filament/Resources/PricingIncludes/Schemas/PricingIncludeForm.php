@@ -13,19 +13,19 @@ class PricingIncludeForm
     {
         return $schema
             ->components([
-                Section::make('Termasuk')
-                    ->icon('heroicon-o-check-circle')
+                Section::make('Pricing include')
+                    ->description('An item in the "what is always included" list on the pricing page.')
+                    ->icon('heroicon-m-check-circle')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('label')
-                            ->required()
-                            ->prefixIcon('heroicon-m-tag'),
-                        Textarea::make('description')
+                        TextInput::make('label')->required()
+                            ->prefixIcon('heroicon-m-check-circle')
+                            ->placeholder('Dedicated senior team')
+                            ->helperText('Short name of what is included.')
                             ->columnSpanFull(),
-                        TextInput::make('sort')
-                            ->required()
-                            ->numeric()
-                            ->default(0),
+                        Textarea::make('description')->rows(4)->columnSpanFull()
+                            ->placeholder('No account layers — the people who scope your work also do it…')
+                            ->helperText('Optional detail explaining the inclusion.'),
                     ]),
             ]);
     }

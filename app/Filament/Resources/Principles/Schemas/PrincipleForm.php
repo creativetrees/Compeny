@@ -13,17 +13,19 @@ class PrincipleForm
     {
         return $schema
             ->components([
-                Section::make('Prinsip')
-                    ->icon('heroicon-o-light-bulb')
+                Section::make('Principle')
+                    ->description('An operating principle shown on the process page.')
+                    ->icon('heroicon-m-light-bulb')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('title')
-                            ->required()
-                            ->prefixIcon('heroicon-m-identification'),
-                        Textarea::make('description'),
-                        TextInput::make('sort')
-                            ->numeric()
-                            ->default(0),
+                        TextInput::make('title')->required()
+                            ->prefixIcon('heroicon-m-light-bulb')
+                            ->placeholder('Ship to learn')
+                            ->helperText('Short, memorable name for the principle.')
+                            ->columnSpanFull(),
+                        Textarea::make('description')->rows(4)->columnSpanFull()
+                            ->placeholder('We release early and let real usage guide the next move…')
+                            ->helperText('Explain what this principle means in practice.'),
                     ]),
             ]);
     }

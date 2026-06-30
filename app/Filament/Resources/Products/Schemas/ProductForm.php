@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -22,56 +24,109 @@ class ProductForm
                     ->tabs([
                         Tab::make('Detail')
                             ->icon('heroicon-o-cube')
+                            ->columns(2)
                             ->schema([
                                 Select::make('category_id')
-                                    ->relationship('category', 'name'),
+                                    ->label('Category')
+                                    ->relationship('category', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->prefixIcon('heroicon-m-rectangle-stack')
+                                    ->placeholder('Select a category')
+                                    ->helperText('Groups this product on the public catalogue.'),
                                 TextInput::make('title')
                                     ->required()
-                                    ->prefixIcon('heroicon-m-identification'),
+                                    ->prefixIcon('heroicon-m-cube')
+                                    ->placeholder('Brand Identity Kit')
+                                    ->helperText('Shown as the heading on the product card.'),
                                 TextInput::make('slug')
                                     ->required()
-                                    ->prefixIcon('heroicon-m-hashtag'),
+                                    ->prefixIcon('heroicon-m-hashtag')
+                                    ->placeholder('brand-identity-kit')
+                                    ->helperText('URL segment — lowercase, no spaces.'),
                                 TextInput::make('type')
-                                    ->prefixIcon('heroicon-m-tag'),
-                                TextInput::make('price_label')
-                                    ->prefixIcon('heroicon-m-banknotes'),
+                                    ->prefixIcon('heroicon-m-tag')
+                                    ->placeholder('Package')
+                                    ->helperText('Optional grouping label, e.g. Package or Add-on.'),
+                                Select::make('status')
+                                    ->required()
+                                    ->native(false)
+                                    ->default('published')
+                                    ->options([
+                                        'published' => 'Published',
+                                        'draft' => 'Draft',
+                                    ])
+                                    ->prefixIcon('heroicon-m-flag')
+                                    ->placeholder('Select a status')
+                                    ->helperText('Only published products appear on the site.'),
                             ]),
 
-                        Tab::make('Konten')
+                        Tab::make('Content')
                             ->icon('heroicon-o-document-text')
+                            ->columns(2)
                             ->schema([
-                                TextInput::make('summary')
-                                    ->required(),
+                                Textarea::make('summary')
+                                    ->required()
+                                    ->rows(3)
+                                    ->columnSpanFull()
+                                    ->placeholder('A short one-line pitch for this product.')
+                                    ->helperText('Brief teaser shown on the product card.'),
                                 Textarea::make('description')
-                                    ->columnSpanFull(),
-                                TextInput::make('features'),
+                                    ->rows(6)
+                                    ->columnSpanFull()
+                                    ->placeholder('Describe what is included and who it is for…')
+                                    ->helperText('Full description shown on the product page.'),
+                                TagsInput::make('features')
+                                    ->columnSpanFull()
+                                    ->placeholder('Add a feature')
+                                    ->helperText('Press Enter after each item.'),
+                                TextInput::make('price_label')
+                                    ->prefixIcon('heroicon-m-banknotes')
+                                    ->placeholder('From $2,500')
+                                    ->helperText('Human-friendly price text shown to visitors.'),
                             ]),
 
                         Tab::make('Media')
                             ->icon('heroicon-o-photo')
+                            ->columns(2)
                             ->schema([
-                                TextInput::make('cover_path')
-                                    ->prefixIcon('heroicon-m-photo'),
+                                FileUpload::make('cover_path')
+                                    ->label('Cover image')
+                                    ->image()
+                                    ->imageEditor()
+                                    ->disk('public')
+                                    ->directory('site/products')
+                                    ->visibility('public')
+                                    ->maxSize(2048)
+                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                                    ->columnSpanFull()
+                                    ->helperText('Main image. PNG/JPG/WEBP, max 2 MB.'),
                             ]),
 
-                        Tab::make('Pengaturan')
-                            ->icon('heroicon-o-cog-6-tooth')
+                        Tab::make('Links')
+                            ->icon('heroicon-o-link')
+                            ->columns(2)
                             ->schema([
                                 TextInput::make('cta_label')
-                                    ->prefixIcon('heroicon-m-cursor-arrow-rays'),
+                                    ->label('Call-to-action label')
+                                    ->prefixIcon('heroicon-m-cursor-arrow-rays')
+                                    ->placeholder('Get started')
+                                    ->helperText('Text shown on the action button.'),
                                 TextInput::make('cta_url')
+                                    ->label('Call-to-action URL')
                                     ->url()
-                                    ->prefixIcon('heroicon-m-link'),
+                                    ->prefixIcon('heroicon-m-link')
+                                    ->placeholder('https://example.com/contact')
+                                    ->helperText('Where the action button links to.'),
+                            ]),
+
+                        Tab::make('Settings')
+                            ->icon('heroicon-o-cog-6-tooth')
+                            ->columns(2)
+                            ->schema([
                                 Toggle::make('is_featured')
-                                    ->required(),
-                                TextInput::make('status')
-                                    ->required()
-                                    ->default('published')
-                                    ->prefixIcon('heroicon-m-flag'),
-                                TextInput::make('sort')
-                                    ->required()
-                                    ->numeric()
-                                    ->default(0),
+                                    ->label('Featured')
+                                    ->helperText('Highlight this product in featured sections.'),
                             ]),
                     ]),
             ]);

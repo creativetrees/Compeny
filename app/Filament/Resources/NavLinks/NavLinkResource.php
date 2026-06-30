@@ -5,7 +5,9 @@ namespace App\Filament\Resources\NavLinks;
 use App\Filament\Resources\NavLinks\Pages\CreateNavLink;
 use App\Filament\Resources\NavLinks\Pages\EditNavLink;
 use App\Filament\Resources\NavLinks\Pages\ListNavLinks;
+use App\Filament\Resources\NavLinks\Pages\ViewNavLink;
 use App\Filament\Resources\NavLinks\Schemas\NavLinkForm;
+use App\Filament\Resources\NavLinks\Schemas\NavLinkInfolist;
 use App\Filament\Resources\NavLinks\Tables\NavLinksTable;
 use App\Models\NavLink;
 use BackedEnum;
@@ -24,9 +26,16 @@ class NavLinkResource extends Resource
 
     protected static ?int $navigationSort = 16;
 
+    protected static ?string $recordTitleAttribute = 'label';
+
     public static function form(Schema $schema): Schema
     {
         return NavLinkForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return NavLinkInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -46,6 +55,7 @@ class NavLinkResource extends Resource
         return [
             'index' => ListNavLinks::route('/'),
             'create' => CreateNavLink::route('/create'),
+            'view' => ViewNavLink::route('/{record}'),
             'edit' => EditNavLink::route('/{record}/edit'),
         ];
     }

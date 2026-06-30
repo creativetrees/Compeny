@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Principles;
 use App\Filament\Resources\Principles\Pages\CreatePrinciple;
 use App\Filament\Resources\Principles\Pages\EditPrinciple;
 use App\Filament\Resources\Principles\Pages\ListPrinciples;
+use App\Filament\Resources\Principles\Pages\ViewPrinciple;
 use App\Filament\Resources\Principles\Schemas\PrincipleForm;
+use App\Filament\Resources\Principles\Schemas\PrincipleInfolist;
 use App\Filament\Resources\Principles\Tables\PrinciplesTable;
 use App\Models\Principle;
 use BackedEnum;
@@ -24,9 +26,16 @@ class PrincipleResource extends Resource
 
     protected static ?int $navigationSort = 13;
 
+    protected static ?string $recordTitleAttribute = 'title';
+
     public static function form(Schema $schema): Schema
     {
         return PrincipleForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return PrincipleInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -46,6 +55,7 @@ class PrincipleResource extends Resource
         return [
             'index' => ListPrinciples::route('/'),
             'create' => CreatePrinciple::route('/create'),
+            'view' => ViewPrinciple::route('/{record}'),
             'edit' => EditPrinciple::route('/{record}/edit'),
         ];
     }
