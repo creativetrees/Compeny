@@ -155,11 +155,13 @@ class DatabaseSeeder extends Seeder
                     'disciplines_eyebrow' => 'The disciplines',
                     'disciplines_label' => 'Pick one — or the full stack',
                     'disciplines_intro' => 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.',
+                    'empty_message' => 'Capabilities are being updated. Check back shortly.',
                 ],
                 'work' => [
                     'hero_eyebrow' => 'Selected work',
                     'hero_title' => "Proof, not\npromises.",
                     'hero_intro' => "A selection of products we've designed and engineered — for founders, teams, and the people who use what they ship.",
+                    'empty_message' => 'Work is being published — check back soon.',
                 ],
                 'products' => [
                     'hero_eyebrow' => 'Products',
@@ -200,6 +202,7 @@ class DatabaseSeeder extends Seeder
                     'hero_intro' => 'No account layers, no handoffs. Creative Trees is a small, senior team of strategists, designers, and engineers who embed directly with yours — and stay accountable from the first sketch to production traffic.',
                     'studio_eyebrow' => 'The studio',
                     'studio_intro' => "The senior people who'll actually do your work — no account layers, no handoffs.",
+                    'empty_message' => 'The studio roster is being assembled. In the meantime, the work speaks for itself.',
                 ],
                 'about' => [
                     'hero_eyebrow' => 'About',

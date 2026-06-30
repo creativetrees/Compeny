@@ -79,7 +79,7 @@
                 <div class="col-span-full flex flex-col items-center border border-line bg-panel px-6 py-20 text-center">
                     <span class="label-mono text-faint">00 / Roster</span>
                     <p class="measure mt-4 text-[1rem] text-muted">
-                        The studio roster is being assembled. In the meantime, the work speaks for itself.
+                        {{ content('team.empty_message', 'The studio roster is being assembled. In the meantime, the work speaks for itself.') }}
                     </p>
                     <div class="mt-7">
                         <x-ui.button href="/work" variant="ghost" :magnetic="false">View work</x-ui.button>

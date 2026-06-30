@@ -54,7 +54,7 @@
                 </div>
             @empty
                 <p class="col-span-full border border-line py-16 text-center font-mono text-sm uppercase tracking-widest text-faint">
-                    Work is being published — check back soon.
+                    {{ content('work.empty_message', 'Work is being published — check back soon.') }}
                 </p>
             @endforelse
         </div>

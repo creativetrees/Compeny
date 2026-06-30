@@ -58,7 +58,7 @@
                     @endif
                 </div>
             @empty
-                <p class="border-b border-r border-line p-8 font-mono text-sm uppercase tracking-wide text-faint">Capabilities are being updated. Check back shortly.</p>
+                <p class="border-b border-r border-line p-8 font-mono text-sm uppercase tracking-wide text-faint">{{ content('services.empty_message', 'Capabilities are being updated. Check back shortly.') }}</p>
             @endforelse
         </div>
     </section>

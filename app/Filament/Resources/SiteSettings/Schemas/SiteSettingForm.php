@@ -208,6 +208,7 @@ class SiteSettingForm
                         self::t('page_content.work.hero_eyebrow', 'Eyebrow', 'Selected work'),
                         self::t('page_content.work.hero_title', 'Judul', 'Proof, not promises.'),
                         self::ta('page_content.work.hero_intro', 'Intro'),
+                        self::ta('page_content.work.empty_message', 'Pesan saat belum ada proyek', 'Work is being published — check back soon.'),
                     ]),
             ]);
     }
@@ -247,6 +248,7 @@ class SiteSettingForm
                     self::t('page_content.services.disciplines_eyebrow', 'Eyebrow', 'The disciplines'),
                     self::t('page_content.services.disciplines_label', 'Label', 'Pick one — or the full stack'),
                     self::ta('page_content.services.disciplines_intro', 'Deskripsi', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.'),
+                    self::ta('page_content.services.empty_message', 'Pesan saat belum ada layanan', 'Capabilities are being updated. Check back shortly.'),
                 ]),
             ]);
     }
@@ -314,6 +316,7 @@ class SiteSettingForm
                     self::ta('page_content.team.hero_intro', 'Intro'),
                     self::t('page_content.team.studio_eyebrow', 'Studio eyebrow', 'The studio'),
                     self::ta('page_content.team.studio_intro', 'Studio deskripsi', "The senior people who'll actually do your work — no account layers, no handoffs."),
+                    self::ta('page_content.team.empty_message', 'Pesan saat belum ada anggota tim', 'The studio roster is being assembled. In the meantime, the work speaks for itself.'),
                 ]),
             ]);
     }
