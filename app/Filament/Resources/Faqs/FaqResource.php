@@ -5,7 +5,9 @@ namespace App\Filament\Resources\Faqs;
 use App\Filament\Resources\Faqs\Pages\CreateFaq;
 use App\Filament\Resources\Faqs\Pages\EditFaq;
 use App\Filament\Resources\Faqs\Pages\ListFaqs;
+use App\Filament\Resources\Faqs\Pages\ViewFaq;
 use App\Filament\Resources\Faqs\Schemas\FaqForm;
+use App\Filament\Resources\Faqs\Schemas\FaqInfolist;
 use App\Filament\Resources\Faqs\Tables\FaqsTable;
 use App\Models\Faq;
 use BackedEnum;
@@ -24,9 +26,16 @@ class FaqResource extends Resource
 
     protected static ?int $navigationSort = 14;
 
+    protected static ?string $recordTitleAttribute = 'question';
+
     public static function form(Schema $schema): Schema
     {
         return FaqForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return FaqInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
@@ -46,6 +55,7 @@ class FaqResource extends Resource
         return [
             'index' => ListFaqs::route('/'),
             'create' => CreateFaq::route('/create'),
+            'view' => ViewFaq::route('/{record}'),
             'edit' => EditFaq::route('/{record}/edit'),
         ];
     }
