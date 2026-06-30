@@ -16,7 +16,7 @@
             </h1>
 
             <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.3">
-                {{ content('products.hero_intro', "Productized building blocks — SaaS foundations, design-system templates, and embedded services — each engineered to the same standard as our custom work. Pick a starting point, tell us where you're headed, and we tailor it to your roadmap.") }}
+                {!! content_rich('products.hero_intro', "Productized building blocks — SaaS foundations, design-system templates, and embedded services — each engineered to the same standard as our custom work. Pick a starting point, tell us where you're headed, and we tailor it to your roadmap.") !!}
             </p>
         </div>
     </section>

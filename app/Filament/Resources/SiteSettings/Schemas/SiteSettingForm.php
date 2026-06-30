@@ -57,6 +57,12 @@ class SiteSettingForm
         return Textarea::make($path)->label($label)->placeholder($placeholder)->rows(3)->columnSpanFull();
     }
 
+    /** Rich editor (long-form description). */
+    private static function rich(string $path, string $label): RichEditor
+    {
+        return RichEditor::make($path)->label($label)->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull();
+    }
+
     /** Page picker — constrains a URL field to a known SitePage (no typos, no unsafe schemes). */
     private static function pageSelect(string $path, string $label = 'Halaman tujuan'): Select
     {
@@ -209,7 +215,7 @@ class SiteSettingForm
                     ->schema([
                         self::t('page_content.work.hero_eyebrow', 'Eyebrow', 'Selected work'),
                         self::t('page_content.work.hero_title', 'Judul', 'Proof, not promises.'),
-                        self::ta('page_content.work.hero_intro', 'Intro'),
+                        self::rich('page_content.work.hero_intro', 'Intro'),
                         self::ta('page_content.work.empty_message', 'Pesan saat belum ada proyek', 'Work is being published — check back soon.'),
                     ]),
                 Section::make('Detail proyek — label & tombol')
@@ -245,7 +251,7 @@ class SiteSettingForm
                         self::t('page_content.products.hero_eyebrow', 'Eyebrow', 'Products'),
                         self::t('page_content.products.hero_line1', 'Judul baris 1', 'Starters that ship'),
                         self::t('page_content.products.hero_line2', 'Judul baris 2', 'in days, not months.'),
-                        self::ta('page_content.products.hero_intro', 'Intro'),
+                        self::rich('page_content.products.hero_intro', 'Intro'),
                         self::t('page_content.products.empty_eyebrow', 'Empty-state eyebrow', 'Catalog in progress'),
                         self::ta('page_content.products.empty_message', 'Empty-state pesan'),
                         self::t('page_content.products.leadtime_label', 'Label lead-time', 'Lead-time · 1–3 weeks'),
@@ -264,7 +270,7 @@ class SiteSettingForm
                     self::t('page_content.services.hero_eyebrow', 'Eyebrow', 'Services'),
                     self::t('page_content.services.hero_line1', 'Judul baris 1', 'Capabilities'),
                     self::t('page_content.services.hero_line2', 'Judul baris 2', 'that compound.'),
-                    self::ta('page_content.services.hero_intro', 'Intro'),
+                    self::rich('page_content.services.hero_intro', 'Intro'),
                 ]),
                 Section::make('Disciplines')->columns(2)->schema([
                     self::t('page_content.services.disciplines_eyebrow', 'Eyebrow', 'The disciplines'),
@@ -285,7 +291,7 @@ class SiteSettingForm
                 Section::make('Hero')->columns(2)->schema([
                     self::t('page_content.pricing.hero_eyebrow', 'Eyebrow', 'Pricing'),
                     self::ta('page_content.pricing.hero_title', 'Judul', "Engagements,\npriced honestly."),
-                    self::ta('page_content.pricing.hero_intro', 'Intro'),
+                    self::rich('page_content.pricing.hero_intro', 'Intro'),
                 ]),
                 Section::make('Tiers')->columns(2)->schema([
                     self::t('page_content.pricing.tiers_eyebrow', 'Eyebrow', 'Engagement tiers'),
@@ -315,7 +321,7 @@ class SiteSettingForm
                 Section::make('Hero')->columns(2)->schema([
                     self::t('page_content.process.hero_eyebrow', 'Eyebrow', 'How we work'),
                     self::t('page_content.process.hero_title', 'Judul', 'A process built to de-risk the work.'),
-                    self::ta('page_content.process.hero_intro', 'Intro'),
+                    self::rich('page_content.process.hero_intro', 'Intro'),
                 ]),
                 Section::make('Sequence & principles')->columns(2)->schema([
                     self::t('page_content.process.sequence_eyebrow', 'Sequence eyebrow', 'The sequence'),
@@ -339,7 +345,7 @@ class SiteSettingForm
                 Section::make('Hero')->columns(2)->schema([
                     self::t('page_content.team.hero_eyebrow', 'Eyebrow', 'Team'),
                     self::ta('page_content.team.hero_title', 'Judul', "The people behind\nthe work."),
-                    self::ta('page_content.team.hero_intro', 'Intro'),
+                    self::rich('page_content.team.hero_intro', 'Intro'),
                     self::t('page_content.team.studio_eyebrow', 'Studio eyebrow', 'The studio'),
                     self::ta('page_content.team.studio_intro', 'Studio deskripsi', "The senior people who'll actually do your work — no account layers, no handoffs."),
                     self::ta('page_content.team.empty_message', 'Pesan saat belum ada anggota tim', 'The studio roster is being assembled. In the meantime, the work speaks for itself.'),
@@ -389,12 +395,12 @@ class SiteSettingForm
                 Section::make('Halaman Contact — hero')->columns(2)->schema([
                     self::t('page_content.contact.hero_eyebrow', 'Eyebrow', 'Contact'),
                     self::t('page_content.contact.hero_title', 'Judul', "Let's talk."),
-                    self::ta('page_content.contact.hero_intro', 'Intro'),
+                    self::rich('page_content.contact.hero_intro', 'Intro'),
                 ]),
                 Section::make('Halaman Start — hero')->columns(2)->schema([
                     self::t('page_content.start.hero_eyebrow', 'Eyebrow', 'Start a project'),
                     self::ta('page_content.start.hero_title', 'Judul', "Tell us where\nyou're headed."),
-                    self::ta('page_content.start.hero_intro', 'Intro'),
+                    self::rich('page_content.start.hero_intro', 'Intro'),
                     self::t('page_content.start.submit_label', 'Tombol submit', 'Send brief'),
                     self::t('page_content.start.reply_note', 'Catatan balasan', 'We reply within 1 business day.'),
                 ]),

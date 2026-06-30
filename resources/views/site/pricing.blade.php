@@ -15,7 +15,7 @@
             </h1>
 
             <p class="measure mt-7 text-[1.02rem] text-muted" data-reveal data-reveal-delay="0.18">
-                {{ content('pricing.hero_intro', "We are a studio, not a checkout. Every engagement is scoped to the work in front of it — the numbers below are honest starting points, where most projects begin rather than where they are capped.") }}
+                {!! content_rich('pricing.hero_intro', "We are a studio, not a checkout. Every engagement is scoped to the work in front of it — the numbers below are honest starting points, where most projects begin rather than where they are capped.") !!}
             </p>
         </div>
     </section>

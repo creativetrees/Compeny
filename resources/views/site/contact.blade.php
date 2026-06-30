@@ -26,7 +26,7 @@
                 </h1>
 
                 <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.28">
-                    {{ content('contact.hero_intro', "A fully-scoped build or a half-formed idea — either is a good place to start. Tell us where you're headed and we'll come back with the shortest honest path to get there.") }}
+                    {!! content_rich('contact.hero_intro', "A fully-scoped build or a half-formed idea — either is a good place to start. Tell us where you're headed and we'll come back with the shortest honest path to get there.") !!}
                 </p>
             </div>
 

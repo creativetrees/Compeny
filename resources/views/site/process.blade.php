@@ -19,7 +19,7 @@
             </h1>
 
             <p class="measure mt-7 text-[1.02rem] text-muted" data-reveal data-reveal-delay="0.24">
-                {{ content('process.hero_intro', 'Four phases, one embedded team, zero handoffs. We spend the riskiest assumptions first and ship working software every week — so the path from idea to scale is something you can see, not something you have to trust.') }}
+                {!! content_rich('process.hero_intro', 'Four phases, one embedded team, zero handoffs. We spend the riskiest assumptions first and ship working software every week — so the path from idea to scale is something you can see, not something you have to trust.') !!}
             </p>
         </div>
     </section>

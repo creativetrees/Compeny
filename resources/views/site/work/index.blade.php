@@ -6,7 +6,7 @@
             {!! nl2br(e(content('work.hero_title', "Proof, not\npromises."))) !!}
         </h1>
         <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.1">
-            {{ content('work.hero_intro', "A selection of products we've designed and engineered — for founders, teams, and the people who use what they ship.") }}
+            {!! content_rich('work.hero_intro', "A selection of products we've designed and engineered — for founders, teams, and the people who use what they ship.") !!}
         </p>
     </section>
 

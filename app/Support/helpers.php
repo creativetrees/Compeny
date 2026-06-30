@@ -16,3 +16,21 @@ if (! function_exists('content')) {
         return is_string($value) && $value !== '' ? $value : $default;
     }
 }
+
+if (! function_exists('content_rich')) {
+    /**
+     * Like content(), but for a single-paragraph RichEditor value rendered inline
+     * inside an existing block element: strips one wrapping <p>…</p> so the HTML
+     * does not nest inside the container (which would drop the container styling).
+     */
+    function content_rich(string $key, string $default = ''): string
+    {
+        $html = trim(content($key, $default));
+
+        if (preg_match('#^<p>(.*)</p>$#is', $html, $m) && stripos($m[1], '<p') === false) {
+            return $m[1];
+        }
+
+        return $html;
+    }
+}

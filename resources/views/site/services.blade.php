@@ -16,7 +16,7 @@
             </h1>
 
             <p class="mt-7 max-w-xl text-[1.05rem] text-muted" data-reveal data-reveal-delay="0.3">
-                {{ content('services.hero_intro', "We keep strategy, design, and engineering under one roof. Each capability below stands on its own — and gets sharper the moment it's paired with the next.") }}
+                {!! content_rich('services.hero_intro', "We keep strategy, design, and engineering under one roof. Each capability below stands on its own — and gets sharper the moment it's paired with the next.") !!}
             </p>
         </div>
     </section>

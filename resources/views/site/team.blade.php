@@ -15,7 +15,7 @@
             </h1>
 
             <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.3">
-                {{ content('team.hero_intro', 'No account layers, no handoffs. Creative Trees is a small, senior team of strategists, designers, and engineers who embed directly with yours — and stay accountable from the first sketch to production traffic.') }}
+                {!! content_rich('team.hero_intro', 'No account layers, no handoffs. Creative Trees is a small, senior team of strategists, designers, and engineers who embed directly with yours — and stay accountable from the first sketch to production traffic.') !!}
             </p>
         </div>
     </section>

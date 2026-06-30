@@ -8,7 +8,7 @@
                     {!! nl2br(e(content('start.hero_title', "Tell us where\nyou're headed."))) !!}
                 </h1>
                 <p class="mt-6 max-w-sm text-[0.97rem] text-muted" data-reveal data-reveal-delay="0.1">
-                    {{ content('start.hero_intro', "Share a few details about what you're building. We'll tell you the shortest honest path to get there.") }}
+                    {!! content_rich('start.hero_intro', "Share a few details about what you're building. We'll tell you the shortest honest path to get there.") !!}
                 </p>
 
                 <div class="mt-12 space-y-px border-t border-line" data-stagger>
