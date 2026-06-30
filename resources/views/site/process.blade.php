@@ -34,7 +34,7 @@
         <p class="measure mt-6 text-[1rem] text-muted">{{ content('process.sequence_intro', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.') }}</p>
 
         <div class="mt-12 grid border-l border-t border-line sm:grid-cols-2 md:mt-14" data-stagger>
-            @foreach ($phases as $i => $phase)
+            @forelse ($phases as $i => $phase)
                 <div class="group flex flex-col border-b border-r border-line p-8 transition-colors duration-500 hover:bg-panel md:p-10" data-stagger-item>
                     <div class="display text-[2.6rem] leading-none text-faint transition-colors duration-500 group-hover:text-ink">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div>
                     <h2 class="display mt-6 text-2xl leading-none sm:text-[1.7rem]">{{ $phase->name }}</h2>
@@ -50,7 +50,9 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <p class="col-span-full border-b border-r border-line p-8 text-center font-mono text-sm uppercase tracking-wide text-faint">{{ content('process.phases_empty', 'The process is being documented — check back soon.') }}</p>
+            @endforelse
         </div>
     </section>
 

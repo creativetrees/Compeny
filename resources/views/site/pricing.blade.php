@@ -39,6 +39,7 @@
 
         <p class="measure mt-6 text-[1rem] text-muted">{{ content('pricing.tiers_intro', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.') }}</p>
 
+        @if (collect($tiers)->isNotEmpty())
         <div class="mt-12" data-reveal>
             <div class="swiper pricing-swiper">
                 <div class="swiper-wrapper">
@@ -97,6 +98,9 @@
 
             <div class="p-pagination mt-10 flex items-center justify-center gap-2"></div>
         </div>
+        @else
+            <p class="mt-12 border border-line py-16 text-center font-mono text-sm uppercase tracking-widest text-faint">{{ content('pricing.tiers_empty', 'Engagement tiers are being finalised — check back soon.') }}</p>
+        @endif
 
         @if (isset($services) && $services->isNotEmpty())
             <p class="mt-10 text-center label-mono text-faint">

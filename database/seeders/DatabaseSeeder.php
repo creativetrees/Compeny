@@ -178,6 +178,7 @@ class DatabaseSeeder extends Seeder
                     'tiers_eyebrow' => 'Engagement tiers',
                     'tiers_note' => 'Lead-based · scoped per project · no checkout',
                     'tiers_intro' => 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.',
+                    'tiers_empty' => 'Engagement tiers are being finalised — check back soon.',
                     'included_eyebrow' => 'No fine print',
                     'included_title' => "What's always included.",
                     'included_intro' => 'However we work together, a few things never change — the reasons engagements stay honest.',
@@ -195,6 +196,7 @@ class DatabaseSeeder extends Seeder
                     'principles_eyebrow' => 'Operating principles',
                     'principles_title' => 'The rules that keep the work honest.',
                     'principles_intro' => 'Four constraints we hold on every engagement — the reason the process stays honest when the deadlines get loud.',
+                    'phases_empty' => 'The process is being documented — check back soon.',
                 ],
                 'team' => [
                     'hero_eyebrow' => 'Team',

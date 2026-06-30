@@ -268,6 +268,7 @@ class SiteSettingForm
                     self::t('page_content.pricing.tiers_eyebrow', 'Eyebrow', 'Engagement tiers'),
                     self::t('page_content.pricing.tiers_note', 'Catatan', 'Lead-based · scoped per project · no checkout'),
                     self::ta('page_content.pricing.tiers_intro', 'Deskripsi', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.'),
+                    self::ta('page_content.pricing.tiers_empty', 'Pesan saat belum ada tier', 'Engagement tiers are being finalised — check back soon.'),
                 ]),
                 Section::make('Included')->columns(2)->schema([
                     self::t('page_content.pricing.included_eyebrow', 'Eyebrow', 'No fine print'),
@@ -300,6 +301,7 @@ class SiteSettingForm
                     self::t('page_content.process.principles_eyebrow', 'Principles eyebrow', 'Operating principles'),
                     self::t('page_content.process.principles_title', 'Principles judul', 'The rules that keep the work honest.'),
                     self::ta('page_content.process.principles_intro', 'Principles intro'),
+                    self::ta('page_content.process.phases_empty', 'Pesan saat belum ada fase', 'The process is being documented — check back soon.'),
                 ]),
             ]);
     }
