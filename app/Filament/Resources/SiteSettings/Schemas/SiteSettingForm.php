@@ -78,7 +78,7 @@ class SiteSettingForm
             str_contains($l, 'label') || str_contains($l, 'keterangan') => 'heroicon-m-bookmark',
             str_contains($l, 'catatan') || str_contains($l, 'note') => 'heroicon-m-chat-bubble-bottom-center-text',
             str_contains($l, 'suffix') || str_contains($l, 'jumlah') => 'heroicon-m-hashtag',
-            str_contains($l, 'pesan') || str_contains($l, 'empty') => 'heroicon-m-information-circle',
+            str_contains($l, 'pesan') || str_contains($l, 'message') || str_contains($l, 'empty') => 'heroicon-m-information-circle',
             default => 'heroicon-m-pencil',
         };
     }
@@ -104,7 +104,7 @@ class SiteSettingForm
     }
 
     /** Page picker — constrains a URL field to a known SitePage (no typos, no unsafe schemes). */
-    private static function pageSelect(string $path, string $label = 'Halaman tujuan'): Select
+    private static function pageSelect(string $path, string $label = 'Target page'): Select
     {
         return Select::make($path)
             ->label($label)
@@ -117,17 +117,17 @@ class SiteSettingForm
     // ── System: maintenance + error pages ──────────────────────────────────
     private static function systemTab(): Tab
     {
-        return Tab::make('Sistem')
+        return Tab::make('System')
             ->icon('heroicon-o-wrench-screwdriver')
             ->schema([
-                Section::make('Mode maintenance')
-                    ->description('Saat aktif, pengunjung umum melihat halaman maintenance. Admin & yang login tetap bisa akses untuk mematikannya. Tanpa artisan.')
+                Section::make('Maintenance mode')
+                    ->description('When on, public visitors see the maintenance page. Admins and signed-in users still have access to turn it off. No artisan needed.')
                     ->icon('heroicon-m-wrench')
                     ->columns(2)
                     ->schema([
                         Toggle::make('page_content.system.maintenance')
-                            ->label('Aktifkan mode maintenance')
-                            ->helperText('Situs publik menampilkan halaman maintenance saat ON. Berlaku seketika — tanpa Save changes.')
+                            ->label('Enable maintenance mode')
+                            ->helperText('Public visitors see the maintenance page when ON. Applies instantly — no Save needed.')
                             ->inline(false)->columnSpanFull()
                             ->live()
                             ->afterStateUpdated(function ($state): void {
@@ -150,32 +150,32 @@ class SiteSettingForm
                                     ->duration(5000)
                                     ->send();
                             }),
-                        self::t('page_content.system.maint_title', 'Judul', "We'll be right back"),
+                        self::t('page_content.system.maint_title', 'Title', "We'll be right back"),
                         Grid::make(2)->columnSpanFull()->schema([
-                            DateTimePicker::make('page_content.system.maint_start')->label('Mulai (Start)')->seconds(false)->native(false)->prefixIcon('heroicon-m-play')->helperText('Opsional. Kosongkan bila tak ingin menampilkan jadwal.'),
-                            DateTimePicker::make('page_content.system.maint_end')->label('Selesai (End)')->seconds(false)->native(false)->prefixIcon('heroicon-m-flag')->helperText('Opsional. Perkiraan situs kembali online.'),
+                            DateTimePicker::make('page_content.system.maint_start')->label('Start')->seconds(false)->native(false)->prefixIcon('heroicon-m-play')->helperText('Optional. Leave empty if you don’t want to show a schedule.'),
+                            DateTimePicker::make('page_content.system.maint_end')->label('End')->seconds(false)->native(false)->prefixIcon('heroicon-m-flag')->helperText('Optional. Estimated time the site is back online.'),
                         ]),
-                        self::ta('page_content.system.maint_message', 'Pesan')->formatStateUsing(fn ($state) => filled($state) ? $state : 'We’re shipping a quick upgrade, so the site is briefly offline. No action needed — it’ll be back to normal shortly.'),
+                        self::ta('page_content.system.maint_message', 'Message')->formatStateUsing(fn ($state) => filled($state) ? $state : 'We’re shipping a quick upgrade, so the site is briefly offline. No action needed — it’ll be back to normal shortly.'),
                     ]),
-                Section::make('Halaman error')
-                    ->description('Teks tiap halaman error — sudah terisi default, ubah hanya bila perlu. Tetap tampil walau DB mati (crash-safe).')
+                Section::make('Error pages')
+                    ->description('Text for each error page — pre-filled with defaults, edit only if needed. Still shows even if the DB is down (crash-safe).')
                     ->icon('heroicon-m-exclamation-triangle')
                     ->columns(2)
                     ->schema([
-                        self::t('page_content.system.e401_title', '401 — judul', 'Sign in to continue.'),
-                        self::t('page_content.system.e401_message', '401 — pesan', 'This page needs a verified session. Sign in, then head back to where you were going.'),
-                        self::t('page_content.system.e403_title', '403 — judul', 'You can’t open this.'),
-                        self::t('page_content.system.e403_message', '403 — pesan', 'This page is locked to your account. If you think that’s a mistake, get in touch and we’ll sort it out.'),
-                        self::t('page_content.system.e404_title', '404 — judul', 'This page isn’t here.'),
-                        self::t('page_content.system.e404_message', '404 — pesan', 'The page you’re after moved, was renamed, or never existed. Everything still standing is one click away.'),
-                        self::t('page_content.system.e419_title', '419 — judul', 'Your session expired.'),
-                        self::t('page_content.system.e419_message', '419 — pesan', 'For security, the page sat idle too long. Refresh it and submit again — nothing you typed was lost.'),
-                        self::t('page_content.system.e429_title', '429 — judul', 'Slow down a moment.'),
-                        self::t('page_content.system.e429_message', '429 — pesan', 'You’ve sent a lot of requests in a short time. Wait a few seconds, then try again.'),
-                        self::t('page_content.system.e500_title', '500 — judul', 'Something broke on our end.'),
-                        self::t('page_content.system.e500_message', '500 — pesan', 'That’s on us, not you. The team is alerted automatically — give it a moment, then try again.'),
-                        self::t('page_content.system.e503_title', '503 — judul', 'We’re temporarily offline.'),
-                        self::t('page_content.system.e503_message', '503 — pesan', 'The service is briefly unavailable — likely heavy load or a quick restart. Give it a moment and try again.'),
+                        self::t('page_content.system.e401_title', '401 — title', 'Sign in to continue.'),
+                        self::t('page_content.system.e401_message', '401 — message', 'This page needs a verified session. Sign in, then head back to where you were going.'),
+                        self::t('page_content.system.e403_title', '403 — title', 'You can’t open this.'),
+                        self::t('page_content.system.e403_message', '403 — message', 'This page is locked to your account. If you think that’s a mistake, get in touch and we’ll sort it out.'),
+                        self::t('page_content.system.e404_title', '404 — title', 'This page isn’t here.'),
+                        self::t('page_content.system.e404_message', '404 — message', 'The page you’re after moved, was renamed, or never existed. Everything still standing is one click away.'),
+                        self::t('page_content.system.e419_title', '419 — title', 'Your session expired.'),
+                        self::t('page_content.system.e419_message', '419 — message', 'For security, the page sat idle too long. Refresh it and submit again — nothing you typed was lost.'),
+                        self::t('page_content.system.e429_title', '429 — title', 'Slow down a moment.'),
+                        self::t('page_content.system.e429_message', '429 — message', 'You’ve sent a lot of requests in a short time. Wait a few seconds, then try again.'),
+                        self::t('page_content.system.e500_title', '500 — title', 'Something broke on our end.'),
+                        self::t('page_content.system.e500_message', '500 — message', 'That’s on us, not you. The team is alerted automatically — give it a moment, then try again.'),
+                        self::t('page_content.system.e503_title', '503 — title', 'We’re temporarily offline.'),
+                        self::t('page_content.system.e503_message', '503 — message', 'The service is briefly unavailable — likely heavy load or a quick restart. Give it a moment and try again.'),
                     ]),
             ]);
     }
@@ -186,55 +186,55 @@ class SiteSettingForm
         return Tab::make('Brand & Logo')
             ->icon('heroicon-o-sparkles')
             ->schema([
-                Section::make('Identitas (Header & Footer)')
-                    ->description('Nama & logo yang dipakai header dan footer — satu sumber, selalu sama. Juga judul halaman & OG.')
+                Section::make('Identity (Header & Footer)')
+                    ->description('Name & logo used in the header and footer — one source, always the same. Also the page title & OG.')
                     ->icon('heroicon-m-identification')
                     ->columns(2)
                     ->schema([
                         TextInput::make('brand_name')
-                            ->label('Nama brand / perusahaan')
+                            ->label('Brand / company name')
                             ->required()
                             ->default('Creative Trees Group')
                             ->prefixIcon('heroicon-m-building-office-2')
-                            ->helperText('Dipakai header + footer (sama), judul halaman, dan OG.'),
+                            ->helperText('Used in header + footer (same), page title, and OG.'),
                         TextInput::make('logo_text')
-                            ->label('Teks wordmark (opsional)')
+                            ->label('Wordmark text (optional)')
                             ->placeholder('Creative Trees Group')
                             ->prefixIcon('heroicon-m-pencil')
-                            ->helperText('Override teks di samping logo. Kosong = pakai nama brand lengkap.'),
+                            ->helperText('Overrides the text next to the logo. Empty = use the full brand name.'),
                         FileUpload::make('logo_path')
                             ->label('Icon / Logo')
                             ->image()->disk('public')->directory('site/logo')->visibility('public')
                             ->imageEditor()->maxSize(2048)
                             ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'])
-                            ->helperText('Ikon brand di samping wordmark (header & footer). PNG/SVG transparan, maks 2 MB. Kosong = mark bawaan.'),
+                            ->helperText('Brand icon next to the wordmark (header & footer). Transparent PNG/SVG, max 2 MB. Empty = default mark.'),
                         FileUpload::make('favicon_path')
                             ->label('Favicon')
                             ->image()->disk('public')->directory('site/favicon')->visibility('public')
                             ->maxSize(1024)
                             ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'])
-                            ->helperText('Ikon tab browser (ICO/PNG/SVG), maks 1 MB.'),
+                            ->helperText('Browser tab icon (ICO/PNG/SVG), max 1 MB.'),
                     ]),
-                Section::make('Menu header (navigasi)')
-                    ->description('Daftar menu di header. Tarik untuk mengurutkan.')
+                Section::make('Header menu (navigation)')
+                    ->description('Header menu items. Drag to reorder.')
                     ->icon('heroicon-m-bars-3')
                     ->schema([
                         Repeater::make('nav_menu')
                             ->hiddenLabel()
                             ->schema([
-                                TextInput::make('label')->label('Teks')->required()->placeholder('Work')->prefixIcon('heroicon-m-bookmark'),
-                                self::pageSelect('url', 'Halaman tujuan')->required(),
+                                TextInput::make('label')->label('Text')->required()->placeholder('Work')->prefixIcon('heroicon-m-bookmark'),
+                                self::pageSelect('url', 'Target page')->required(),
                             ])
                             ->columns(2)->reorderable()->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
-                            ->addActionLabel('Tambah menu'),
+                            ->addActionLabel('Add menu item'),
                     ]),
-                Fieldset::make('Tombol header (CTA)')
+                Fieldset::make('Header button (CTA)')
                     ->columns(3)
                     ->schema([
-                        self::t('page_content.header.cta_label', 'Teks tombol', 'Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
+                        self::t('page_content.header.cta_label', 'Button text', 'Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('page_content.header.cta_url'),
-                        self::t('page_content.header.close_label', 'Teks tombol tutup (menu mobile)', 'Close')->prefixIcon('heroicon-m-x-mark'),
+                        self::t('page_content.header.close_label', 'Close button (mobile menu)', 'Close')->prefixIcon('heroicon-m-x-mark'),
                     ]),
             ]);
     }
@@ -245,32 +245,32 @@ class SiteSettingForm
         return Tab::make('Hero')
             ->icon('heroicon-o-megaphone')
             ->schema([
-                Section::make('Konten hero (beranda)')
+                Section::make('Hero content (home)')
                     ->icon('heroicon-m-megaphone')
                     ->columns(2)
                     ->schema([
                         TextInput::make('hero_eyebrow')->label('Eyebrow')->placeholder('Digital product studio')->prefixIcon('heroicon-m-tag')->columnSpanFull(),
                         RichEditor::make('hero_title')
-                            ->label('Judul hero')
+                            ->label('Hero title')
                             ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/hero')->fileAttachmentsVisibility('public')
-                            ->helperText('Tiap paragraf (Enter) = satu baris judul beranimasi.')
+                            ->helperText('Each paragraph (Enter) = one animated title line.')
                             ->columnSpanFull(),
                         RichEditor::make('hero_subtitle')
-                            ->label('Subjudul')
+                            ->label('Subtitle')
                             ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/hero')->fileAttachmentsVisibility('public')
-                            ->helperText('Kalimat pendukung — mendukung teks kaya.')
+                            ->helperText('Supporting sentence — supports rich text.')
                             ->columnSpanFull(),
                     ]),
-                Fieldset::make('Tombol utama')
+                Fieldset::make('Primary button')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('hero_cta_label')->label('Teks')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
+                        TextInput::make('hero_cta_label')->label('Text')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('hero_cta_url'),
                     ]),
-                Fieldset::make('Tombol sekunder')
+                Fieldset::make('Secondary button')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('hero_cta_secondary_label')->label('Teks')->placeholder('View work')->prefixIcon('heroicon-m-cursor-arrow-rays'),
+                        TextInput::make('hero_cta_secondary_label')->label('Text')->placeholder('View work')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('hero_cta_secondary_url'),
                     ]),
             ]);
@@ -284,26 +284,26 @@ class SiteSettingForm
             ->schema([
                 Section::make('Capabilities')->icon('heroicon-m-squares-2x2')->columns(2)->schema([
                     self::t('page_content.home.cap_eyebrow', 'Eyebrow', 'Capabilities'),
-                    self::t('page_content.home.cap_title', 'Judul', 'Everything you need to launch and scale.'),
+                    self::t('page_content.home.cap_title', 'Title', 'Everything you need to launch and scale.'),
                     self::ta('page_content.home.cap_intro', 'Intro'),
                 ]),
                 Section::make('Selected work')->icon('heroicon-m-briefcase')->columns(3)->schema([
                     self::t('page_content.home.work_eyebrow', 'Eyebrow', 'Selected work'),
-                    self::t('page_content.home.work_title', 'Judul', 'Proof, not promises.'),
-                    self::t('page_content.home.work_link', 'Link "semua proyek"', 'All work →'),
-                    self::ta('page_content.home.work_intro', 'Deskripsi', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
+                    self::t('page_content.home.work_title', 'Title', 'Proof, not promises.'),
+                    self::t('page_content.home.work_link', '"All work" link', 'All work →'),
+                    self::ta('page_content.home.work_intro', 'Description', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
                 ]),
                 Section::make('Process')->icon('heroicon-m-arrow-path-rounded-square')->columns(2)->schema([
                     self::t('page_content.home.process_eyebrow', 'Eyebrow', 'How we work'),
-                    self::t('page_content.home.process_title', 'Judul', 'A process built to de-risk the work.'),
+                    self::t('page_content.home.process_title', 'Title', 'A process built to de-risk the work.'),
                     self::ta('page_content.home.process_intro', 'Intro'),
                 ]),
-                Section::make('Signal / testimoni')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
+                Section::make('Signal / testimonials')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                     self::t('page_content.home.signal_eyebrow', 'Eyebrow', 'Signal'),
-                    self::t('page_content.home.signal_title', 'Judul', 'What partners say.'),
-                    self::ta('page_content.home.signal_intro', 'Deskripsi', "Unfiltered words from the founders and teams we've embedded with."),
+                    self::t('page_content.home.signal_title', 'Title', 'What partners say.'),
+                    self::ta('page_content.home.signal_intro', 'Description', "Unfiltered words from the founders and teams we've embedded with."),
                 ]),
-                Section::make('Lainnya')->icon('heroicon-m-ellipsis-horizontal-circle')->columns(2)->schema([
+                Section::make('Other')->icon('heroicon-m-ellipsis-horizontal-circle')->columns(2)->schema([
                     self::t('page_content.home.trusted_eyebrow', 'Trusted-by eyebrow', 'Trusted by innovative teams'),
                 ]),
             ]);
@@ -315,34 +315,34 @@ class SiteSettingForm
         return Tab::make('Work')
             ->icon('heroicon-o-briefcase')
             ->schema([
-                Section::make('Halaman Work')
-                    ->description('Header halaman /work.')
+                Section::make('Work page')
+                    ->description('Header for the /work page.')
                     ->icon('heroicon-m-briefcase')
                     ->columns(2)
                     ->schema([
                         self::t('page_content.work.hero_eyebrow', 'Eyebrow', 'Selected work'),
-                        self::t('page_content.work.hero_title', 'Judul', 'Proof, not promises.'),
+                        self::t('page_content.work.hero_title', 'Title', 'Proof, not promises.'),
                         self::rich('page_content.work.hero_intro', 'Intro'),
-                        self::ta('page_content.work.empty_message', 'Pesan saat belum ada proyek', 'Work is being published — check back soon.'),
+                        self::ta('page_content.work.empty_message', 'Message when there are no projects yet', 'Work is being published — check back soon.'),
                     ]),
-                Section::make('Detail proyek — label & tombol')
-                    ->description('Teks di halaman detail proyek /work/{slug}.')
+                Section::make('Project detail — labels & buttons')
+                    ->description('Text on the project detail page /work/{slug}.')
                     ->icon('heroicon-m-rectangle-stack')
                     ->collapsed()
                     ->columns(3)
                     ->schema([
-                        self::t('page_content.work.detail_back', 'Tombol kembali', 'Work'),
-                        self::t('page_content.work.detail_client', 'Label Client', 'Client'),
-                        self::t('page_content.work.detail_year', 'Label Year', 'Year'),
-                        self::t('page_content.work.detail_role', 'Label Role', 'Role'),
-                        self::t('page_content.work.detail_overview', 'Label Overview', 'Overview'),
-                        self::t('page_content.work.detail_services', 'Label Services', 'Services'),
-                        self::t('page_content.work.detail_visit', 'Tombol Visit site', 'Visit site'),
-                        self::t('page_content.work.detail_gallery', 'Label Gallery', 'Gallery'),
-                        self::t('page_content.work.detail_frames', 'Suffix jumlah frame', 'frames'),
+                        self::t('page_content.work.detail_back', 'Back button', 'Work'),
+                        self::t('page_content.work.detail_client', 'Client label', 'Client'),
+                        self::t('page_content.work.detail_year', 'Year label', 'Year'),
+                        self::t('page_content.work.detail_role', 'Role label', 'Role'),
+                        self::t('page_content.work.detail_overview', 'Overview label', 'Overview'),
+                        self::t('page_content.work.detail_services', 'Services label', 'Services'),
+                        self::t('page_content.work.detail_visit', 'Visit site button', 'Visit site'),
+                        self::t('page_content.work.detail_gallery', 'Gallery label', 'Gallery'),
+                        self::t('page_content.work.detail_frames', 'Frame count suffix', 'frames'),
                         self::t('page_content.work.more_eyebrow', 'More work — eyebrow', 'Keep looking'),
-                        self::t('page_content.work.more_title', 'More work — judul', 'More work.'),
-                        self::t('page_content.work.all_link', 'Link "semua proyek"', 'All work →'),
+                        self::t('page_content.work.more_title', 'More work — title', 'More work.'),
+                        self::t('page_content.work.all_link', '"All work" link', 'All work →'),
                     ]),
             ]);
     }
@@ -352,19 +352,19 @@ class SiteSettingForm
         return Tab::make('Products')
             ->icon('heroicon-o-cube')
             ->schema([
-                Section::make('Halaman Products')
-                    ->description('Header halaman /products (tertaut dari footer) — bukan /work.')
+                Section::make('Products page')
+                    ->description('Header for the /products page (linked from the footer) — not /work.')
                     ->icon('heroicon-m-cube')
                     ->columns(2)
                     ->schema([
                         self::t('page_content.products.hero_eyebrow', 'Eyebrow', 'Products'),
-                        self::t('page_content.products.hero_line1', 'Judul baris 1', 'Starters that ship'),
-                        self::t('page_content.products.hero_line2', 'Judul baris 2', 'in days, not months.'),
+                        self::t('page_content.products.hero_line1', 'Title line 1', 'Starters that ship'),
+                        self::t('page_content.products.hero_line2', 'Title line 2', 'in days, not months.'),
                         self::t('page_content.products.empty_eyebrow', 'Empty-state eyebrow', 'Catalog in progress'),
-                        self::t('page_content.products.leadtime_label', 'Label lead-time', 'Lead-time · 1–3 weeks'),
+                        self::t('page_content.products.leadtime_label', 'Lead-time label', 'Lead-time · 1–3 weeks'),
                         self::t('page_content.products.investment_label', 'Label "Investment"', 'Investment'),
                         self::rich('page_content.products.hero_intro', 'Intro'),
-                        self::ta('page_content.products.empty_message', 'Empty-state pesan'),
+                        self::ta('page_content.products.empty_message', 'Empty-state message'),
                     ]),
             ]);
     }
@@ -377,16 +377,16 @@ class SiteSettingForm
             ->schema([
                 Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.services.hero_eyebrow', 'Eyebrow', 'Services'),
-                    self::t('page_content.services.hero_line1', 'Judul baris 1', 'Capabilities'),
-                    self::t('page_content.services.hero_line2', 'Judul baris 2', 'that compound.'),
+                    self::t('page_content.services.hero_line1', 'Title line 1', 'Capabilities'),
+                    self::t('page_content.services.hero_line2', 'Title line 2', 'that compound.'),
                     self::rich('page_content.services.hero_intro', 'Intro'),
                 ]),
                 Section::make('Disciplines')->icon('heroicon-m-squares-plus')->columns(2)->schema([
                     self::t('page_content.services.disciplines_eyebrow', 'Eyebrow', 'The disciplines'),
                     self::t('page_content.services.disciplines_label', 'Label', 'Pick one — or the full stack'),
                     self::t('page_content.services.featured_label', 'Label "Featured"', 'Featured'),
-                    self::ta('page_content.services.disciplines_intro', 'Deskripsi', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.'),
-                    self::ta('page_content.services.empty_message', 'Pesan saat belum ada layanan', 'Capabilities are being updated. Check back shortly.'),
+                    self::ta('page_content.services.disciplines_intro', 'Description', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.'),
+                    self::ta('page_content.services.empty_message', 'Message when there are no services yet', 'Capabilities are being updated. Check back shortly.'),
                 ]),
             ]);
     }
@@ -399,28 +399,28 @@ class SiteSettingForm
             ->schema([
                 Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.pricing.hero_eyebrow', 'Eyebrow', 'Pricing'),
-                    self::taPlain('page_content.pricing.hero_title', 'Judul', "Engagements,\npriced honestly."),
+                    self::taPlain('page_content.pricing.hero_title', 'Title', "Engagements,\npriced honestly."),
                     self::rich('page_content.pricing.hero_intro', 'Intro'),
                 ]),
                 Section::make('Tiers')->icon('heroicon-m-squares-2x2')->columns(2)->schema([
                     self::t('page_content.pricing.tiers_eyebrow', 'Eyebrow', 'Engagement tiers'),
-                    self::t('page_content.pricing.tiers_note', 'Catatan', 'Lead-based · scoped per project · no checkout'),
+                    self::t('page_content.pricing.tiers_note', 'Note', 'Lead-based · scoped per project · no checkout'),
                     self::t('page_content.pricing.popular_label', 'Badge "Most popular"', 'Most popular'),
-                    self::t('page_content.pricing.tier_cta', 'Tombol pada kartu tier', 'Start a project'),
-                    self::pageSelect('page_content.pricing.tier_cta_url', 'URL tombol tier'),
-                    self::t('page_content.pricing.studio_note', 'Catatan studio (sebelum daftar layanan)', 'Every engagement draws on the full studio —'),
-                    self::ta('page_content.pricing.tiers_intro', 'Deskripsi', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.'),
-                    self::ta('page_content.pricing.tiers_empty', 'Pesan saat belum ada tier', 'Engagement tiers are being finalised — check back soon.'),
+                    self::t('page_content.pricing.tier_cta', 'Button on the tier card', 'Start a project'),
+                    self::pageSelect('page_content.pricing.tier_cta_url', 'Tier button URL'),
+                    self::t('page_content.pricing.studio_note', 'Studio note (before the services list)', 'Every engagement draws on the full studio —'),
+                    self::ta('page_content.pricing.tiers_intro', 'Description', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.'),
+                    self::ta('page_content.pricing.tiers_empty', 'Message when there are no tiers yet', 'Engagement tiers are being finalised — check back soon.'),
                 ]),
                 Section::make('Included')->icon('heroicon-m-check-circle')->columns(2)->schema([
                     self::t('page_content.pricing.included_eyebrow', 'Eyebrow', 'No fine print'),
-                    self::t('page_content.pricing.included_title', 'Judul', "What's always included."),
+                    self::t('page_content.pricing.included_title', 'Title', "What's always included."),
                     self::ta('page_content.pricing.included_intro', 'Intro'),
                 ]),
                 Section::make('FAQ')->icon('heroicon-m-question-mark-circle')->columns(2)->schema([
                     self::t('page_content.pricing.faq_eyebrow', 'Eyebrow', 'FAQ'),
-                    self::t('page_content.pricing.faq_title', 'Judul', 'Questions, answered.'),
-                    self::ta('page_content.pricing.faq_intro', 'Deskripsi', 'The questions we hear most, answered straight — before you ever send a brief.'),
+                    self::t('page_content.pricing.faq_title', 'Title', 'Questions, answered.'),
+                    self::ta('page_content.pricing.faq_intro', 'Description', 'The questions we hear most, answered straight — before you ever send a brief.'),
                 ]),
             ]);
     }
@@ -433,18 +433,18 @@ class SiteSettingForm
             ->schema([
                 Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.process.hero_eyebrow', 'Eyebrow', 'How we work'),
-                    self::t('page_content.process.hero_title', 'Judul', 'A process built to de-risk the work.'),
+                    self::t('page_content.process.hero_title', 'Title', 'A process built to de-risk the work.'),
                     self::rich('page_content.process.hero_intro', 'Intro'),
                 ]),
                 Section::make('Sequence & principles')->icon('heroicon-m-list-bullet')->columns(2)->schema([
                     self::t('page_content.process.sequence_eyebrow', 'Sequence eyebrow', 'The sequence'),
-                    self::t('page_content.process.phases_label', 'Label jumlah fase', 'phases'),
+                    self::t('page_content.process.phases_label', 'Phase count label', 'phases'),
                     self::t('page_content.process.principles_eyebrow', 'Principles eyebrow', 'Operating principles'),
-                    self::t('page_content.process.principles_title', 'Principles judul', 'The rules that keep the work honest.'),
+                    self::t('page_content.process.principles_title', 'Principles title', 'The rules that keep the work honest.'),
                     self::t('page_content.process.deliverables_label', 'Label "Deliverables"', 'Deliverables'),
-                    self::ta('page_content.process.sequence_intro', 'Sequence deskripsi', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.'),
+                    self::ta('page_content.process.sequence_intro', 'Sequence description', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.'),
                     self::ta('page_content.process.principles_intro', 'Principles intro'),
-                    self::ta('page_content.process.phases_empty', 'Pesan saat belum ada fase', 'The process is being documented — check back soon.'),
+                    self::ta('page_content.process.phases_empty', 'Message when there are no phases yet', 'The process is being documented — check back soon.'),
                 ]),
             ]);
     }
@@ -459,11 +459,11 @@ class SiteSettingForm
                     self::t('page_content.team.hero_eyebrow', 'Eyebrow', 'Team'),
                     self::t('page_content.team.studio_eyebrow', 'Studio eyebrow', 'The studio'),
                     self::t('page_content.team.people_label', 'Suffix "People"', 'People'),
-                    self::t('page_content.team.empty_cta', 'Tombol pada empty-state', 'View work'),
-                    self::taPlain('page_content.team.hero_title', 'Judul', "The people behind\nthe work."),
+                    self::t('page_content.team.empty_cta', 'Button on the empty state', 'View work'),
+                    self::taPlain('page_content.team.hero_title', 'Title', "The people behind\nthe work."),
                     self::rich('page_content.team.hero_intro', 'Intro'),
-                    self::ta('page_content.team.studio_intro', 'Studio deskripsi', "The senior people who'll actually do your work — no account layers, no handoffs."),
-                    self::ta('page_content.team.empty_message', 'Pesan saat belum ada anggota tim', 'The studio roster is being assembled. In the meantime, the work speaks for itself.'),
+                    self::ta('page_content.team.studio_intro', 'Studio description', "The senior people who'll actually do your work — no account layers, no handoffs."),
+                    self::ta('page_content.team.empty_message', 'Message when there are no team members yet', 'The studio roster is being assembled. In the meantime, the work speaks for itself.'),
                 ]),
             ]);
     }
@@ -476,25 +476,25 @@ class SiteSettingForm
             ->schema([
                 Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.about.hero_eyebrow', 'Eyebrow', 'About'),
-                    TextInput::make('about_heading')->label('Judul')->placeholder('A studio built like a product team.')->prefixIcon('heroicon-m-bars-3-bottom-left')->columnSpanFull(),
+                    TextInput::make('about_heading')->label('Title')->placeholder('A studio built like a product team.')->prefixIcon('heroicon-m-bars-3-bottom-left'),
                     RichEditor::make('about_body')
-                        ->label('Isi')
+                        ->label('Body')
                         ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/about')->fileAttachmentsVisibility('public')
-                        ->helperText('Editor teks kaya.')
+                        ->helperText('Rich text editor.')
                         ->columnSpanFull(),
                 ]),
                 Section::make('Values')->icon('heroicon-m-sparkles')->columns(2)->schema([
                     self::t('page_content.about.values_eyebrow', 'Eyebrow', 'What we value'),
-                    self::t('page_content.about.values_title', 'Judul', 'How we think.'),
-                    self::ta('page_content.about.values_intro', 'Deskripsi', 'The handful of beliefs that shape how we design, build, and decide.'),
+                    self::t('page_content.about.values_title', 'Title', 'How we think.'),
+                    self::ta('page_content.about.values_intro', 'Description', 'The handful of beliefs that shape how we design, build, and decide.'),
                 ]),
                 Section::make('Team & clients')->icon('heroicon-m-user-group')->columns(2)->schema([
                     self::t('page_content.about.team_eyebrow', 'Team eyebrow', 'The team'),
-                    self::t('page_content.about.team_title', 'Team judul', 'Senior, embedded, accountable.'),
+                    self::t('page_content.about.team_title', 'Team title', 'Senior, embedded, accountable.'),
                     self::t('page_content.about.team_link', 'Team link', 'Meet everyone'),
                     self::t('page_content.about.clients_eyebrow', 'Clients eyebrow', 'In good company'),
-                    self::ta('page_content.about.team_intro', 'Team deskripsi', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.'),
-                    self::ta('page_content.about.clients_intro', 'Clients deskripsi', "A few of the teams we've designed and built alongside."),
+                    self::ta('page_content.about.team_intro', 'Team description', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.'),
+                    self::ta('page_content.about.clients_intro', 'Clients description', "A few of the teams we've designed and built alongside."),
                 ]),
             ]);
     }
@@ -505,16 +505,16 @@ class SiteSettingForm
         return Tab::make('Contact & Start')
             ->icon('heroicon-o-chat-bubble-left-right')
             ->schema([
-                Section::make('Halaman Contact — hero')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
+                Section::make('Contact page — hero')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                     self::t('page_content.contact.hero_eyebrow', 'Eyebrow', 'Contact'),
-                    self::t('page_content.contact.hero_title', 'Judul', "Let's talk."),
+                    self::t('page_content.contact.hero_title', 'Title', "Let's talk."),
                     self::rich('page_content.contact.hero_intro', 'Intro'),
                 ]),
-                Section::make('Halaman Start — hero')->icon('heroicon-m-paper-airplane')->columns(2)->schema([
+                Section::make('Start page — hero')->icon('heroicon-m-paper-airplane')->columns(3)->schema([
                     self::t('page_content.start.hero_eyebrow', 'Eyebrow', 'Start a project'),
-                    self::t('page_content.start.submit_label', 'Tombol submit', 'Send brief'),
-                    self::t('page_content.start.reply_note', 'Catatan balasan', 'We reply within 1 business day.'),
-                    self::taPlain('page_content.start.hero_title', 'Judul', "Tell us where\nyou're headed."),
+                    self::t('page_content.start.submit_label', 'Submit button', 'Send brief'),
+                    self::t('page_content.start.reply_note', 'Reply note', 'We reply within 1 business day.'),
+                    self::taPlain('page_content.start.hero_title', 'Title', "Tell us where\nyou're headed."),
                     self::rich('page_content.start.hero_intro', 'Intro'),
                 ]),
             ]);
@@ -523,21 +523,21 @@ class SiteSettingForm
     // ── Contact data + social ───────────────────────────────────────────────
     private static function contactDataTab(): Tab
     {
-        return Tab::make('Kontak & Sosial')
+        return Tab::make('Contact & Social')
             ->icon('heroicon-o-at-symbol')
             ->schema([
-                Section::make('Kontak')
-                    ->description('Detail kontak yang tampil di footer & halaman kontak.')
+                Section::make('Contact')
+                    ->description('Contact details shown in the footer & contact page.')
                     ->icon('heroicon-m-envelope')
                     ->columns(2)
                     ->schema([
                         TextInput::make('contact_email')->label('Email')->email()->prefixIcon('heroicon-m-envelope'),
-                        TextInput::make('contact_phone')->label('Telepon')->tel()->prefixIcon('heroicon-m-phone'),
-                        TextInput::make('contact_address')->label('Alamat')->prefixIcon('heroicon-m-map-pin')->columnSpanFull(),
-                        TextInput::make('page_content.system.notify_email')->label('Email penerima notifikasi (form lead)')->email()->placeholder('support@creativetreesgroup.com')->helperText('Tujuan email saat ada lead baru. Kosong = pakai Email kontak di atas.')->prefixIcon('heroicon-m-inbox-arrow-down')->columnSpanFull(),
+                        TextInput::make('contact_phone')->label('Phone')->tel()->prefixIcon('heroicon-m-phone'),
+                        TextInput::make('contact_address')->label('Address')->prefixIcon('heroicon-m-map-pin')->columnSpanFull(),
+                        TextInput::make('page_content.system.notify_email')->label('Notification recipient email (lead form)')->email()->placeholder('support@creativetreesgroup.com')->helperText('Where new lead emails are sent. Empty = use the contact email above.')->prefixIcon('heroicon-m-inbox-arrow-down')->columnSpanFull(),
                     ]),
-                Section::make('Sosial media')
-                    ->description('Pilih platform & isi URL profil. Tarik untuk mengurutkan.')
+                Section::make('Social media')
+                    ->description('Pick a platform & enter the profile URL. Drag to reorder.')
                     ->icon('heroicon-m-share')
                     ->schema([
                         Repeater::make('social_links')
@@ -553,7 +553,7 @@ class SiteSettingForm
                             ])
                             ->columns(2)->reorderable()->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['platform'] ?? null)
-                            ->addActionLabel('Tambah sosial media'),
+                            ->addActionLabel('Add social media'),
                     ]),
             ]);
     }
@@ -561,22 +561,22 @@ class SiteSettingForm
     // ── Stats ───────────────────────────────────────────────────────────────
     private static function statsTab(): Tab
     {
-        return Tab::make('Statistik')
+        return Tab::make('Statistics')
             ->icon('heroicon-o-chart-bar')
             ->schema([
-                Section::make('Angka highlight')
-                    ->description('Statistik yang ditonjolkan (mis. "120+ proyek").')
+                Section::make('Highlight numbers')
+                    ->description('Highlighted statistics (e.g. "120+ projects").')
                     ->icon('heroicon-m-chart-bar')
                     ->schema([
                         Repeater::make('stats')
                             ->hiddenLabel()
                             ->schema([
-                                TextInput::make('value')->label('Angka')->required()->placeholder('120+')->prefixIcon('heroicon-m-hashtag'),
-                                TextInput::make('label')->label('Keterangan')->required()->placeholder('Proyek selesai')->prefixIcon('heroicon-m-bookmark'),
+                                TextInput::make('value')->label('Number')->required()->placeholder('120+')->prefixIcon('heroicon-m-hashtag'),
+                                TextInput::make('label')->label('Label')->required()->placeholder('Projects completed')->prefixIcon('heroicon-m-bookmark'),
                             ])
                             ->columns(2)->reorderable()->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
-                            ->addActionLabel('Tambah stat'),
+                            ->addActionLabel('Add stat'),
                     ]),
             ]);
     }
@@ -588,21 +588,21 @@ class SiteSettingForm
             ->icon('heroicon-o-magnifying-glass')
             ->schema([
                 Section::make('Metadata')
-                    ->description('Judul, deskripsi & kata kunci untuk mesin pencari dan pratinjau sosial.')
+                    ->description('Title, description & keywords for search engines and social previews.')
                     ->icon('heroicon-m-document-magnifying-glass')
                     ->schema([
-                        TextInput::make('seo_title')->label('Judul SEO')->maxLength(60)->prefixIcon('heroicon-m-hashtag')->helperText('±50–60 karakter. Kosong = nama brand.'),
-                        Textarea::make('seo_description')->label('Deskripsi meta')->rows(3)->maxLength(160)->helperText('±150–160 karakter.')->columnSpanFull(),
-                        TextInput::make('seo_keywords')->label('Kata kunci')->placeholder('product studio, saas, web design')->prefixIcon('heroicon-m-key')->helperText('Pisahkan dengan koma.')->columnSpanFull(),
-                        FileUpload::make('seo_image_path')->label('Gambar berbagi sosial (OG)')->image()->disk('public')->directory('site/seo')->visibility('public')->maxSize(2048)->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])->helperText('Disarankan 1200×630px.')->columnSpanFull(),
+                        TextInput::make('seo_title')->label('SEO title')->maxLength(60)->prefixIcon('heroicon-m-hashtag')->helperText('±50–60 characters. Empty = brand name.'),
+                        Textarea::make('seo_description')->label('Meta description')->rows(3)->maxLength(160)->helperText('±150–160 characters.')->columnSpanFull(),
+                        TextInput::make('seo_keywords')->label('Keywords')->placeholder('product studio, saas, web design')->prefixIcon('heroicon-m-key')->helperText('Separate with commas.')->columnSpanFull(),
+                        FileUpload::make('seo_image_path')->label('Social share image (OG)')->image()->disk('public')->directory('site/seo')->visibility('public')->maxSize(2048)->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])->helperText('Recommended 1200×630px.')->columnSpanFull(),
                     ]),
-                Section::make('Analytics & pengindeksan')
-                    ->description('Hubungkan Google Analytics dan atur perilaku indeks.')
+                Section::make('Analytics & indexing')
+                    ->description('Connect Google Analytics and control indexing behavior.')
                     ->icon('heroicon-m-chart-pie')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('google_analytics_id')->label('Google Analytics ID (GA4)')->placeholder('G-XXXXXXXXXX')->prefixIcon('heroicon-m-presentation-chart-line')->helperText('Measurement ID GA4. Kosong = nonaktif.')->rule('regex:/^(G|UA|GT|AW)-?[A-Z0-9\-]+$/i')->validationMessages(['regex' => 'Format ID tidak valid (contoh: G-XXXXXXXXXX).']),
-                        Toggle::make('seo_noindex')->label('Sembunyikan dari mesin pencari (noindex)')->helperText('Aktifkan untuk staging/privat.')->inline(false),
+                        TextInput::make('google_analytics_id')->label('Google Analytics ID (GA4)')->placeholder('G-XXXXXXXXXX')->prefixIcon('heroicon-m-presentation-chart-line')->helperText('GA4 Measurement ID. Empty = disabled.')->rule('regex:/^(G|UA|GT|AW)-?[A-Z0-9\-]+$/i')->validationMessages(['regex' => 'Invalid ID format (e.g. G-XXXXXXXXXX).']),
+                        Toggle::make('seo_noindex')->label('Hide from search engines (noindex)')->helperText('Enable for staging/private.')->inline(false),
                     ]),
             ]);
     }
@@ -613,31 +613,31 @@ class SiteSettingForm
         return Tab::make('Footer')
             ->icon('heroicon-o-bars-3-bottom-left')
             ->schema([
-                Section::make('Ajakan (CTA) footer')
-                    ->description('Pita ajakan besar di atas footer.')
+                Section::make('Footer call to action (CTA)')
+                    ->description('Large call-to-action band above the footer.')
                     ->icon('heroicon-m-rocket-launch')
                     ->columns(2)
                     ->schema([
                         TextInput::make('footer_cta_eyebrow')->label('Eyebrow')->placeholder("Let's build")->prefixIcon('heroicon-m-tag')->columnSpanFull(),
-                        Textarea::make('footer_cta_title')->label('Judul')->placeholder("Have something\nworth building?")->helperText('Baris baru memecah judul.')->rows(2)->columnSpanFull(),
-                        TextInput::make('footer_cta_label')->label('Teks tombol')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
+                        Textarea::make('footer_cta_title')->label('Title')->placeholder("Have something\nworth building?")->helperText('New lines split the title.')->rows(2)->columnSpanFull(),
+                        TextInput::make('footer_cta_label')->label('Button text')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('footer_cta_url'),
-                        RichEditor::make('footer_cta_body')->label('Deskripsi')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->columnSpanFull(),
+                        RichEditor::make('footer_cta_body')->label('Description')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->columnSpanFull(),
                     ]),
-                Section::make('Identitas footer')
-                    ->description('Tagline, lokasi, copyright & watermark.')
+                Section::make('Footer identity')
+                    ->description('Tagline, location, copyright & watermark.')
                     ->icon('heroicon-m-bars-3-bottom-left')
                     ->columns(2)
                     ->schema([
-                        TextInput::make('footer_location')->label('Lokasi')->placeholder('Jakarta · Remote-first')->prefixIcon('heroicon-m-map-pin'),
-                        TextInput::make('footer_copyright')->label('Nama copyright')->placeholder('Creative Trees Group')->helperText('Tahun otomatis: © '.date('Y').' + teks ini. Kosong = nama brand.')->prefixIcon('heroicon-m-calendar'),
-                        TextInput::make('footer_watermark')->label('Teks watermark (opsional)')->placeholder('Creative Trees Group')->helperText('Teks besar di latar footer. Kosong = nama brand.')->prefixIcon('heroicon-m-sparkles')->columnSpanFull(),
-                        self::t('page_content.footer.contact_label', 'Judul kolom kontak', 'Contact')->columnSpanFull(),
                         RichEditor::make('footer_tagline')
                             ->label('Tagline')
                             ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')
-                            ->helperText('Teks kaya di bawah logo footer.')
+                            ->helperText('Rich text below the footer logo.')
                             ->columnSpanFull(),
+                        TextInput::make('footer_location')->label('Location')->placeholder('Jakarta · Remote-first')->prefixIcon('heroicon-m-map-pin'),
+                        TextInput::make('footer_copyright')->label('Copyright name')->placeholder('Creative Trees Group')->helperText('Year is automatic: © '.date('Y').' + this text. Empty = brand name.')->prefixIcon('heroicon-m-calendar'),
+                        TextInput::make('footer_watermark')->label('Watermark text (optional)')->placeholder('Creative Trees Group')->helperText('Large text in the footer background. Empty = brand name.')->prefixIcon('heroicon-m-sparkles')->columnSpanFull(),
+                        self::t('page_content.footer.contact_label', 'Contact column title', 'Contact')->columnSpanFull(),
                     ]),
             ]);
     }
