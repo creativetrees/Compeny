@@ -615,6 +615,7 @@ class SiteSettingForm
                                 Select::make('encryption')
                                     ->label('Encryption')
                                     ->native(false)
+                                    ->default('ssl')
                                     ->prefixIcon('heroicon-m-lock-closed')
                                     ->options([
                                         'ssl' => 'SSL — port 465',
@@ -634,8 +635,7 @@ class SiteSettingForm
                                     ->label('Username')
                                     ->prefixIcon('heroicon-m-user')
                                     ->placeholder('support@creativetreesgroup.com')
-                                    ->helperText('Usually the full email address. Empty = use the address above.')
-                                    ->columnSpanFull(),
+                                    ->helperText('Usually the full email address. Empty = use the address above.'),
                                 TextInput::make('password')
                                     ->label('Password')
                                     ->password()
@@ -643,8 +643,7 @@ class SiteSettingForm
                                     ->autocomplete('new-password')
                                     ->dehydrated(fn ($state) => filled($state))
                                     ->prefixIcon('heroicon-m-key')
-                                    ->helperText('Stored encrypted (AES-256). Leave blank to keep the saved password; type to set or replace it.')
-                                    ->columnSpanFull(),
+                                    ->helperText('Stored encrypted (AES-256). Leave blank to keep the saved password; type to set or replace it.'),
                             ]),
                     ])
                     ->columns(2)

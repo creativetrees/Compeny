@@ -37,6 +37,8 @@ return new class extends Migration
             $table->string('contact_address')->nullable();
             $table->json('social_links')->nullable();
             $table->json('stats')->nullable();              // [{label, value}]
+            $table->json('emails')->nullable();             // role-based mail accounts [{role, address, mailer, host, port, encryption, username}]
+            $table->text('email_secrets')->nullable();      // encrypted (AES-256) per-account SMTP passwords {address: password}
 
             // ── SEO + analytics ──
             $table->string('seo_title')->nullable();

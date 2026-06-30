@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             FaqSeeder::class,
             StartStepSeeder::class,
             NavLinkSeeder::class,
+            MailAccountSeeder::class,
         ]);
     }
 
