@@ -41,18 +41,47 @@ class SiteSettingForm
                         self::statsTab(),
                         self::seoTab(),
                         self::footerTab(),
+                        self::systemTab(),
                     ]),
             ]);
     }
 
-    /** Short single-line copy field (eyebrow, title line, label, url). */
-    private static function t(string $path, string $label, ?string $placeholder = null): TextInput
+    /** Short single-line copy field (eyebrow, title line, label, url) — auto-iconed. */
+    private static function t(string $path, string $label, ?string $placeholder = null, ?string $icon = null): TextInput
     {
-        return TextInput::make($path)->label($label)->placeholder($placeholder);
+        return TextInput::make($path)->label($label)->placeholder($placeholder)->prefixIcon($icon ?? self::guessIcon($label));
     }
 
-    /** Multi-line copy field (intro, supporting paragraph). Plain text — rendered via {{ }}. */
-    private static function ta(string $path, string $label, ?string $placeholder = null): Textarea
+    /** Pick a role-appropriate prefix icon from the field label so every text field is iconed consistently. */
+    private static function guessIcon(string $label): string
+    {
+        $l = mb_strtolower($label);
+
+        return match (true) {
+            str_contains($l, 'eyebrow') => 'heroicon-m-tag',
+            str_contains($l, 'url') => 'heroicon-m-link',
+            str_contains($l, 'link') => 'heroicon-m-arrow-top-right-on-square',
+            str_contains($l, 'tombol') || str_contains($l, 'cta') || str_contains($l, 'submit') || str_contains($l, 'button') => 'heroicon-m-cursor-arrow-rays',
+            str_contains($l, 'judul') || str_contains($l, 'title') => 'heroicon-m-bars-3-bottom-left',
+            str_contains($l, 'badge') => 'heroicon-m-check-badge',
+            str_contains($l, 'label') || str_contains($l, 'keterangan') => 'heroicon-m-bookmark',
+            str_contains($l, 'catatan') || str_contains($l, 'note') => 'heroicon-m-chat-bubble-bottom-center-text',
+            str_contains($l, 'suffix') || str_contains($l, 'jumlah') => 'heroicon-m-hashtag',
+            str_contains($l, 'pesan') || str_contains($l, 'empty') => 'heroicon-m-information-circle',
+            default => 'heroicon-m-pencil',
+        };
+    }
+
+    /** Multi-line RICH copy field (intro, description, message) — large editor. */
+    private static function ta(string $path, string $label, ?string $placeholder = null): RichEditor
+    {
+        return RichEditor::make($path)->label($label)
+            ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')
+            ->columnSpanFull();
+    }
+
+    /** Plain multi-line field — for multi-line titles rendered with nl2br on the frontend. */
+    private static function taPlain(string $path, string $label, ?string $placeholder = null): Textarea
     {
         return Textarea::make($path)->label($label)->placeholder($placeholder)->rows(3)->columnSpanFull();
     }
@@ -72,6 +101,33 @@ class SiteSettingForm
             ->searchable()
             ->options(SitePage::options())
             ->prefixIcon('heroicon-m-link');
+    }
+
+    // ── System: maintenance + error pages ──────────────────────────────────
+    private static function systemTab(): Tab
+    {
+        return Tab::make('Sistem')
+            ->icon('heroicon-o-wrench-screwdriver')
+            ->schema([
+                Section::make('Mode maintenance')
+                    ->description('Saat aktif, pengunjung umum melihat halaman maintenance. Admin & yang login tetap bisa akses untuk mematikannya. Tanpa artisan.')
+                    ->icon('heroicon-m-wrench')
+                    ->schema([
+                        Toggle::make('page_content.system.maintenance')->label('Aktifkan mode maintenance')->helperText('Situs publik menampilkan halaman maintenance saat ON.')->inline(false),
+                        self::t('page_content.system.maint_title', 'Judul', "We'll be right back"),
+                        self::ta('page_content.system.maint_message', 'Pesan'),
+                    ]),
+                Section::make('Halaman error')
+                    ->description('Teks halaman error. Default tetap tampil walau DB mati (crash-safe).')
+                    ->icon('heroicon-m-exclamation-triangle')
+                    ->columns(2)
+                    ->schema([
+                        self::t('page_content.system.e404_title', '404 — judul', "This page isn't here."),
+                        self::ta('page_content.system.e404_message', '404 — pesan'),
+                        self::t('page_content.system.e500_title', '500 — judul', 'Something broke on our end.'),
+                        self::ta('page_content.system.e500_message', '500 — pesan'),
+                    ]),
+            ]);
     }
 
     // ── Brand & Logo (header identity) ──────────────────────────────────────
@@ -116,7 +172,7 @@ class SiteSettingForm
                         Repeater::make('nav_menu')
                             ->hiddenLabel()
                             ->schema([
-                                TextInput::make('label')->label('Teks')->required()->placeholder('Work'),
+                                TextInput::make('label')->label('Teks')->required()->placeholder('Work')->prefixIcon('heroicon-m-bookmark'),
                                 self::pageSelect('url', 'Halaman tujuan')->required(),
                             ])
                             ->columns(2)->reorderable()->collapsible()
@@ -176,28 +232,28 @@ class SiteSettingForm
         return Tab::make('Home')
             ->icon('heroicon-o-home')
             ->schema([
-                Section::make('Capabilities')->columns(2)->schema([
+                Section::make('Capabilities')->icon('heroicon-m-squares-2x2')->columns(2)->schema([
                     self::t('page_content.home.cap_eyebrow', 'Eyebrow', 'Capabilities'),
                     self::t('page_content.home.cap_title', 'Judul', 'Everything you need to launch and scale.'),
                     self::ta('page_content.home.cap_intro', 'Intro'),
                 ]),
-                Section::make('Selected work')->columns(2)->schema([
+                Section::make('Selected work')->icon('heroicon-m-briefcase')->columns(2)->schema([
                     self::t('page_content.home.work_eyebrow', 'Eyebrow', 'Selected work'),
                     self::t('page_content.home.work_title', 'Judul', 'Proof, not promises.'),
                     self::ta('page_content.home.work_intro', 'Deskripsi', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
                     self::t('page_content.home.work_link', 'Link "semua proyek"', 'All work →'),
                 ]),
-                Section::make('Process')->columns(2)->schema([
+                Section::make('Process')->icon('heroicon-m-arrow-path-rounded-square')->columns(2)->schema([
                     self::t('page_content.home.process_eyebrow', 'Eyebrow', 'How we work'),
                     self::t('page_content.home.process_title', 'Judul', 'A process built to de-risk the work.'),
                     self::ta('page_content.home.process_intro', 'Intro'),
                 ]),
-                Section::make('Signal / testimoni')->columns(2)->schema([
+                Section::make('Signal / testimoni')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                     self::t('page_content.home.signal_eyebrow', 'Eyebrow', 'Signal'),
                     self::t('page_content.home.signal_title', 'Judul', 'What partners say.'),
                     self::ta('page_content.home.signal_intro', 'Deskripsi', "Unfiltered words from the founders and teams we've embedded with."),
                 ]),
-                Section::make('Lainnya')->columns(2)->schema([
+                Section::make('Lainnya')->icon('heroicon-m-ellipsis-horizontal-circle')->columns(2)->schema([
                     self::t('page_content.home.trusted_eyebrow', 'Trusted-by eyebrow', 'Trusted by innovative teams'),
                 ]),
             ]);
@@ -211,6 +267,7 @@ class SiteSettingForm
             ->schema([
                 Section::make('Halaman Work')
                     ->description('Header halaman /work.')
+                    ->icon('heroicon-m-briefcase')
                     ->columns(2)
                     ->schema([
                         self::t('page_content.work.hero_eyebrow', 'Eyebrow', 'Selected work'),
@@ -220,8 +277,9 @@ class SiteSettingForm
                     ]),
                 Section::make('Detail proyek — label & tombol')
                     ->description('Teks di halaman detail proyek /work/{slug}.')
+                    ->icon('heroicon-m-rectangle-stack')
                     ->collapsed()
-                    ->columns(2)
+                    ->columns(3)
                     ->schema([
                         self::t('page_content.work.detail_back', 'Tombol kembali', 'Work'),
                         self::t('page_content.work.detail_client', 'Label Client', 'Client'),
@@ -246,6 +304,7 @@ class SiteSettingForm
             ->schema([
                 Section::make('Halaman Products')
                     ->description('Header halaman /products (tertaut dari footer) — bukan /work.')
+                    ->icon('heroicon-m-cube')
                     ->columns(2)
                     ->schema([
                         self::t('page_content.products.hero_eyebrow', 'Eyebrow', 'Products'),
@@ -266,13 +325,13 @@ class SiteSettingForm
         return Tab::make('Services')
             ->icon('heroicon-o-squares-2x2')
             ->schema([
-                Section::make('Hero')->columns(2)->schema([
+                Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.services.hero_eyebrow', 'Eyebrow', 'Services'),
                     self::t('page_content.services.hero_line1', 'Judul baris 1', 'Capabilities'),
                     self::t('page_content.services.hero_line2', 'Judul baris 2', 'that compound.'),
                     self::rich('page_content.services.hero_intro', 'Intro'),
                 ]),
-                Section::make('Disciplines')->columns(2)->schema([
+                Section::make('Disciplines')->icon('heroicon-m-squares-plus')->columns(2)->schema([
                     self::t('page_content.services.disciplines_eyebrow', 'Eyebrow', 'The disciplines'),
                     self::t('page_content.services.disciplines_label', 'Label', 'Pick one — or the full stack'),
                     self::ta('page_content.services.disciplines_intro', 'Deskripsi', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.'),
@@ -288,12 +347,12 @@ class SiteSettingForm
         return Tab::make('Pricing')
             ->icon('heroicon-o-banknotes')
             ->schema([
-                Section::make('Hero')->columns(2)->schema([
+                Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.pricing.hero_eyebrow', 'Eyebrow', 'Pricing'),
-                    self::ta('page_content.pricing.hero_title', 'Judul', "Engagements,\npriced honestly."),
+                    self::taPlain('page_content.pricing.hero_title', 'Judul', "Engagements,\npriced honestly."),
                     self::rich('page_content.pricing.hero_intro', 'Intro'),
                 ]),
-                Section::make('Tiers')->columns(2)->schema([
+                Section::make('Tiers')->icon('heroicon-m-squares-2x2')->columns(2)->schema([
                     self::t('page_content.pricing.tiers_eyebrow', 'Eyebrow', 'Engagement tiers'),
                     self::t('page_content.pricing.tiers_note', 'Catatan', 'Lead-based · scoped per project · no checkout'),
                     self::ta('page_content.pricing.tiers_intro', 'Deskripsi', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.'),
@@ -303,12 +362,12 @@ class SiteSettingForm
                     self::pageSelect('page_content.pricing.tier_cta_url', 'URL tombol tier'),
                     self::t('page_content.pricing.studio_note', 'Catatan studio (sebelum daftar layanan)', 'Every engagement draws on the full studio —'),
                 ]),
-                Section::make('Included')->columns(2)->schema([
+                Section::make('Included')->icon('heroicon-m-check-circle')->columns(2)->schema([
                     self::t('page_content.pricing.included_eyebrow', 'Eyebrow', 'No fine print'),
                     self::t('page_content.pricing.included_title', 'Judul', "What's always included."),
                     self::ta('page_content.pricing.included_intro', 'Intro'),
                 ]),
-                Section::make('FAQ')->columns(2)->schema([
+                Section::make('FAQ')->icon('heroicon-m-question-mark-circle')->columns(2)->schema([
                     self::t('page_content.pricing.faq_eyebrow', 'Eyebrow', 'FAQ'),
                     self::t('page_content.pricing.faq_title', 'Judul', 'Questions, answered.'),
                     self::ta('page_content.pricing.faq_intro', 'Deskripsi', 'The questions we hear most, answered straight — before you ever send a brief.'),
@@ -322,12 +381,12 @@ class SiteSettingForm
         return Tab::make('Process')
             ->icon('heroicon-o-arrow-path-rounded-square')
             ->schema([
-                Section::make('Hero')->columns(2)->schema([
+                Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.process.hero_eyebrow', 'Eyebrow', 'How we work'),
                     self::t('page_content.process.hero_title', 'Judul', 'A process built to de-risk the work.'),
                     self::rich('page_content.process.hero_intro', 'Intro'),
                 ]),
-                Section::make('Sequence & principles')->columns(2)->schema([
+                Section::make('Sequence & principles')->icon('heroicon-m-list-bullet')->columns(2)->schema([
                     self::t('page_content.process.sequence_eyebrow', 'Sequence eyebrow', 'The sequence'),
                     self::ta('page_content.process.sequence_intro', 'Sequence deskripsi', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.'),
                     self::t('page_content.process.phases_label', 'Label jumlah fase', 'phases'),
@@ -346,9 +405,9 @@ class SiteSettingForm
         return Tab::make('Team')
             ->icon('heroicon-o-user-group')
             ->schema([
-                Section::make('Hero')->columns(2)->schema([
+                Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.team.hero_eyebrow', 'Eyebrow', 'Team'),
-                    self::ta('page_content.team.hero_title', 'Judul', "The people behind\nthe work."),
+                    self::taPlain('page_content.team.hero_title', 'Judul', "The people behind\nthe work."),
                     self::rich('page_content.team.hero_intro', 'Intro'),
                     self::t('page_content.team.studio_eyebrow', 'Studio eyebrow', 'The studio'),
                     self::ta('page_content.team.studio_intro', 'Studio deskripsi', "The senior people who'll actually do your work — no account layers, no handoffs."),
@@ -365,21 +424,21 @@ class SiteSettingForm
         return Tab::make('About')
             ->icon('heroicon-o-information-circle')
             ->schema([
-                Section::make('Hero')->columns(2)->schema([
+                Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.about.hero_eyebrow', 'Eyebrow', 'About'),
-                    TextInput::make('about_heading')->label('Judul')->placeholder('A studio built like a product team.')->columnSpanFull(),
+                    TextInput::make('about_heading')->label('Judul')->placeholder('A studio built like a product team.')->prefixIcon('heroicon-m-bars-3-bottom-left')->columnSpanFull(),
                     RichEditor::make('about_body')
                         ->label('Isi')
                         ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/about')->fileAttachmentsVisibility('public')
                         ->helperText('Editor teks kaya.')
                         ->columnSpanFull(),
                 ]),
-                Section::make('Values')->columns(2)->schema([
+                Section::make('Values')->icon('heroicon-m-sparkles')->columns(2)->schema([
                     self::t('page_content.about.values_eyebrow', 'Eyebrow', 'What we value'),
                     self::t('page_content.about.values_title', 'Judul', 'How we think.'),
                     self::ta('page_content.about.values_intro', 'Deskripsi', 'The handful of beliefs that shape how we design, build, and decide.'),
                 ]),
-                Section::make('Team & clients')->columns(2)->schema([
+                Section::make('Team & clients')->icon('heroicon-m-user-group')->columns(2)->schema([
                     self::t('page_content.about.team_eyebrow', 'Team eyebrow', 'The team'),
                     self::t('page_content.about.team_title', 'Team judul', 'Senior, embedded, accountable.'),
                     self::ta('page_content.about.team_intro', 'Team deskripsi', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.'),
@@ -396,14 +455,14 @@ class SiteSettingForm
         return Tab::make('Contact & Start')
             ->icon('heroicon-o-chat-bubble-left-right')
             ->schema([
-                Section::make('Halaman Contact — hero')->columns(2)->schema([
+                Section::make('Halaman Contact — hero')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                     self::t('page_content.contact.hero_eyebrow', 'Eyebrow', 'Contact'),
                     self::t('page_content.contact.hero_title', 'Judul', "Let's talk."),
                     self::rich('page_content.contact.hero_intro', 'Intro'),
                 ]),
-                Section::make('Halaman Start — hero')->columns(2)->schema([
+                Section::make('Halaman Start — hero')->icon('heroicon-m-paper-airplane')->columns(2)->schema([
                     self::t('page_content.start.hero_eyebrow', 'Eyebrow', 'Start a project'),
-                    self::ta('page_content.start.hero_title', 'Judul', "Tell us where\nyou're headed."),
+                    self::taPlain('page_content.start.hero_title', 'Judul', "Tell us where\nyou're headed."),
                     self::rich('page_content.start.hero_intro', 'Intro'),
                     self::t('page_content.start.submit_label', 'Tombol submit', 'Send brief'),
                     self::t('page_content.start.reply_note', 'Catatan balasan', 'We reply within 1 business day.'),
@@ -433,7 +492,7 @@ class SiteSettingForm
                         Repeater::make('social_links')
                             ->hiddenLabel()
                             ->schema([
-                                Select::make('platform')->required()->native(false)->options([
+                                Select::make('platform')->required()->native(false)->prefixIcon('heroicon-m-globe-alt')->options([
                                     'X' => 'X (Twitter)', 'LinkedIn' => 'LinkedIn', 'GitHub' => 'GitHub',
                                     'Instagram' => 'Instagram', 'Dribbble' => 'Dribbble', 'Behance' => 'Behance',
                                     'YouTube' => 'YouTube', 'Facebook' => 'Facebook', 'TikTok' => 'TikTok',
@@ -462,7 +521,7 @@ class SiteSettingForm
                             ->hiddenLabel()
                             ->schema([
                                 TextInput::make('value')->label('Angka')->required()->placeholder('120+')->prefixIcon('heroicon-m-hashtag'),
-                                TextInput::make('label')->label('Keterangan')->required()->placeholder('Proyek selesai'),
+                                TextInput::make('label')->label('Keterangan')->required()->placeholder('Proyek selesai')->prefixIcon('heroicon-m-bookmark'),
                             ])
                             ->columns(2)->reorderable()->collapsible()
                             ->itemLabel(fn (array $state): ?string => $state['label'] ?? null)
@@ -492,7 +551,6 @@ class SiteSettingForm
                     ->columns(2)
                     ->schema([
                         TextInput::make('google_analytics_id')->label('Google Analytics ID (GA4)')->placeholder('G-XXXXXXXXXX')->prefixIcon('heroicon-m-presentation-chart-line')->helperText('Measurement ID GA4. Kosong = nonaktif.')->rule('regex:/^(G|UA|GT|AW)-?[A-Z0-9\-]+$/i')->validationMessages(['regex' => 'Format ID tidak valid (contoh: G-XXXXXXXXXX).']),
-                        self::t('page_content.seo.google_verification', 'Google Search Console — kode verifikasi', 'abcd1234efgh...')->helperText('Isi nilai "content" dari meta tag google-site-verification (tanpa tag <meta>).'),
                         Toggle::make('seo_noindex')->label('Sembunyikan dari mesin pencari (noindex)')->helperText('Aktifkan untuk staging/privat.')->inline(false),
                     ]),
             ]);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\Maintenance;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -29,6 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Baseline security headers on every web response (public site + admin).
         $middleware->web(append: [
             SecurityHeaders::class,
+            Maintenance::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
