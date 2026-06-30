@@ -77,8 +77,8 @@
                                     placeholder="What are you building, and what does success look like?" />
 
                         <div class="flex items-center gap-4 pt-2">
-                            <button type="submit" data-magnetic class="btn">Send brief</button>
-                            <span class="font-mono text-xs text-faint">We reply within 1 business day.</span>
+                            <button type="submit" data-magnetic class="btn">{{ content('start.submit_label', 'Send brief') }}</button>
+                            <span class="font-mono text-xs text-faint">{{ content('start.reply_note', 'We reply within 1 business day.') }}</span>
                         </div>
                     </form>
                 @endif

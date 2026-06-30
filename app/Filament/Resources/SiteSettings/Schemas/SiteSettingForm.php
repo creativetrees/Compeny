@@ -122,6 +122,7 @@ class SiteSettingForm
                     ->schema([
                         self::t('page_content.header.cta_label', 'Teks tombol', 'Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('page_content.header.cta_url'),
+                        self::t('page_content.header.close_label', 'Teks tombol tutup (menu mobile)', 'Close'),
                     ]),
             ]);
     }
@@ -178,6 +179,7 @@ class SiteSettingForm
                     self::t('page_content.home.work_eyebrow', 'Eyebrow', 'Selected work'),
                     self::t('page_content.home.work_title', 'Judul', 'Proof, not promises.'),
                     self::ta('page_content.home.work_intro', 'Deskripsi', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
+                    self::t('page_content.home.work_link', 'Link "semua proyek"', 'All work →'),
                 ]),
                 Section::make('Process')->columns(2)->schema([
                     self::t('page_content.home.process_eyebrow', 'Eyebrow', 'How we work'),
@@ -210,6 +212,24 @@ class SiteSettingForm
                         self::ta('page_content.work.hero_intro', 'Intro'),
                         self::ta('page_content.work.empty_message', 'Pesan saat belum ada proyek', 'Work is being published — check back soon.'),
                     ]),
+                Section::make('Detail proyek — label & tombol')
+                    ->description('Teks di halaman detail proyek /work/{slug}.')
+                    ->collapsed()
+                    ->columns(2)
+                    ->schema([
+                        self::t('page_content.work.detail_back', 'Tombol kembali', 'Work'),
+                        self::t('page_content.work.detail_client', 'Label Client', 'Client'),
+                        self::t('page_content.work.detail_year', 'Label Year', 'Year'),
+                        self::t('page_content.work.detail_role', 'Label Role', 'Role'),
+                        self::t('page_content.work.detail_overview', 'Label Overview', 'Overview'),
+                        self::t('page_content.work.detail_services', 'Label Services', 'Services'),
+                        self::t('page_content.work.detail_visit', 'Tombol Visit site', 'Visit site'),
+                        self::t('page_content.work.detail_gallery', 'Label Gallery', 'Gallery'),
+                        self::t('page_content.work.detail_frames', 'Suffix jumlah frame', 'frames'),
+                        self::t('page_content.work.more_eyebrow', 'More work — eyebrow', 'Keep looking'),
+                        self::t('page_content.work.more_title', 'More work — judul', 'More work.'),
+                        self::t('page_content.work.all_link', 'Link "semua proyek"', 'All work →'),
+                    ]),
             ]);
     }
 
@@ -228,6 +248,8 @@ class SiteSettingForm
                         self::ta('page_content.products.hero_intro', 'Intro'),
                         self::t('page_content.products.empty_eyebrow', 'Empty-state eyebrow', 'Catalog in progress'),
                         self::ta('page_content.products.empty_message', 'Empty-state pesan'),
+                        self::t('page_content.products.leadtime_label', 'Label lead-time', 'Lead-time · 1–3 weeks'),
+                        self::t('page_content.products.investment_label', 'Label "Investment"', 'Investment'),
                     ]),
             ]);
     }
@@ -249,6 +271,7 @@ class SiteSettingForm
                     self::t('page_content.services.disciplines_label', 'Label', 'Pick one — or the full stack'),
                     self::ta('page_content.services.disciplines_intro', 'Deskripsi', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.'),
                     self::ta('page_content.services.empty_message', 'Pesan saat belum ada layanan', 'Capabilities are being updated. Check back shortly.'),
+                    self::t('page_content.services.featured_label', 'Label "Featured"', 'Featured'),
                 ]),
             ]);
     }
@@ -302,6 +325,7 @@ class SiteSettingForm
                     self::t('page_content.process.principles_title', 'Principles judul', 'The rules that keep the work honest.'),
                     self::ta('page_content.process.principles_intro', 'Principles intro'),
                     self::ta('page_content.process.phases_empty', 'Pesan saat belum ada fase', 'The process is being documented — check back soon.'),
+                    self::t('page_content.process.deliverables_label', 'Label "Deliverables"', 'Deliverables'),
                 ]),
             ]);
     }
@@ -319,6 +343,8 @@ class SiteSettingForm
                     self::t('page_content.team.studio_eyebrow', 'Studio eyebrow', 'The studio'),
                     self::ta('page_content.team.studio_intro', 'Studio deskripsi', "The senior people who'll actually do your work — no account layers, no handoffs."),
                     self::ta('page_content.team.empty_message', 'Pesan saat belum ada anggota tim', 'The studio roster is being assembled. In the meantime, the work speaks for itself.'),
+                    self::t('page_content.team.people_label', 'Suffix "People"', 'People'),
+                    self::t('page_content.team.empty_cta', 'Tombol pada empty-state', 'View work'),
                 ]),
             ]);
     }
@@ -369,6 +395,8 @@ class SiteSettingForm
                     self::t('page_content.start.hero_eyebrow', 'Eyebrow', 'Start a project'),
                     self::ta('page_content.start.hero_title', 'Judul', "Tell us where\nyou're headed."),
                     self::ta('page_content.start.hero_intro', 'Intro'),
+                    self::t('page_content.start.submit_label', 'Tombol submit', 'Send brief'),
+                    self::t('page_content.start.reply_note', 'Catatan balasan', 'We reply within 1 business day.'),
                 ]),
             ]);
     }

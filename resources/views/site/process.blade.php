@@ -42,7 +42,7 @@
                     <p class="mt-3 text-sm leading-relaxed text-muted">{{ $phase->body }}</p>
 
                     <div class="mt-auto border-t border-line pt-6">
-                        <div class="label-mono mb-3 text-faint">Deliverables</div>
+                        <div class="label-mono mb-3 text-faint">{{ content('process.deliverables_label', 'Deliverables') }}</div>
                         <div class="flex flex-wrap gap-2">
                             @foreach ($phase->deliverables ?? [] as $deliverable)
                                 <span class="border border-line px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-wide text-muted transition-colors duration-300 group-hover:border-ink/25 group-hover:text-ink">{{ $deliverable }}</span>

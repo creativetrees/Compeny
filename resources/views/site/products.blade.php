@@ -26,7 +26,7 @@
         @if ($products->isNotEmpty())
             <div class="mb-12 flex items-end justify-between gap-6">
                 <x-ui.eyebrow plain>▪ {{ $products->count() }} {{ \Illuminate\Support\Str::plural('product', $products->count()) }} available</x-ui.eyebrow>
-                <span class="label-mono hidden text-faint sm:inline-block">Lead-time · 1–3 weeks</span>
+                <span class="label-mono hidden text-faint sm:inline-block">{{ content('products.leadtime_label', 'Lead-time · 1–3 weeks') }}</span>
             </div>
 
             <div class="grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
@@ -76,7 +76,7 @@
                             <div class="rule"></div>
                             <div class="mt-6 flex flex-wrap items-end justify-between gap-4">
                                 <div>
-                                    <div class="label-mono text-faint">Investment</div>
+                                    <div class="label-mono text-faint">{{ content('products.investment_label', 'Investment') }}</div>
                                     <div class="mt-1.5 font-mono text-xl font-bold tracking-tight">{{ $product->price_label }}</div>
                                 </div>
                                 <x-ui.button :href="$product->cta_url ?? '/start'" variant="ghost" :magnetic="false">

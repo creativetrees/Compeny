@@ -110,7 +110,7 @@
                 <x-ui.heading :eyebrow="content('home.work_eyebrow', 'Selected work')" :title="content('home.work_title', 'Proof, not promises.')">
                     {{ content('home.work_intro', "A selection of products we've designed, built, and shipped — and the outcomes that followed.") }}
                 </x-ui.heading>
-                <a href="/work" class="link-underline hidden shrink-0 font-mono text-xs uppercase tracking-widest sm:inline-block">All work →</a>
+                <a href="/work" class="link-underline hidden shrink-0 font-mono text-xs uppercase tracking-widest sm:inline-block">{{ content('home.work_link', 'All work →') }}</a>
             </div>
 
             <div class="mt-14 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3" data-stagger>

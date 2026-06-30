@@ -86,7 +86,7 @@
     >
         <div class="frame !border-0 flex h-[68px] items-center justify-between">
             <span class="font-mono text-[0.92rem] font-bold uppercase tracking-tight">{{ $settings->brand_name ?? 'Creative Trees Group' }}</span>
-            <button @click="closeMenu()" class="font-mono text-xs uppercase tracking-widest" aria-label="Close menu">Close ✕</button>
+            <button @click="closeMenu()" class="font-mono text-xs uppercase tracking-widest" aria-label="Close menu">{{ content('header.close_label', 'Close') }} ✕</button>
         </div>
 
         <nav class="frame !border-0 mt-6 flex flex-1 flex-col gap-1" aria-label="Mobile">

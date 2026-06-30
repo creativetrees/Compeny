@@ -40,7 +40,7 @@
                         </span>
                         <div class="flex items-center gap-3 pt-1">
                             @if ($service->is_featured)
-                                <span class="inline-flex items-center gap-1.5 font-mono text-[0.55rem] uppercase tracking-widest text-faint"><span class="h-1.5 w-1.5 rounded-full bg-ink"></span>Featured</span>
+                                <span class="inline-flex items-center gap-1.5 font-mono text-[0.55rem] uppercase tracking-widest text-faint"><span class="h-1.5 w-1.5 rounded-full bg-ink"></span>{{ content('services.featured_label', 'Featured') }}</span>
                             @endif
                             <span class="label-mono text-faint">{{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
                         </div>

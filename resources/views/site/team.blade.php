@@ -24,7 +24,7 @@
     <section class="frame border-t border-line py-20 md:py-28">
         <div class="flex items-end justify-between gap-6">
             <x-ui.eyebrow plain>▪ {{ content('team.studio_eyebrow', 'The studio') }}</x-ui.eyebrow>
-            <span class="label-mono shrink-0">{{ str_pad($members->count(), 2, '0', STR_PAD_LEFT) }} / People</span>
+            <span class="label-mono shrink-0">{{ str_pad($members->count(), 2, '0', STR_PAD_LEFT) }} / {{ content('team.people_label', 'People') }}</span>
         </div>
 
         <p class="measure mt-6 text-[1rem] text-muted">{{ content('team.studio_intro', "The senior people who'll actually do your work — no account layers, no handoffs.") }}</p>
@@ -82,7 +82,7 @@
                         {{ content('team.empty_message', 'The studio roster is being assembled. In the meantime, the work speaks for itself.') }}
                     </p>
                     <div class="mt-7">
-                        <x-ui.button href="/work" variant="ghost" :magnetic="false">View work</x-ui.button>
+                        <x-ui.button href="/work" variant="ghost" :magnetic="false">{{ content('team.empty_cta', 'View work') }}</x-ui.button>
                     </div>
                 </div>
             @endforelse
