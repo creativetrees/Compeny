@@ -549,3 +549,48 @@
     to   { opacity: 1; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: reduce) { .faq-panel { animation: none; } }
+
+/* ── System pages on a dark surface (security "Access blocked") ──────────── */
+/* Ghost buttons need light ink + light border on dark backgrounds. */
+.surface-dark .btn--ghost {
+    --btn-fg: var(--color-paper);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+.surface-dark .btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+/* The char-field canvas paints near-black glyphs; invert it on dark surfaces so
+   the same signature reads as light glyphs (alpha is preserved by invert). */
+.surface-dark .charfield canvas {
+    filter: blur(0.6px) invert(1);
+}
+
+/* A11y: keep keyboard focus visible on dark surfaces (security page). */
+.surface-dark :focus-visible {
+    outline-color: var(--color-paper);
+}
+
+/* ── Rich-text content from the CMS RichEditor (tables, lists, headings…) ──── */
+.richtext > :first-child { margin-top: 0; }
+.richtext > :last-child { margin-bottom: 0; }
+.richtext p { margin: 0; }
+.richtext p + p { margin-top: 0.75rem; }
+.richtext a { text-decoration: underline; text-underline-offset: 2px; }
+.richtext a:hover { color: var(--color-ink); }
+.richtext strong { font-weight: 600; color: var(--color-ink); }
+.richtext ul { list-style: disc; padding-left: 1.25rem; margin: 0.75rem 0; }
+.richtext ol { list-style: decimal; padding-left: 1.25rem; margin: 0.75rem 0; }
+.richtext li { margin: 0.25rem 0; }
+.richtext h2 { font-family: var(--font-mono); font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: -0.01em; color: var(--color-ink); margin: 1.25rem 0 0.5rem; }
+.richtext h3 { font-weight: 600; color: var(--color-ink); margin: 1rem 0 0.4rem; }
+.richtext blockquote { border-left: 2px solid var(--color-line); padding-left: 1.25rem; font-style: italic; margin: 0.75rem 0; }
+.richtext hr { border: 0; border-top: 1px solid var(--color-line); margin: 1.25rem 0; }
+.richtext table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.92em; }
+.richtext th, .richtext td { border: 1px solid var(--color-line); padding: 0.5rem 0.75rem; text-align: left; vertical-align: top; }
+.richtext th { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--color-panel); color: var(--color-ink); font-weight: 600; }
+.richtext td { color: var(--color-muted); }
+/* Dark surface (security page) — flip borders/fills to light */
+.surface-dark .richtext th, .surface-dark .richtext td { border-color: rgba(255, 255, 255, 0.18); }
+.surface-dark .richtext th { background: rgba(255, 255, 255, 0.06); color: var(--color-paper); }
+.surface-dark .richtext td { color: #b9b9b4; }
+.surface-dark .richtext blockquote { border-left-color: rgba(255, 255, 255, 0.2); }
