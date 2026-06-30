@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\LeadReceived;
 use App\Mail\NewLeadMail;
+use App\Models\SiteSetting;
 use App\Models\User;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
@@ -15,8 +16,14 @@ class NotifyTeamOfLead
         $lead = $event->lead;
 
         // 1) Email the studio inbox (configured mailer; logs in dev, SMTP on cPanel).
+        //    Recipient is CMS-driven: Site Settings notification email → public
+        //    contact email → the mailer's from address (last-resort fallback).
         try {
-            Mail::to(config('mail.from.address'))->send(new NewLeadMail($lead));
+            $settings = SiteSetting::current();
+            $to = data_get($settings->page_content, 'system.notify_email')
+                ?: ($settings->contact_email ?: config('mail.from.address'));
+
+            Mail::to($to)->send(new NewLeadMail($lead));
         } catch (\Throwable $e) {
             report($e);
         }

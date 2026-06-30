@@ -122,10 +122,20 @@ class SiteSettingForm
                     ->icon('heroicon-m-exclamation-triangle')
                     ->columns(2)
                     ->schema([
-                        self::t('page_content.system.e404_title', '404 — judul', "This page isn't here."),
+                        self::t('page_content.system.e401_title', '401 — judul', 'Sign in to continue.'),
+                        self::ta('page_content.system.e401_message', '401 — pesan'),
+                        self::t('page_content.system.e403_title', '403 — judul', 'You can’t open this.'),
+                        self::ta('page_content.system.e403_message', '403 — pesan'),
+                        self::t('page_content.system.e404_title', '404 — judul', 'This page isn’t here.'),
                         self::ta('page_content.system.e404_message', '404 — pesan'),
+                        self::t('page_content.system.e419_title', '419 — judul', 'Your session expired.'),
+                        self::ta('page_content.system.e419_message', '419 — pesan'),
+                        self::t('page_content.system.e429_title', '429 — judul', 'Slow down a moment.'),
+                        self::ta('page_content.system.e429_message', '429 — pesan'),
                         self::t('page_content.system.e500_title', '500 — judul', 'Something broke on our end.'),
                         self::ta('page_content.system.e500_message', '500 — pesan'),
+                        self::t('page_content.system.e503_title', '503 — judul', 'We’re temporarily offline.'),
+                        self::ta('page_content.system.e503_message', '503 — pesan'),
                     ]),
             ]);
     }
@@ -484,6 +494,7 @@ class SiteSettingForm
                         TextInput::make('contact_email')->label('Email')->email()->prefixIcon('heroicon-m-envelope'),
                         TextInput::make('contact_phone')->label('Telepon')->tel()->prefixIcon('heroicon-m-phone'),
                         TextInput::make('contact_address')->label('Alamat')->prefixIcon('heroicon-m-map-pin')->columnSpanFull(),
+                        TextInput::make('page_content.system.notify_email')->label('Email penerima notifikasi (form lead)')->email()->placeholder('support@creativetreesgroup.com')->helperText('Tujuan email saat ada lead baru. Kosong = pakai Email kontak di atas.')->prefixIcon('heroicon-m-inbox-arrow-down')->columnSpanFull(),
                     ]),
                 Section::make('Sosial media')
                     ->description('Pilih platform & isi URL profil. Tarik untuk mengurutkan.')
