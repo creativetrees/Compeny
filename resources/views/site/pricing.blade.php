@@ -56,7 +56,7 @@
                                 <div class="mb-8 flex h-5 items-center">
                                     @if ($featured)
                                         <span class="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-paper">
-                                            <span class="h-1.5 w-1.5 rounded-full bg-paper" aria-hidden="true"></span>Most popular
+                                            <span class="h-1.5 w-1.5 rounded-full bg-paper" aria-hidden="true"></span>{{ content('pricing.popular_label', 'Most popular') }}
                                         </span>
                                     @endif
                                 </div>
@@ -88,7 +88,7 @@
                                 </ul>
 
                                 <div class="mt-auto pt-10">
-                                    <x-ui.button href="/start" :variant="$featured ? 'invert' : 'solid'" class="w-full justify-center">Start a project</x-ui.button>
+                                    <x-ui.button href="{{ content('pricing.tier_cta_url', '/start') }}" :variant="$featured ? 'invert' : 'solid'" class="w-full justify-center">{{ content('pricing.tier_cta', 'Start a project') }}</x-ui.button>
                                 </div>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
 
         @if (isset($services) && $services->isNotEmpty())
             <p class="mt-10 text-center label-mono text-faint">
-                Every engagement draws on the full studio — {{ $services->pluck('title')->join(' · ') }}.
+                {{ content('pricing.studio_note', 'Every engagement draws on the full studio —') }} {{ $services->pluck('title')->join(' · ') }}.
             </p>
         @endif
     </section>

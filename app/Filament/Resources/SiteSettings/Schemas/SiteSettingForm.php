@@ -298,6 +298,10 @@ class SiteSettingForm
                     self::t('page_content.pricing.tiers_note', 'Catatan', 'Lead-based · scoped per project · no checkout'),
                     self::ta('page_content.pricing.tiers_intro', 'Deskripsi', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.'),
                     self::ta('page_content.pricing.tiers_empty', 'Pesan saat belum ada tier', 'Engagement tiers are being finalised — check back soon.'),
+                    self::t('page_content.pricing.popular_label', 'Badge "Most popular"', 'Most popular'),
+                    self::t('page_content.pricing.tier_cta', 'Tombol pada kartu tier', 'Start a project'),
+                    self::pageSelect('page_content.pricing.tier_cta_url', 'URL tombol tier'),
+                    self::t('page_content.pricing.studio_note', 'Catatan studio (sebelum daftar layanan)', 'Every engagement draws on the full studio —'),
                 ]),
                 Section::make('Included')->columns(2)->schema([
                     self::t('page_content.pricing.included_eyebrow', 'Eyebrow', 'No fine print'),
