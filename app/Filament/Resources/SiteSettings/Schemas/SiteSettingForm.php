@@ -30,6 +30,7 @@ class SiteSettingForm
                         self::heroTab(),
                         self::homeTab(),
                         self::workTab(),
+                        self::productsTab(),
                         self::servicesTab(),
                         self::pricingTab(),
                         self::processTab(),
@@ -200,19 +201,33 @@ class SiteSettingForm
         return Tab::make('Work')
             ->icon('heroicon-o-briefcase')
             ->schema([
-                Section::make('Halaman Work')->columns(2)->schema([
-                    self::t('page_content.work.hero_eyebrow', 'Eyebrow', 'Selected work'),
-                    self::t('page_content.work.hero_title', 'Judul', 'Proof, not promises.'),
-                    self::ta('page_content.work.hero_intro', 'Intro'),
-                ]),
-                Section::make('Halaman Products')->columns(2)->schema([
-                    self::t('page_content.products.hero_eyebrow', 'Eyebrow', 'Products'),
-                    self::t('page_content.products.hero_line1', 'Judul baris 1', 'Starters that ship'),
-                    self::t('page_content.products.hero_line2', 'Judul baris 2', 'in days, not months.'),
-                    self::ta('page_content.products.hero_intro', 'Intro'),
-                    self::t('page_content.products.empty_eyebrow', 'Empty-state eyebrow', 'Catalog in progress'),
-                    self::ta('page_content.products.empty_message', 'Empty-state pesan'),
-                ]),
+                Section::make('Halaman Work')
+                    ->description('Header halaman /work.')
+                    ->columns(2)
+                    ->schema([
+                        self::t('page_content.work.hero_eyebrow', 'Eyebrow', 'Selected work'),
+                        self::t('page_content.work.hero_title', 'Judul', 'Proof, not promises.'),
+                        self::ta('page_content.work.hero_intro', 'Intro'),
+                    ]),
+            ]);
+    }
+
+    private static function productsTab(): Tab
+    {
+        return Tab::make('Products')
+            ->icon('heroicon-o-cube')
+            ->schema([
+                Section::make('Halaman Products')
+                    ->description('Header halaman /products (tertaut dari footer) — bukan /work.')
+                    ->columns(2)
+                    ->schema([
+                        self::t('page_content.products.hero_eyebrow', 'Eyebrow', 'Products'),
+                        self::t('page_content.products.hero_line1', 'Judul baris 1', 'Starters that ship'),
+                        self::t('page_content.products.hero_line2', 'Judul baris 2', 'in days, not months.'),
+                        self::ta('page_content.products.hero_intro', 'Intro'),
+                        self::t('page_content.products.empty_eyebrow', 'Empty-state eyebrow', 'Catalog in progress'),
+                        self::ta('page_content.products.empty_message', 'Empty-state pesan'),
+                    ]),
             ]);
     }
 
