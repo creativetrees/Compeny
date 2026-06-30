@@ -28,6 +28,7 @@ class NavLinkSeeder extends Seeder
                 ['About', '/about'],
                 ['Team', '/team'],
                 ['Products', '/products'],
+                ['Contact', '/contact'],
                 ['Start a project', '/start'],
             ],
         ];
