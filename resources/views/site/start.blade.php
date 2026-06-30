@@ -5,7 +5,7 @@
             <div class="md:col-span-5">
                 <x-ui.eyebrow data-scramble>{{ content('start.hero_eyebrow', 'Start a project') }}</x-ui.eyebrow>
                 <h1 class="display mt-6 text-[2.4rem] leading-[0.98] sm:text-5xl" data-reveal>
-                    {!! nl2br(e(content('start.hero_title', "Tell us where\nyou're headed."))) !!}
+                    {!! nl2br(e(content_title('start.hero_title', "Tell us where\nyou're headed."))) !!}
                 </h1>
                 <p class="mt-6 max-w-sm text-[0.97rem] text-muted" data-reveal data-reveal-delay="0.1">
                     {!! content_rich('start.hero_intro', "Share a few details about what you're building. We'll tell you the shortest honest path to get there.") !!}

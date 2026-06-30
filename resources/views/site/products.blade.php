@@ -11,8 +11,8 @@
             <x-ui.eyebrow data-scramble>{{ content('products.hero_eyebrow', 'Products') }}</x-ui.eyebrow>
 
             <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]">
-                <span class="block" data-reveal data-reveal-delay="0.08">{{ content('products.hero_line1', 'Starters that ship') }}</span>
-                <span class="block" data-reveal data-reveal-delay="0.16">{{ content('products.hero_line2', 'in days, not months.') }}</span>
+                <span class="block" data-reveal data-reveal-delay="0.08">{!! content_rich('products.hero_line1', 'Starters that ship') !!}</span>
+                <span class="block" data-reveal data-reveal-delay="0.16">{!! content_rich('products.hero_line2', 'in days, not months.') !!}</span>
             </h1>
 
             <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.3">
@@ -100,7 +100,7 @@
                         <x-ui.eyebrow plain>▪ {{ content('products.empty_eyebrow', 'Catalog in progress') }}</x-ui.eyebrow>
                     </div>
                     <p class="mt-5 text-sm leading-relaxed text-muted">
-                        {{ content('products.empty_message', "We're packaging our next set of starters. Tell us what you're building and we'll scope a custom path in the meantime.") }}
+                        {!! content_rich('products.empty_message', "We're packaging our next set of starters. Tell us what you're building and we'll scope a custom path in the meantime.") !!}
                     </p>
                     <div class="mt-8 flex justify-center">
                         <x-ui.button href="/start">Start a project</x-ui.button>

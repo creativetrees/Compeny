@@ -37,7 +37,7 @@
                     @endforeach
                 </h1>
 
-                <div class="measure mx-auto mt-8 text-[1rem] text-muted sm:text-[1.05rem] [&_a]:underline [&_a:hover]:text-ink [&_p]:m-0 [&_p+p]:mt-3 [&_strong]:font-semibold [&_strong]:text-ink" data-reveal data-reveal-delay="0.3">
+                <div class="measure mx-auto mt-8 text-[1rem] text-muted sm:text-[1.05rem] richtext" data-reveal data-reveal-delay="0.3">
                     {!! filled($settings->hero_subtitle) ? $settings->hero_subtitle : 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.' !!}
                 </div>
 
@@ -64,8 +64,8 @@
     {{-- ──────────────────── Services ──────────────────── --}}
     @if ($services->isNotEmpty())
         <section id="services" class="frame border-t border-line py-20 md:py-28">
-            <x-ui.heading :eyebrow="content('home.cap_eyebrow', 'Capabilities')" :title="content('home.cap_title', 'Everything you need to launch and scale.')">
-                {{ content('home.cap_intro', 'One embedded team across strategy, design, and engineering — so nothing is lost in handoff.') }}
+            <x-ui.heading :eyebrow="content('home.cap_eyebrow', 'Capabilities')" :title="content_rich('home.cap_title', 'Everything you need to launch and scale.')">
+                {!! content_rich('home.cap_intro', 'One embedded team across strategy, design, and engineering — so nothing is lost in handoff.') !!}
             </x-ui.heading>
 
             <div class="mt-14 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-3" data-stagger>
@@ -107,8 +107,8 @@
     @if ($projects->isNotEmpty())
         <section id="work" class="frame border-t border-line py-20 md:py-28">
             <div class="flex items-end justify-between gap-6">
-                <x-ui.heading :eyebrow="content('home.work_eyebrow', 'Selected work')" :title="content('home.work_title', 'Proof, not promises.')">
-                    {{ content('home.work_intro', "A selection of products we've designed, built, and shipped — and the outcomes that followed.") }}
+                <x-ui.heading :eyebrow="content('home.work_eyebrow', 'Selected work')" :title="content_rich('home.work_title', 'Proof, not promises.')">
+                    {!! content_rich('home.work_intro', "A selection of products we've designed, built, and shipped — and the outcomes that followed.") !!}
                 </x-ui.heading>
                 <a href="/work" class="link-underline hidden shrink-0 font-mono text-xs uppercase tracking-widest sm:inline-block">{{ content('home.work_link', 'All work →') }}</a>
             </div>
@@ -123,8 +123,8 @@
 
     {{-- ──────────────────── Process ──────────────────── --}}
     <section id="process" class="frame border-t border-line py-20 md:py-28">
-        <x-ui.heading :eyebrow="content('home.process_eyebrow', 'How we work')" :title="content('home.process_title', 'A process built to de-risk the work.')">
-            {{ content('home.process_intro', 'Four phases, one continuous flow — each one de-risks the next.') }}
+        <x-ui.heading :eyebrow="content('home.process_eyebrow', 'How we work')" :title="content_rich('home.process_title', 'A process built to de-risk the work.')">
+            {!! content_rich('home.process_intro', 'Four phases, one continuous flow — each one de-risks the next.') !!}
         </x-ui.heading>
 
         <div class="mt-16 grid gap-y-12 lg:grid-cols-4 lg:gap-y-0" data-stagger>
@@ -154,8 +154,8 @@
     @if ($testimonials->isNotEmpty())
         <section class="frame border-t border-line py-20 md:py-28">
             <div class="flex items-end justify-between gap-6">
-                <x-ui.heading :eyebrow="content('home.signal_eyebrow', 'Signal')" :title="content('home.signal_title', 'What partners say.')">
-                    {{ content('home.signal_intro', "Unfiltered words from the founders and teams we've embedded with.") }}
+                <x-ui.heading :eyebrow="content('home.signal_eyebrow', 'Signal')" :title="content_rich('home.signal_title', 'What partners say.')">
+                    {!! content_rich('home.signal_intro', "Unfiltered words from the founders and teams we've embedded with.") !!}
                 </x-ui.heading>
 
                 @if ($testimonials->count() > 1)

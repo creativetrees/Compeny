@@ -3,7 +3,7 @@
     <section class="frame pt-32 pb-12 md:pt-40">
         <x-ui.eyebrow data-scramble>{{ content('work.hero_eyebrow', 'Selected work') }}</x-ui.eyebrow>
         <h1 class="display mt-6 text-[2.6rem] leading-[0.98] sm:text-6xl md:text-7xl" data-reveal>
-            {!! nl2br(e(content('work.hero_title', "Proof, not\npromises."))) !!}
+            {!! nl2br(e(content_title('work.hero_title', "Proof, not\npromises."))) !!}
         </h1>
         <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.1">
             {!! content_rich('work.hero_intro', "A selection of products we've designed and engineered — for founders, teams, and the people who use what they ship.") !!}
@@ -54,7 +54,7 @@
                 </div>
             @empty
                 <p class="col-span-full border border-line py-16 text-center font-mono text-sm uppercase tracking-widest text-faint">
-                    {{ content('work.empty_message', 'Work is being published — check back soon.') }}
+                    {!! content_rich('work.empty_message', 'Work is being published — check back soon.') !!}
                 </p>
             @endforelse
         </div>

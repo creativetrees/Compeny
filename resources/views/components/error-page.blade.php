@@ -34,9 +34,9 @@
     </p>
 
     @if (filled($message))
-        <p class="measure mx-auto mt-5 text-[1rem] leading-relaxed text-muted sys-in sm:text-[1.05rem]" style="animation-delay: 0.3s">
-            {{ $message }}
-        </p>
+        <div class="measure mx-auto mt-5 text-[1rem] leading-relaxed text-muted sys-in sm:text-[1.05rem] richtext" style="animation-delay: 0.3s">
+            {!! $message !!}
+        </div>
     @endif
 
     <div class="mt-9 flex flex-wrap items-center justify-center gap-3 sys-in" style="animation-delay: 0.38s">

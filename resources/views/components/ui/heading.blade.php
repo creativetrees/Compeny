@@ -13,11 +13,11 @@
     @endif
 
     @if ($title)
-        <h2 class="display text-[2rem] leading-[1.02] sm:text-4xl md:text-5xl">{{ $title }}</h2>
+        <h2 class="display text-[2rem] leading-[1.02] sm:text-4xl md:text-5xl">{!! $title !!}</h2>
     @endif
 
     @if (! $slot->isEmpty())
-        <div class="mt-5 max-w-xl text-[0.97rem] text-muted @if ($align === 'center') mx-auto @endif">
+        <div class="richtext mt-5 max-w-xl text-[0.97rem] text-muted @if ($align === 'center') mx-auto @endif">
             {{ $slot }}
         </div>
     @endif

@@ -95,7 +95,7 @@
     @if ($more->isNotEmpty())
         <section class="frame border-t border-line py-20 md:py-28">
             <div class="mb-10 flex items-end justify-between gap-6">
-                <x-ui.heading :eyebrow="content('work.more_eyebrow', 'Keep looking')" :title="content('work.more_title', 'More work.')" />
+                <x-ui.heading :eyebrow="content('work.more_eyebrow', 'Keep looking')" :title="content_rich('work.more_title', 'More work.')" />
                 <a href="/work" class="link-underline hidden shrink-0 font-mono text-xs uppercase tracking-widest sm:inline-block">{{ content('work.all_link', 'All work →') }}</a>
             </div>
             <div class="grid gap-x-8 gap-y-12 sm:grid-cols-2" data-stagger>

@@ -11,8 +11,8 @@
             <x-ui.eyebrow data-scramble>{{ content('services.hero_eyebrow', 'Services') }}</x-ui.eyebrow>
 
             <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]">
-                <span class="block" data-reveal data-reveal-delay="0.1">{{ content('services.hero_line1', 'Capabilities') }}</span>
-                <span class="block" data-reveal data-reveal-delay="0.18">{{ content('services.hero_line2', 'that compound.') }}</span>
+                <span class="block" data-reveal data-reveal-delay="0.1">{!! content_rich('services.hero_line1', 'Capabilities') !!}</span>
+                <span class="block" data-reveal data-reveal-delay="0.18">{!! content_rich('services.hero_line2', 'that compound.') !!}</span>
             </h1>
 
             <p class="mt-7 max-w-xl text-[1.05rem] text-muted" data-reveal data-reveal-delay="0.3">
@@ -28,7 +28,7 @@
             <span class="hidden font-mono text-xs uppercase tracking-widest text-faint sm:inline-block">{{ content('services.disciplines_label', 'Pick one — or the full stack') }}</span>
         </div>
 
-        <p class="measure mt-6 text-[1rem] text-muted">{{ content('services.disciplines_intro', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.') }}</p>
+        <div class="richtext measure mt-6 text-[1rem] text-muted">{!! content_rich('services.disciplines_intro', 'Six disciplines held to one studio standard — engage any on its own, or stack them into a single embedded team.') !!}</div>
 
         {{-- Disciplines — clean capability cards --}}
         <div class="mt-12 grid border-l border-t border-line sm:grid-cols-2 md:mt-16" data-stagger>
@@ -58,7 +58,7 @@
                     @endif
                 </div>
             @empty
-                <p class="border-b border-r border-line p-8 font-mono text-sm uppercase tracking-wide text-faint">{{ content('services.empty_message', 'Capabilities are being updated. Check back shortly.') }}</p>
+                <p class="border-b border-r border-line p-8 font-mono text-sm uppercase tracking-wide text-faint">{!! content_rich('services.empty_message', 'Capabilities are being updated. Check back shortly.') !!}</p>
             @endforelse
         </div>
     </section>

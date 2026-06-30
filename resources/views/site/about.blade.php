@@ -2,6 +2,13 @@
     $aboutBody = filled($settings->about_body)
         ? $settings->about_body
         : '<p>Creative Trees Group is a digital product studio. We design and engineer software the way the best in-house teams do — close to the problem, fast to ship, and obsessed with the details users actually feel.</p>';
+    // about_heading is a RichEditor value but a column (not a page_content key, so
+    // content_title() can't read it): strip block HTML to plain text for the headline.
+    $aboutHeading = trim(html_entity_decode(strip_tags(preg_replace(
+        ['#</(?:p|div|h[1-6]|li)>#i', '#<br\s*/?>#i'],
+        "\n",
+        filled($settings->about_heading) ? $settings->about_heading : 'A studio built like a product team.'
+    )), ENT_QUOTES));
 @endphp
 
 <x-layouts.app title="About" :description="$settings->seo_description">
@@ -13,16 +20,16 @@
         <div class="max-w-4xl">
             <x-ui.eyebrow data-scramble>{{ content('about.hero_eyebrow', 'About') }}</x-ui.eyebrow>
             <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]" data-reveal data-reveal-delay="0.08">
-                {{ $settings->about_heading ?? 'A studio built like a product team.' }}
+                {{ $aboutHeading }}
             </h1>
-            <div class="measure mt-7 space-y-5 text-[1.05rem] leading-relaxed text-muted [&_a]:underline [&_a]:decoration-from-font [&_a:hover]:text-ink [&_blockquote]:border-l-2 [&_blockquote]:border-line [&_blockquote]:pl-5 [&_blockquote]:italic [&_h2]:font-mono [&_h2]:text-lg [&_h2]:font-bold [&_h2]:uppercase [&_h2]:tracking-tight [&_h2]:text-ink [&_h3]:font-semibold [&_h3]:text-ink [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_strong]:text-ink [&_ul]:list-disc [&_ul]:pl-5" data-reveal data-reveal-delay="0.24">{!! $aboutBody !!}</div>
+            <div class="measure mt-7 space-y-5 text-[1.05rem] leading-relaxed text-muted richtext" data-reveal data-reveal-delay="0.24">{!! $aboutBody !!}</div>
         </div>
     </section>
 
     {{-- Values --}}
     <section class="frame border-t border-line py-20 md:py-28">
-        <x-ui.heading :eyebrow="content('about.values_eyebrow', 'What we value')" :title="content('about.values_title', 'How we think.')">
-            {{ content('about.values_intro', 'The handful of beliefs that shape how we design, build, and decide.') }}
+        <x-ui.heading :eyebrow="content('about.values_eyebrow', 'What we value')" :title="content_rich('about.values_title', 'How we think.')">
+            {!! content_rich('about.values_intro', 'The handful of beliefs that shape how we design, build, and decide.') !!}
         </x-ui.heading>
         <div class="mt-14 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4" data-stagger>
             @foreach ($values as $i => $value)
@@ -39,8 +46,8 @@
     @if ($members->isNotEmpty())
         <section class="frame border-t border-line py-20 md:py-28">
             <div class="flex items-end justify-between gap-6">
-                <x-ui.heading :eyebrow="content('about.team_eyebrow', 'The team')" :title="content('about.team_title', 'Senior, embedded, accountable.')">
-                    {{ content('about.team_intro', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.') }}
+                <x-ui.heading :eyebrow="content('about.team_eyebrow', 'The team')" :title="content_rich('about.team_title', 'Senior, embedded, accountable.')">
+                    {!! content_rich('about.team_intro', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.') !!}
                 </x-ui.heading>
                 <a href="/team" class="link-underline hidden shrink-0 font-mono text-xs uppercase tracking-widest sm:inline-block">{{ content('about.team_link', 'Meet everyone') }} →</a>
             </div>
@@ -68,7 +75,7 @@
             <div class="mb-4 flex justify-center">
                 <x-ui.eyebrow plain>▪ {{ content('about.clients_eyebrow', 'In good company') }}</x-ui.eyebrow>
             </div>
-            <p class="mx-auto mb-10 max-w-xl text-center text-sm text-muted">{{ content('about.clients_intro', "A few of the teams we've designed and built alongside.") }}</p>
+            <p class="mx-auto mb-10 max-w-xl text-center text-sm text-muted">{!! content_rich('about.clients_intro', "A few of the teams we've designed and built alongside.") !!}</p>
             <x-ui.marquee :clients="$clients" />
         </section>
     @endif

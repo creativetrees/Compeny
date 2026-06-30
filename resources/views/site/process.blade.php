@@ -15,7 +15,7 @@
             <x-ui.eyebrow data-scramble>{{ content('process.hero_eyebrow', 'How we work') }}</x-ui.eyebrow>
 
             <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]" data-reveal data-reveal-delay="0.08">
-                {{ content('process.hero_title', 'A process built to de-risk the work.') }}
+                {{ content_title('process.hero_title', 'A process built to de-risk the work.') }}
             </h1>
 
             <p class="measure mt-7 text-[1.02rem] text-muted" data-reveal data-reveal-delay="0.24">
@@ -31,7 +31,7 @@
             <span class="label-mono text-faint">{{ $count }} {{ content('process.phases_label', 'phases') }}</span>
         </div>
 
-        <p class="measure mt-6 text-[1rem] text-muted">{{ content('process.sequence_intro', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.') }}</p>
+        <div class="richtext measure mt-6 text-[1rem] text-muted">{!! content_rich('process.sequence_intro', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.') !!}</div>
 
         <div class="mt-12 grid border-l border-t border-line sm:grid-cols-2 md:mt-14" data-stagger>
             @forelse ($phases as $i => $phase)
@@ -51,15 +51,15 @@
                     </div>
                 </div>
             @empty
-                <p class="col-span-full border-b border-r border-line p-8 text-center font-mono text-sm uppercase tracking-wide text-faint">{{ content('process.phases_empty', 'The process is being documented — check back soon.') }}</p>
+                <p class="col-span-full border-b border-r border-line p-8 text-center font-mono text-sm uppercase tracking-wide text-faint">{!! content_rich('process.phases_empty', 'The process is being documented — check back soon.') !!}</p>
             @endforelse
         </div>
     </section>
 
     {{-- ──────────────────── Operating principles (light) ──────────────────── --}}
     <section class="frame border-t border-line py-20 md:py-28">
-        <x-ui.heading :eyebrow="content('process.principles_eyebrow', 'Operating principles')" :title="content('process.principles_title', 'The rules that keep the work honest.')">
-            {{ content('process.principles_intro', 'Four constraints we hold on every engagement — the reason the process stays honest when the deadlines get loud.') }}
+        <x-ui.heading :eyebrow="content('process.principles_eyebrow', 'Operating principles')" :title="content_rich('process.principles_title', 'The rules that keep the work honest.')">
+            {!! content_rich('process.principles_intro', 'Four constraints we hold on every engagement — the reason the process stays honest when the deadlines get loud.') !!}
         </x-ui.heading>
 
         <div class="mt-14 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4" data-stagger>

@@ -11,7 +11,7 @@
             <x-ui.eyebrow data-scramble>{{ content('pricing.hero_eyebrow', 'Pricing') }}</x-ui.eyebrow>
 
             <h1 class="display mt-6 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]" data-reveal data-reveal-delay="0.05">
-                {!! nl2br(e(content('pricing.hero_title', "Engagements,\npriced honestly."))) !!}
+                {!! nl2br(e(content_title('pricing.hero_title', "Engagements,\npriced honestly."))) !!}
             </h1>
 
             <p class="measure mt-7 text-[1.02rem] text-muted" data-reveal data-reveal-delay="0.18">
@@ -37,7 +37,7 @@
             </div>
         </div>
 
-        <p class="measure mt-6 text-[1rem] text-muted">{{ content('pricing.tiers_intro', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.') }}</p>
+        <div class="richtext measure mt-6 text-[1rem] text-muted">{!! content_rich('pricing.tiers_intro', 'Three ways to start, each scoped to the work in front of it — no packages, no checkout, no surprises.') !!}</div>
 
         @if (collect($tiers)->isNotEmpty())
         <div class="mt-12" data-reveal>
@@ -99,7 +99,7 @@
             <div class="p-pagination mt-10 flex items-center justify-center gap-2"></div>
         </div>
         @else
-            <p class="mt-12 border border-line py-16 text-center font-mono text-sm uppercase tracking-widest text-faint">{{ content('pricing.tiers_empty', 'Engagement tiers are being finalised — check back soon.') }}</p>
+            <p class="mt-12 border border-line py-16 text-center font-mono text-sm uppercase tracking-widest text-faint">{!! content_rich('pricing.tiers_empty', 'Engagement tiers are being finalised — check back soon.') !!}</p>
         @endif
 
         @if (isset($services) && $services->isNotEmpty())
@@ -111,8 +111,8 @@
 
     {{-- ───────────────────────── What's always included ───────────────────────── --}}
     <section class="frame border-t border-line py-20 md:py-28">
-        <x-ui.heading :eyebrow="content('pricing.included_eyebrow', 'No fine print')" :title="content('pricing.included_title', 'What\'s always included.')">
-            {{ content('pricing.included_intro', 'However we work together, a few things never change — the reasons engagements stay honest.') }}
+        <x-ui.heading :eyebrow="content('pricing.included_eyebrow', 'No fine print')" :title="content_rich('pricing.included_title', 'What\'s always included.')">
+            {!! content_rich('pricing.included_intro', 'However we work together, a few things never change — the reasons engagements stay honest.') !!}
         </x-ui.heading>
 
         <div class="mt-14 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4" data-stagger>
@@ -129,8 +129,8 @@
     {{-- ───────────────────────── FAQ ───────────────────────── --}}
     @if (isset($faqs) && $faqs->isNotEmpty())
         <section class="frame border-t border-line py-20 md:py-28">
-            <x-ui.heading :eyebrow="content('pricing.faq_eyebrow', 'FAQ')" :title="content('pricing.faq_title', 'Questions, answered.')">
-                {{ content('pricing.faq_intro', 'The questions we hear most, answered straight — before you ever send a brief.') }}
+            <x-ui.heading :eyebrow="content('pricing.faq_eyebrow', 'FAQ')" :title="content_rich('pricing.faq_title', 'Questions, answered.')">
+                {!! content_rich('pricing.faq_intro', 'The questions we hear most, answered straight — before you ever send a brief.') !!}
             </x-ui.heading>
 
             <div class="mx-auto mt-12 max-w-3xl border-t border-line" data-stagger>

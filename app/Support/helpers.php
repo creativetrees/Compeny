@@ -34,3 +34,24 @@ if (! function_exists('content_rich')) {
         return $html;
     }
 }
+
+if (! function_exists('content_title')) {
+    /**
+     * Plain-text title for animated/scramble headlines and <title>-style headings,
+     * where a RichEditor value must render as clean text (no raw tags, no escaped
+     * entities). Converts block boundaries (</p>, <br>, </div>, </h1-6>, </li>) to
+     * line breaks, strips inline tags, decodes entities, then trims. Line breaks are
+     * preserved so a multi-paragraph value still renders as a multi-line heading;
+     * inline formatting (bold/italic/links) is intentionally dropped.
+     */
+    function content_title(string $key, string $default = ''): string
+    {
+        $text = preg_replace(
+            ['#</(?:p|div|h[1-6]|li)>#i', '#<br\s*/?>#i'],
+            "\n",
+            content($key, $default)
+        );
+
+        return trim(html_entity_decode(strip_tags($text), ENT_QUOTES));
+    }
+}

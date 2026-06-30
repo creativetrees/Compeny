@@ -11,7 +11,7 @@
             <x-ui.eyebrow data-scramble>{{ content('team.hero_eyebrow', 'Team') }}</x-ui.eyebrow>
 
             <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]" data-reveal data-reveal-delay="0.08">
-                {!! nl2br(e(content('team.hero_title', "The people behind\nthe work."))) !!}
+                {!! nl2br(e(content_title('team.hero_title', "The people behind\nthe work."))) !!}
             </h1>
 
             <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.3">
@@ -27,7 +27,7 @@
             <span class="label-mono shrink-0">{{ str_pad($members->count(), 2, '0', STR_PAD_LEFT) }} / {{ content('team.people_label', 'People') }}</span>
         </div>
 
-        <p class="measure mt-6 text-[1rem] text-muted">{{ content('team.studio_intro', "The senior people who'll actually do your work — no account layers, no handoffs.") }}</p>
+        <div class="richtext measure mt-6 text-[1rem] text-muted">{!! content_rich('team.studio_intro', "The senior people who'll actually do your work — no account layers, no handoffs.") !!}</div>
 
         <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-stagger>
             @forelse ($members as $member)
@@ -79,7 +79,7 @@
                 <div class="col-span-full flex flex-col items-center border border-line bg-panel px-6 py-20 text-center">
                     <span class="label-mono text-faint">00 / Roster</span>
                     <p class="measure mt-4 text-[1rem] text-muted">
-                        {{ content('team.empty_message', 'The studio roster is being assembled. In the meantime, the work speaks for itself.') }}
+                        {!! content_rich('team.empty_message', 'The studio roster is being assembled. In the meantime, the work speaks for itself.') !!}
                     </p>
                     <div class="mt-7">
                         <x-ui.button href="/work" variant="ghost" :magnetic="false">{{ content('team.empty_cta', 'View work') }}</x-ui.button>

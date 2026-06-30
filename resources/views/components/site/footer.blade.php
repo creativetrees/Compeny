@@ -22,7 +22,7 @@
             <div class="md:col-span-7" data-reveal>
                 <x-ui.eyebrow class="mb-7">{{ $settings->footer_cta_eyebrow ?: "Let's build" }}</x-ui.eyebrow>
                 <h2 class="display text-[2.6rem] leading-[0.95] sm:text-5xl md:text-[4.2rem]">
-                    {!! nl2br(e($settings->footer_cta_title ?: "Have something\nworth building?")) !!}
+                    {!! nl2br(e(strip_tags(str_replace(['</p>', '<br>', '<br/>', '<br />'], "\n", (string) ($settings->footer_cta_title ?: "Have something\nworth building?"))))) !!}
                 </h2>
             </div>
             <div class="flex flex-col items-start md:col-span-5 md:items-end md:text-right" data-reveal data-reveal-delay="0.1">
@@ -49,7 +49,7 @@
                         <span class="font-mono text-[0.95rem] font-bold uppercase tracking-tight">{{ $settings->logo_text ?: ($settings->brand_name ?? 'Creative Trees Group') }}</span>
                     @endif
                 </a>
-                <div class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96] [&_a]:text-paper [&_a]:underline [&_p]:m-0 [&_p+p]:mt-2 [&_strong]:text-paper">
+                <div class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96] richtext [&_a]:text-paper [&_strong]:text-paper">
                     {!! filled($settings->footer_tagline) ? $settings->footer_tagline : 'Designed and built to compound.' !!}
                 </div>
                 <a href="mailto:{{ $email }}" class="link-underline mt-7 inline-block font-mono text-sm text-paper">{{ $email }}</a>

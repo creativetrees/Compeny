@@ -22,7 +22,7 @@
                 <x-ui.eyebrow data-scramble>{{ content('contact.hero_eyebrow', 'Contact') }} ›</x-ui.eyebrow>
 
                 <h1 class="display mt-7 text-[3rem] leading-[0.92] sm:text-7xl md:text-[7.5rem]" data-reveal data-reveal-delay="0.1">
-                    {{ content('contact.hero_title', "Let's talk.") }}
+                    {{ content_title('contact.hero_title', "Let's talk.") }}
                 </h1>
 
                 <p class="measure mt-7 text-[1rem] text-muted" data-reveal data-reveal-delay="0.28">
