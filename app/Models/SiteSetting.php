@@ -15,7 +15,7 @@ class SiteSetting extends Model
         'hero_eyebrow', 'hero_title', 'hero_subtitle',
         'hero_cta_label', 'hero_cta_url', 'hero_cta_secondary_label', 'hero_cta_secondary_url',
         'about_heading', 'about_body',
-        'contact_email', 'contact_phone', 'contact_address', 'social_links',
+        'contact_email', 'contact_phone', 'contact_address', 'social_links', 'emails', 'email_secrets',
         'stats', 'seo_title', 'seo_description', 'seo_keywords', 'seo_image_path',
         'google_analytics_id', 'seo_noindex', 'footer_tagline',
         'footer_cta_eyebrow', 'footer_cta_title', 'footer_cta_body', 'footer_cta_label', 'footer_cta_url',
@@ -27,6 +27,8 @@ class SiteSetting extends Model
         return [
             'nav_menu' => 'array',
             'social_links' => 'array',
+            'emails' => 'array',
+            'email_secrets' => 'encrypted:array',
             'stats' => 'array',
             'seo_noindex' => 'boolean',
             'page_content' => 'array',

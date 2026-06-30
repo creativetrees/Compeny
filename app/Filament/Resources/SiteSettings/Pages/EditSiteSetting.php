@@ -31,10 +31,13 @@ class EditSiteSetting extends EditRecord
     }
 
     /**
-     * Preserve page_content namespaces that have no form field (e.g. start.*).
-     * Filament rebuilds an array-cast column from its registered fields only, so
-     * without this merge an admin save would silently drop every un-exposed
-     * page_content key, permanently reverting those pages to hardcoded defaults.
+     * Two save-time fixups:
+     *  1. Preserve page_content namespaces that have no form field (e.g. start.*).
+     *     Filament rebuilds an array-cast column from its registered fields only, so
+     *     without this merge an admin save would silently drop every un-exposed
+     *     page_content key, permanently reverting those pages to hardcoded defaults.
+     *  2. Route mail-account passwords into the encrypted `email_secrets` column and
+     *     strip plaintext from the non-secret `emails` column (see below).
      */
     protected function mutateFormDataBeforeSave(array $data): array
     {
@@ -43,6 +46,35 @@ class EditSiteSetting extends EditRecord
 
         $data['page_content'] = array_replace_recursive($existing, $submitted);
 
+        // Mail-account passwords: never store plaintext in `emails`. Move each typed
+        // password into `email_secrets` (encrypted cast), keyed by lowercase address;
+        // keep the existing secret when the field is left blank; drop orphaned addresses.
+        $secrets = $this->record->email_secrets ?? [];
+        $rows = $data['emails'] ?? [];
+        $kept = [];
+
+        foreach ($rows as $i => $row) {
+            $address = strtolower(trim($row['address'] ?? ''));
+            $password = $row['password'] ?? null;
+
+            unset($rows[$i]['password']);   // plaintext never persists in `emails`
+
+            if ($address === '') {
+                continue;
+            }
+
+            if (filled($password)) {
+                $secrets[$address] = $password;
+            }
+
+            if (filled($secrets[$address] ?? null)) {
+                $kept[$address] = $secrets[$address];
+            }
+        }
+
+        $data['emails'] = array_values($rows);
+        $data['email_secrets'] = $kept;
+
         return $data;
     }
 
@@ -50,7 +82,7 @@ class EditSiteSetting extends EditRecord
     {
         return [
             Action::make('view_site')
-                ->label('Lihat situs')
+                ->label('View site')
                 ->icon('heroicon-m-arrow-top-right-on-square')
                 ->color('gray')
                 ->url('/', shouldOpenInNewTab: true),

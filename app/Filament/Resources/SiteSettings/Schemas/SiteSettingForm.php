@@ -284,23 +284,23 @@ class SiteSettingForm
             ->schema([
                 Section::make('Capabilities')->icon('heroicon-m-squares-2x2')->columns(2)->schema([
                     self::t('page_content.home.cap_eyebrow', 'Eyebrow', 'Capabilities'),
-                    self::t('page_content.home.cap_title', 'Title', 'Everything you need to launch and scale.'),
+                    RichEditor::make('page_content.home.cap_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Everything you need to launch and scale.'),
                     self::ta('page_content.home.cap_intro', 'Intro'),
                 ]),
                 Section::make('Selected work')->icon('heroicon-m-briefcase')->columns(3)->schema([
                     self::t('page_content.home.work_eyebrow', 'Eyebrow', 'Selected work'),
-                    self::t('page_content.home.work_title', 'Title', 'Proof, not promises.'),
+                    RichEditor::make('page_content.home.work_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Proof, not promises.'),
                     self::t('page_content.home.work_link', '"All work" link', 'All work →'),
                     self::ta('page_content.home.work_intro', 'Description', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
                 ]),
                 Section::make('Process')->icon('heroicon-m-arrow-path-rounded-square')->columns(2)->schema([
                     self::t('page_content.home.process_eyebrow', 'Eyebrow', 'How we work'),
-                    self::t('page_content.home.process_title', 'Title', 'A process built to de-risk the work.'),
+                    RichEditor::make('page_content.home.process_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'A process built to de-risk the work.'),
                     self::ta('page_content.home.process_intro', 'Intro'),
                 ]),
                 Section::make('Signal / testimonials')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                     self::t('page_content.home.signal_eyebrow', 'Eyebrow', 'Signal'),
-                    self::t('page_content.home.signal_title', 'Title', 'What partners say.'),
+                    RichEditor::make('page_content.home.signal_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'What partners say.'),
                     self::ta('page_content.home.signal_intro', 'Description', "Unfiltered words from the founders and teams we've embedded with."),
                 ]),
                 Section::make('Other')->icon('heroicon-m-ellipsis-horizontal-circle')->columns(2)->schema([
@@ -321,7 +321,7 @@ class SiteSettingForm
                     ->columns(2)
                     ->schema([
                         self::t('page_content.work.hero_eyebrow', 'Eyebrow', 'Selected work'),
-                        self::t('page_content.work.hero_title', 'Title', 'Proof, not promises.'),
+                        RichEditor::make('page_content.work.hero_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Proof, not promises.'),
                         self::rich('page_content.work.hero_intro', 'Intro'),
                         self::ta('page_content.work.empty_message', 'Message when there are no projects yet', 'Work is being published — check back soon.'),
                     ]),
@@ -341,7 +341,7 @@ class SiteSettingForm
                         self::t('page_content.work.detail_gallery', 'Gallery label', 'Gallery'),
                         self::t('page_content.work.detail_frames', 'Frame count suffix', 'frames'),
                         self::t('page_content.work.more_eyebrow', 'More work — eyebrow', 'Keep looking'),
-                        self::t('page_content.work.more_title', 'More work — title', 'More work.'),
+                        RichEditor::make('page_content.work.more_title')->label('More work — title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'More work.'),
                         self::t('page_content.work.all_link', '"All work" link', 'All work →'),
                     ]),
             ]);
@@ -358,8 +358,8 @@ class SiteSettingForm
                     ->columns(2)
                     ->schema([
                         self::t('page_content.products.hero_eyebrow', 'Eyebrow', 'Products'),
-                        self::t('page_content.products.hero_line1', 'Title line 1', 'Starters that ship'),
-                        self::t('page_content.products.hero_line2', 'Title line 2', 'in days, not months.'),
+                        RichEditor::make('page_content.products.hero_line1')->label('Title line 1')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Starters that ship'),
+                        RichEditor::make('page_content.products.hero_line2')->label('Title line 2')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'in days, not months.'),
                         self::t('page_content.products.empty_eyebrow', 'Empty-state eyebrow', 'Catalog in progress'),
                         self::t('page_content.products.leadtime_label', 'Lead-time label', 'Lead-time · 1–3 weeks'),
                         self::t('page_content.products.investment_label', 'Label "Investment"', 'Investment'),
@@ -375,13 +375,13 @@ class SiteSettingForm
         return Tab::make('Services')
             ->icon('heroicon-o-squares-2x2')
             ->schema([
-                Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
+                Section::make('Hero')->icon('heroicon-m-megaphone')->columns(3)->schema([
                     self::t('page_content.services.hero_eyebrow', 'Eyebrow', 'Services'),
-                    self::t('page_content.services.hero_line1', 'Title line 1', 'Capabilities'),
-                    self::t('page_content.services.hero_line2', 'Title line 2', 'that compound.'),
+                    RichEditor::make('page_content.services.hero_line1')->label('Title line 1')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Capabilities'),
+                    RichEditor::make('page_content.services.hero_line2')->label('Title line 2')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'that compound.'),
                     self::rich('page_content.services.hero_intro', 'Intro'),
                 ]),
-                Section::make('Disciplines')->icon('heroicon-m-squares-plus')->columns(2)->schema([
+                Section::make('Disciplines')->icon('heroicon-m-squares-plus')->columns(3)->schema([
                     self::t('page_content.services.disciplines_eyebrow', 'Eyebrow', 'The disciplines'),
                     self::t('page_content.services.disciplines_label', 'Label', 'Pick one — or the full stack'),
                     self::t('page_content.services.featured_label', 'Label "Featured"', 'Featured'),
@@ -399,7 +399,7 @@ class SiteSettingForm
             ->schema([
                 Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.pricing.hero_eyebrow', 'Eyebrow', 'Pricing'),
-                    self::taPlain('page_content.pricing.hero_title', 'Title', "Engagements,\npriced honestly."),
+                    RichEditor::make('page_content.pricing.hero_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : '<p>Engagements,</p><p>priced honestly.</p>'),
                     self::rich('page_content.pricing.hero_intro', 'Intro'),
                 ]),
                 Section::make('Tiers')->icon('heroicon-m-squares-2x2')->columns(2)->schema([
@@ -414,12 +414,12 @@ class SiteSettingForm
                 ]),
                 Section::make('Included')->icon('heroicon-m-check-circle')->columns(2)->schema([
                     self::t('page_content.pricing.included_eyebrow', 'Eyebrow', 'No fine print'),
-                    self::t('page_content.pricing.included_title', 'Title', "What's always included."),
+                    RichEditor::make('page_content.pricing.included_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : "What's always included."),
                     self::ta('page_content.pricing.included_intro', 'Intro'),
                 ]),
                 Section::make('FAQ')->icon('heroicon-m-question-mark-circle')->columns(2)->schema([
                     self::t('page_content.pricing.faq_eyebrow', 'Eyebrow', 'FAQ'),
-                    self::t('page_content.pricing.faq_title', 'Title', 'Questions, answered.'),
+                    RichEditor::make('page_content.pricing.faq_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Questions, answered.'),
                     self::ta('page_content.pricing.faq_intro', 'Description', 'The questions we hear most, answered straight — before you ever send a brief.'),
                 ]),
             ]);
@@ -433,14 +433,14 @@ class SiteSettingForm
             ->schema([
                 Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.process.hero_eyebrow', 'Eyebrow', 'How we work'),
-                    self::t('page_content.process.hero_title', 'Title', 'A process built to de-risk the work.'),
+                    RichEditor::make('page_content.process.hero_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'A process built to de-risk the work.'),
                     self::rich('page_content.process.hero_intro', 'Intro'),
                 ]),
                 Section::make('Sequence & principles')->icon('heroicon-m-list-bullet')->columns(3)->schema([
                     self::t('page_content.process.sequence_eyebrow', 'Sequence eyebrow', 'The sequence'),
                     self::t('page_content.process.phases_label', 'Phase count label', 'phases'),
                     self::t('page_content.process.principles_eyebrow', 'Principles eyebrow', 'Operating principles'),
-                    self::t('page_content.process.principles_title', 'Principles title', 'The rules that keep the work honest.'),
+                    RichEditor::make('page_content.process.principles_title')->label('Principles title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'The rules that keep the work honest.'),
                     self::t('page_content.process.deliverables_label', 'Label "Deliverables"', 'Deliverables'),
                     self::ta('page_content.process.sequence_intro', 'Sequence description', 'Four phases in one continuous flow — each closing the riskiest gaps before the next begins.'),
                     self::ta('page_content.process.principles_intro', 'Principles intro'),
@@ -460,7 +460,7 @@ class SiteSettingForm
                     self::t('page_content.team.studio_eyebrow', 'Studio eyebrow', 'The studio'),
                     self::t('page_content.team.people_label', 'Suffix "People"', 'People'),
                     self::t('page_content.team.empty_cta', 'Button on the empty state', 'View work'),
-                    self::taPlain('page_content.team.hero_title', 'Title', "The people behind\nthe work."),
+                    RichEditor::make('page_content.team.hero_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : '<p>The people behind</p><p>the work.</p>'),
                     self::rich('page_content.team.hero_intro', 'Intro'),
                     self::ta('page_content.team.studio_intro', 'Studio description', "The senior people who'll actually do your work — no account layers, no handoffs."),
                     self::ta('page_content.team.empty_message', 'Message when there are no team members yet', 'The studio roster is being assembled. In the meantime, the work speaks for itself.'),
@@ -476,7 +476,7 @@ class SiteSettingForm
             ->schema([
                 Section::make('Hero')->icon('heroicon-m-megaphone')->columns(2)->schema([
                     self::t('page_content.about.hero_eyebrow', 'Eyebrow', 'About'),
-                    TextInput::make('about_heading')->label('Title')->placeholder('A studio built like a product team.')->prefixIcon('heroicon-m-bars-3-bottom-left'),
+                    RichEditor::make('about_heading')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'A studio built like a product team.'),
                     RichEditor::make('about_body')
                         ->label('Body')
                         ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/about')->fileAttachmentsVisibility('public')
@@ -485,12 +485,12 @@ class SiteSettingForm
                 ]),
                 Section::make('Values')->icon('heroicon-m-sparkles')->columns(2)->schema([
                     self::t('page_content.about.values_eyebrow', 'Eyebrow', 'What we value'),
-                    self::t('page_content.about.values_title', 'Title', 'How we think.'),
+                    RichEditor::make('page_content.about.values_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'How we think.'),
                     self::ta('page_content.about.values_intro', 'Description', 'The handful of beliefs that shape how we design, build, and decide.'),
                 ]),
                 Section::make('Team & clients')->icon('heroicon-m-user-group')->columns(2)->schema([
                     self::t('page_content.about.team_eyebrow', 'Team eyebrow', 'The team'),
-                    self::t('page_content.about.team_title', 'Team title', 'Senior, embedded, accountable.'),
+                    RichEditor::make('page_content.about.team_title')->label('Team title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Senior, embedded, accountable.'),
                     self::t('page_content.about.team_link', 'Team link', 'Meet everyone'),
                     self::t('page_content.about.clients_eyebrow', 'Clients eyebrow', 'In good company'),
                     self::ta('page_content.about.team_intro', 'Team description', 'Senior strategists, designers, and engineers who embed with your team and stay accountable end to end.'),
@@ -507,14 +507,14 @@ class SiteSettingForm
             ->schema([
                 Section::make('Contact page — hero')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                     self::t('page_content.contact.hero_eyebrow', 'Eyebrow', 'Contact'),
-                    self::t('page_content.contact.hero_title', 'Title', "Let's talk."),
+                    RichEditor::make('page_content.contact.hero_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : "Let's talk."),
                     self::rich('page_content.contact.hero_intro', 'Intro'),
                 ]),
                 Section::make('Start page — hero')->icon('heroicon-m-paper-airplane')->columns(3)->schema([
                     self::t('page_content.start.hero_eyebrow', 'Eyebrow', 'Start a project'),
                     self::t('page_content.start.submit_label', 'Submit button', 'Send brief'),
                     self::t('page_content.start.reply_note', 'Reply note', 'We reply within 1 business day.'),
-                    self::taPlain('page_content.start.hero_title', 'Title', "Tell us where\nyou're headed."),
+                    RichEditor::make('page_content.start.hero_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : "<p>Tell us where</p><p>you're headed.</p>"),
                     self::rich('page_content.start.hero_intro', 'Intro'),
                 ]),
             ]);
@@ -536,6 +536,7 @@ class SiteSettingForm
                         TextInput::make('contact_address')->label('Address')->prefixIcon('heroicon-m-map-pin')->columnSpanFull(),
                         TextInput::make('page_content.system.notify_email')->label('Notification recipient email (lead form)')->email()->placeholder('support@creativetreesgroup.com')->helperText('Where new lead emails are sent. Empty = use the contact email above.')->prefixIcon('heroicon-m-inbox-arrow-down')->columnSpanFull(),
                     ]),
+                self::emailAddressesSection(),
                 Section::make('Social media')
                     ->description('Pick a platform & enter the profile URL. Drag to reorder.')
                     ->icon('heroicon-m-share')
@@ -555,6 +556,106 @@ class SiteSettingForm
                             ->itemLabel(fn (array $state): ?string => $state['platform'] ?? null)
                             ->addActionLabel('Add social media'),
                     ]),
+            ]);
+    }
+
+    /**
+     * Role-based mailbox directory — admins enter each address by hand (support,
+     * no-reply, hello, developer, …). Stored in the dedicated `emails` json column
+     * (like social_links) so removing a row persists. Addresses only: the SMTP
+     * password/credentials stay server-side in .env and are never stored here.
+     */
+    private static function emailAddressesSection(): Section
+    {
+        return Section::make('Email addresses')
+            ->description('Your role-based mailboxes. Add each address, pick its purpose, and (optionally) full SMTP sending details including password. Passwords are stored encrypted (AES-256) and never shown back.')
+            ->icon('heroicon-m-at-symbol')
+            ->schema([
+                Repeater::make('emails')
+                    ->hiddenLabel()
+                    ->schema([
+                        Select::make('role')
+                            ->label('Purpose')
+                            ->required()
+                            ->native(false)
+                            ->prefixIcon('heroicon-m-identification')
+                            ->options([
+                                'general' => 'General · hello@',
+                                'support' => 'Support',
+                                'sales' => 'Sales / new business',
+                                'no_reply' => 'No-reply (system sender)',
+                                'developer' => 'Developer / technical',
+                                'info' => 'Info / general inquiries',
+                                'billing' => 'Billing / finance',
+                                'careers' => 'Careers / HR',
+                                'press' => 'Press / media',
+                                'other' => 'Other',
+                            ]),
+                        TextInput::make('address')
+                            ->label('Email address')
+                            ->required()
+                            ->email()
+                            ->prefixIcon('heroicon-m-envelope')
+                            ->placeholder('support@creativetreesgroup.com'),
+                        Fieldset::make('Sending (SMTP) — optional')
+                            ->columns(2)
+                            ->columnSpanFull()
+                            ->schema([
+                                Select::make('mailer')
+                                    ->label('Mailer type')
+                                    ->native(false)
+                                    ->default('smtp')
+                                    ->prefixIcon('heroicon-m-server-stack')
+                                    ->options([
+                                        'smtp' => 'SMTP',
+                                        'sendmail' => 'Sendmail (server)',
+                                        'log' => 'Log (debug only)',
+                                    ])
+                                    ->helperText('How this account sends. Most cPanel mailboxes use SMTP.'),
+                                Select::make('encryption')
+                                    ->label('Encryption')
+                                    ->native(false)
+                                    ->prefixIcon('heroicon-m-lock-closed')
+                                    ->options([
+                                        'ssl' => 'SSL — port 465',
+                                        'tls' => 'TLS / STARTTLS — port 587',
+                                        'none' => 'None',
+                                    ]),
+                                TextInput::make('host')
+                                    ->label('SMTP host')
+                                    ->prefixIcon('heroicon-m-globe-alt')
+                                    ->placeholder('mail.creativetreesgroup.com'),
+                                TextInput::make('port')
+                                    ->label('Port')
+                                    ->numeric()
+                                    ->prefixIcon('heroicon-m-hashtag')
+                                    ->placeholder('465'),
+                                TextInput::make('username')
+                                    ->label('Username')
+                                    ->prefixIcon('heroicon-m-user')
+                                    ->placeholder('support@creativetreesgroup.com')
+                                    ->helperText('Usually the full email address. Empty = use the address above.')
+                                    ->columnSpanFull(),
+                                TextInput::make('password')
+                                    ->label('Password')
+                                    ->password()
+                                    ->revealable()
+                                    ->autocomplete('new-password')
+                                    ->dehydrated(fn ($state) => filled($state))
+                                    ->prefixIcon('heroicon-m-key')
+                                    ->helperText('Stored encrypted (AES-256). Leave blank to keep the saved password; type to set or replace it.')
+                                    ->columnSpanFull(),
+                            ]),
+                    ])
+                    ->columns(2)
+                    ->reorderable()
+                    ->collapsible()
+                    ->cloneable()
+                    ->itemLabel(fn (array $state): ?string => filled($state['address'] ?? null)
+                        ? trim((filled($state['role'] ?? null) ? ucfirst(str_replace('_', '-', $state['role'])).' — ' : '').$state['address'])
+                        : null)
+                    ->addActionLabel('Add email address')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -590,10 +691,12 @@ class SiteSettingForm
                 Section::make('Metadata')
                     ->description('Title, description & keywords for search engines and social previews.')
                     ->icon('heroicon-m-document-magnifying-glass')
+                    ->columns(2)
                     ->schema([
+                        // SEO title feeds <meta>/<title> — must stay plain text
                         TextInput::make('seo_title')->label('SEO title')->maxLength(60)->prefixIcon('heroicon-m-hashtag')->helperText('±50–60 characters. Empty = brand name.'),
+                        TextInput::make('seo_keywords')->label('Keywords')->placeholder('product studio, saas, web design')->prefixIcon('heroicon-m-key')->helperText('Separate with commas.'),
                         Textarea::make('seo_description')->label('Meta description')->rows(3)->maxLength(160)->helperText('±150–160 characters.')->columnSpanFull(),
-                        TextInput::make('seo_keywords')->label('Keywords')->placeholder('product studio, saas, web design')->prefixIcon('heroicon-m-key')->helperText('Separate with commas.')->columnSpanFull(),
                         FileUpload::make('seo_image_path')->label('Social share image (OG)')->image()->disk('public')->directory('site/seo')->visibility('public')->maxSize(2048)->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])->helperText('Recommended 1200×630px.')->columnSpanFull(),
                     ]),
                 Section::make('Analytics & indexing')
@@ -616,28 +719,27 @@ class SiteSettingForm
                 Section::make('Footer call to action (CTA)')
                     ->description('Large call-to-action band above the footer.')
                     ->icon('heroicon-m-rocket-launch')
-                    ->columns(2)
                     ->schema([
-                        TextInput::make('footer_cta_eyebrow')->label('Eyebrow')->placeholder("Let's build")->prefixIcon('heroicon-m-tag')->columnSpanFull(),
-                        Textarea::make('footer_cta_title')->label('Title')->placeholder("Have something\nworth building?")->helperText('New lines split the title.')->rows(2)->columnSpanFull(),
-                        TextInput::make('footer_cta_label')->label('Button text')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
-                        self::pageSelect('footer_cta_url'),
-                        RichEditor::make('footer_cta_body')->label('Description')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->columnSpanFull(),
+                        Grid::make(3)->schema([
+                            TextInput::make('footer_cta_eyebrow')->label('Eyebrow')->prefixIcon('heroicon-m-tag')->formatStateUsing(fn ($state) => filled($state) ? $state : "Let's build"),
+                            TextInput::make('footer_cta_label')->label('Button text')->prefixIcon('heroicon-m-cursor-arrow-rays')->formatStateUsing(fn ($state) => filled($state) ? $state : 'Start a project'),
+                            self::pageSelect('footer_cta_url', 'Target page')->formatStateUsing(fn ($state) => filled($state) ? $state : '/start'),
+                        ]),
+                        Grid::make(2)->schema([
+                            RichEditor::make('footer_cta_title')->label('Title')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/richtext')->fileAttachmentsVisibility('public')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : '<p>Have something</p><p>worth building?</p>'),
+                            RichEditor::make('footer_cta_body')->label('Description')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->formatStateUsing(fn ($state) => filled($state) ? $state : "Tell us where you're headed. We'll tell you the shortest honest path to get there."),
+                        ]),
                     ]),
                 Section::make('Footer identity')
                     ->description('Tagline, location, copyright & watermark.')
                     ->icon('heroicon-m-bars-3-bottom-left')
                     ->columns(2)
                     ->schema([
-                        RichEditor::make('footer_tagline')
-                            ->label('Tagline')
-                            ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')
-                            ->helperText('Rich text below the footer logo.')
-                            ->columnSpanFull(),
-                        TextInput::make('footer_location')->label('Location')->placeholder('Jakarta · Remote-first')->prefixIcon('heroicon-m-map-pin'),
-                        TextInput::make('footer_copyright')->label('Copyright name')->placeholder('Creative Trees Group')->helperText('Year is automatic: © '.date('Y').' + this text. Empty = brand name.')->prefixIcon('heroicon-m-calendar'),
-                        TextInput::make('footer_watermark')->label('Watermark text (optional)')->placeholder('Creative Trees Group')->helperText('Large text in the footer background. Empty = brand name.')->prefixIcon('heroicon-m-sparkles')->columnSpanFull(),
-                        self::t('page_content.footer.contact_label', 'Contact column title', 'Contact')->columnSpanFull(),
+                        TextInput::make('footer_location')->label('Location')->prefixIcon('heroicon-m-map-pin')->formatStateUsing(fn ($state) => filled($state) ? $state : 'Jakarta · Remote-first'),
+                        TextInput::make('footer_copyright')->label('Copyright name')->helperText('Year is automatic: © '.date('Y').' + this text. Empty = brand name.')->prefixIcon('heroicon-m-calendar')->formatStateUsing(fn ($state) => filled($state) ? $state : 'Creative Trees Group'),
+                        TextInput::make('footer_watermark')->label('Watermark text (optional)')->helperText('Large text in the footer background. Empty = brand name.')->prefixIcon('heroicon-m-sparkles')->formatStateUsing(fn ($state) => filled($state) ? $state : 'Creative Trees Group'),
+                        self::t('page_content.footer.contact_label', 'Contact column title', 'Contact'),
+                        RichEditor::make('footer_tagline')->label('Tagline')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->helperText('Rich text below the footer logo.')->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'Designed and built to compound.'),
                     ]),
             ]);
     }

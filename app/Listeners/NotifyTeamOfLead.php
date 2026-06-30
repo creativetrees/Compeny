@@ -6,6 +6,7 @@ use App\Events\LeadReceived;
 use App\Mail\NewLeadMail;
 use App\Models\SiteSetting;
 use App\Models\User;
+use App\Support\MailAccounts;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Mail;
 
@@ -23,7 +24,20 @@ class NotifyTeamOfLead
             $to = data_get($settings->page_content, 'system.notify_email')
                 ?: ($settings->contact_email ?: config('mail.from.address'));
 
-            Mail::to($to)->send(new NewLeadMail($lead));
+            // Prefer the CMS "no-reply" account's SMTP (its password lives in .env, never
+            // the DB); fall back to the default mailer when it isn't fully configured.
+            // When used, align the visible From to that account so SMTP auth matches.
+            $mailerName = MailAccounts::mailer('no_reply');
+            if ($mailerName) {
+                $sender = MailAccounts::byRole('no_reply');
+                if ($sender && filled($sender['address'] ?? null)) {
+                    config(['mail.from.address' => $sender['address']]);
+                }
+            }
+
+            Mail::mailer($mailerName ?? config('mail.default'))
+                ->to($to)
+                ->send(new NewLeadMail($lead));
         } catch (\Throwable $e) {
             report($e);
         }
