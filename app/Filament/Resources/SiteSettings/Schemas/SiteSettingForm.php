@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\SiteSettings\Schemas;
 
 use App\Enums\SitePage;
+use App\Models\SiteSetting;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -10,6 +12,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
@@ -46,10 +49,17 @@ class SiteSettingForm
             ]);
     }
 
-    /** Short single-line copy field (eyebrow, title line, label, url) — auto-iconed. */
+    /** Short single-line copy field (eyebrow, title line, label, url) — auto-iconed,
+        and pre-filled with its default so the admin sees the current text (edit only if needed). */
     private static function t(string $path, string $label, ?string $placeholder = null, ?string $icon = null): TextInput
     {
-        return TextInput::make($path)->label($label)->placeholder($placeholder)->prefixIcon($icon ?? self::guessIcon($label));
+        $field = TextInput::make($path)->label($label)->placeholder($placeholder)->prefixIcon($icon ?? self::guessIcon($label));
+
+        if (filled($placeholder)) {
+            $field->formatStateUsing(fn ($state) => filled($state) ? $state : $placeholder);
+        }
+
+        return $field;
     }
 
     /** Pick a role-appropriate prefix icon from the field label so every text field is iconed consistently. */
@@ -112,30 +122,51 @@ class SiteSettingForm
                 Section::make('Mode maintenance')
                     ->description('Saat aktif, pengunjung umum melihat halaman maintenance. Admin & yang login tetap bisa akses untuk mematikannya. Tanpa artisan.')
                     ->icon('heroicon-m-wrench')
+                    ->columns(2)
                     ->schema([
-                        Toggle::make('page_content.system.maintenance')->label('Aktifkan mode maintenance')->helperText('Situs publik menampilkan halaman maintenance saat ON.')->inline(false),
-                        self::t('page_content.system.maint_title', 'Judul', "We'll be right back"),
-                        self::ta('page_content.system.maint_message', 'Pesan'),
+                        Toggle::make('page_content.system.maintenance')
+                            ->label('Aktifkan mode maintenance')
+                            ->helperText('Situs publik menampilkan halaman maintenance saat ON. Berlaku seketika — tanpa Save changes.')
+                            ->inline(false)->columnSpanFull()
+                            ->live()
+                            ->afterStateUpdated(function ($state): void {
+                                // Persist this one flag immediately (no Save needed). Reads the
+                                // current row so other unsaved form edits are not overwritten.
+                                $setting = SiteSetting::query()->firstOrCreate(['id' => 1]);
+                                $pc = $setting->page_content ?? [];
+                                data_set($pc, 'system.maintenance', (bool) $state);
+                                $setting->page_content = $pc;
+                                $setting->save();
+
+                                Notification::make()
+                                    ->title($state ? 'Mode maintenance: AKTIF' : 'Mode maintenance: NONAKTIF')
+                                    ->color($state ? 'warning' : 'success')
+                                    ->send();
+                            }),
+                        self::t('page_content.system.maint_title', 'Judul', "We'll be right back")->columnSpanFull(),
+                        Textarea::make('page_content.system.maint_message')->label('Pesan')->rows(3)->columnSpanFull()->formatStateUsing(fn ($state) => filled($state) ? $state : 'We’re shipping a quick upgrade, so the site is briefly offline. No action needed — it’ll be back to normal shortly.'),
+                        DateTimePicker::make('page_content.system.maint_start')->label('Mulai (Start)')->seconds(false)->native(false)->prefixIcon('heroicon-m-play')->helperText('Opsional. Kosongkan bila tak ingin menampilkan jadwal.'),
+                        DateTimePicker::make('page_content.system.maint_end')->label('Selesai (End)')->seconds(false)->native(false)->prefixIcon('heroicon-m-flag')->helperText('Opsional. Perkiraan situs kembali online.'),
                     ]),
                 Section::make('Halaman error')
-                    ->description('Teks halaman error. Default tetap tampil walau DB mati (crash-safe).')
+                    ->description('Teks tiap halaman error — sudah terisi default, ubah hanya bila perlu. Tetap tampil walau DB mati (crash-safe).')
                     ->icon('heroicon-m-exclamation-triangle')
                     ->columns(2)
                     ->schema([
                         self::t('page_content.system.e401_title', '401 — judul', 'Sign in to continue.'),
-                        self::ta('page_content.system.e401_message', '401 — pesan'),
+                        self::t('page_content.system.e401_message', '401 — pesan', 'This page needs a verified session. Sign in, then head back to where you were going.'),
                         self::t('page_content.system.e403_title', '403 — judul', 'You can’t open this.'),
-                        self::ta('page_content.system.e403_message', '403 — pesan'),
+                        self::t('page_content.system.e403_message', '403 — pesan', 'This page is locked to your account. If you think that’s a mistake, get in touch and we’ll sort it out.'),
                         self::t('page_content.system.e404_title', '404 — judul', 'This page isn’t here.'),
-                        self::ta('page_content.system.e404_message', '404 — pesan'),
+                        self::t('page_content.system.e404_message', '404 — pesan', 'The page you’re after moved, was renamed, or never existed. Everything still standing is one click away.'),
                         self::t('page_content.system.e419_title', '419 — judul', 'Your session expired.'),
-                        self::ta('page_content.system.e419_message', '419 — pesan'),
+                        self::t('page_content.system.e419_message', '419 — pesan', 'For security, the page sat idle too long. Refresh it and submit again — nothing you typed was lost.'),
                         self::t('page_content.system.e429_title', '429 — judul', 'Slow down a moment.'),
-                        self::ta('page_content.system.e429_message', '429 — pesan'),
+                        self::t('page_content.system.e429_message', '429 — pesan', 'You’ve sent a lot of requests in a short time. Wait a few seconds, then try again.'),
                         self::t('page_content.system.e500_title', '500 — judul', 'Something broke on our end.'),
-                        self::ta('page_content.system.e500_message', '500 — pesan'),
+                        self::t('page_content.system.e500_message', '500 — pesan', 'That’s on us, not you. The team is alerted automatically — give it a moment, then try again.'),
                         self::t('page_content.system.e503_title', '503 — judul', 'We’re temporarily offline.'),
-                        self::ta('page_content.system.e503_message', '503 — pesan'),
+                        self::t('page_content.system.e503_message', '503 — pesan', 'The service is briefly unavailable — likely heavy load or a quick restart. Give it a moment and try again.'),
                     ]),
             ]);
     }
@@ -247,11 +278,11 @@ class SiteSettingForm
                     self::t('page_content.home.cap_title', 'Judul', 'Everything you need to launch and scale.'),
                     self::ta('page_content.home.cap_intro', 'Intro'),
                 ]),
-                Section::make('Selected work')->icon('heroicon-m-briefcase')->columns(2)->schema([
+                Section::make('Selected work')->icon('heroicon-m-briefcase')->columns(3)->schema([
                     self::t('page_content.home.work_eyebrow', 'Eyebrow', 'Selected work'),
                     self::t('page_content.home.work_title', 'Judul', 'Proof, not promises.'),
-                    self::ta('page_content.home.work_intro', 'Deskripsi', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
                     self::t('page_content.home.work_link', 'Link "semua proyek"', 'All work →'),
+                    self::ta('page_content.home.work_intro', 'Deskripsi', "A selection of products we've designed, built, and shipped — and the outcomes that followed."),
                 ]),
                 Section::make('Process')->icon('heroicon-m-arrow-path-rounded-square')->columns(2)->schema([
                     self::t('page_content.home.process_eyebrow', 'Eyebrow', 'How we work'),
