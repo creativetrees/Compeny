@@ -620,24 +620,24 @@ class SiteSettingForm
                     ->schema([
                         TextInput::make('footer_cta_eyebrow')->label('Eyebrow')->placeholder("Let's build")->prefixIcon('heroicon-m-tag')->columnSpanFull(),
                         Textarea::make('footer_cta_title')->label('Judul')->placeholder("Have something\nworth building?")->helperText('Baris baru memecah judul.')->rows(2)->columnSpanFull(),
-                        RichEditor::make('footer_cta_body')->label('Deskripsi')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->columnSpanFull(),
                         TextInput::make('footer_cta_label')->label('Teks tombol')->placeholder('Start a project')->prefixIcon('heroicon-m-cursor-arrow-rays'),
                         self::pageSelect('footer_cta_url'),
+                        RichEditor::make('footer_cta_body')->label('Deskripsi')->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')->columnSpanFull(),
                     ]),
                 Section::make('Identitas footer')
                     ->description('Tagline, lokasi, copyright & watermark.')
                     ->icon('heroicon-m-bars-3-bottom-left')
                     ->columns(2)
                     ->schema([
+                        TextInput::make('footer_location')->label('Lokasi')->placeholder('Jakarta · Remote-first')->prefixIcon('heroicon-m-map-pin'),
+                        TextInput::make('footer_copyright')->label('Nama copyright')->placeholder('Creative Trees Group')->helperText('Tahun otomatis: © '.date('Y').' + teks ini. Kosong = nama brand.')->prefixIcon('heroicon-m-calendar'),
+                        TextInput::make('footer_watermark')->label('Teks watermark (opsional)')->placeholder('Creative Trees Group')->helperText('Teks besar di latar footer. Kosong = nama brand.')->prefixIcon('heroicon-m-sparkles')->columnSpanFull(),
+                        self::t('page_content.footer.contact_label', 'Judul kolom kontak', 'Contact')->columnSpanFull(),
                         RichEditor::make('footer_tagline')
                             ->label('Tagline')
                             ->fileAttachmentsDisk('public')->fileAttachmentsDirectory('site/footer')->fileAttachmentsVisibility('public')
                             ->helperText('Teks kaya di bawah logo footer.')
                             ->columnSpanFull(),
-                        TextInput::make('footer_location')->label('Lokasi')->placeholder('Jakarta · Remote-first')->prefixIcon('heroicon-m-map-pin'),
-                        TextInput::make('footer_copyright')->label('Nama copyright')->placeholder('Creative Trees Group')->helperText('Tahun otomatis: © '.date('Y').' + teks ini. Kosong = nama brand.')->prefixIcon('heroicon-m-calendar'),
-                        TextInput::make('footer_watermark')->label('Teks watermark (opsional)')->placeholder('Creative Trees Group')->helperText('Teks besar di latar footer. Kosong = nama brand.')->prefixIcon('heroicon-m-sparkles')->columnSpanFull(),
-                        self::t('page_content.footer.contact_label', 'Judul kolom kontak', 'Contact')->columnSpanFull(),
                     ]),
             ]);
     }
