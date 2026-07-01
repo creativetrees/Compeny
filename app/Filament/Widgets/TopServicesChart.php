@@ -17,7 +17,7 @@ class TopServicesChart extends ApexChartWidget
 
     protected int|string|array $columnSpan = 6;
 
-    protected ?string $pollingInterval = '5s';
+    protected ?string $pollingInterval = '30s';
 
     public function getHeading(): ?string
     {

@@ -15,7 +15,7 @@ class StudioOverview extends StatsOverviewWidget
     use HasWidgetShield;
     use InteractsWithDashboardFilters;
 
-    protected ?string $pollingInterval = '5s';
+    protected ?string $pollingInterval = '30s';
 
     protected int|string|array $columnSpan = 'full';
 

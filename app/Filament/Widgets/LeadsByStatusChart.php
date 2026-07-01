@@ -19,7 +19,7 @@ class LeadsByStatusChart extends ApexChartWidget
 
     protected int|string|array $columnSpan = 4;
 
-    protected ?string $pollingInterval = '5s';
+    protected ?string $pollingInterval = '30s';
 
     public function getHeading(): ?string
     {
