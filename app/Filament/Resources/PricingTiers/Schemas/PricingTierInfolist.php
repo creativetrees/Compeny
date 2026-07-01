@@ -15,7 +15,7 @@ class PricingTierInfolist
             Section::make('Detail')->icon('heroicon-m-banknotes')->columns(2)->schema([
                 TextEntry::make('name')->icon('heroicon-m-banknotes')->weight('bold'),
                 TextEntry::make('term')->icon('heroicon-m-clock')->placeholder('—'),
-                TextEntry::make('tagline')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('tagline')->html()->prose()->columnSpanFull()->placeholder('—'),
             ]),
             Section::make('Pricing')->icon('heroicon-m-currency-dollar')->columns(3)->schema([
                 TextEntry::make('price_label')->icon('heroicon-m-bookmark')->placeholder('—'),

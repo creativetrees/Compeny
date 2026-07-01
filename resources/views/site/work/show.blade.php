@@ -8,7 +8,7 @@
         </h1>
 
         <div class="mt-10 grid gap-x-8 gap-y-10 border-t border-line pt-10 md:mt-14 md:grid-cols-12" data-reveal data-reveal-delay="0.08">
-            <p class="measure text-[1.05rem] leading-relaxed text-muted md:col-span-7">{{ $project->summary }}</p>
+            <p class="measure text-[1.05rem] leading-relaxed text-muted md:col-span-7">{!! rich_html($project->summary) !!}</p>
 
             <dl class="flex flex-wrap gap-x-12 gap-y-6 md:col-span-4 md:col-start-9">
                 @if ($project->client_name)
@@ -51,7 +51,7 @@
                 @if ($project->body)
                     <div class="md:col-span-7">
                         <x-ui.eyebrow plain class="mb-7">{{ content('work.detail_overview', 'Overview') }}</x-ui.eyebrow>
-                        <div class="measure whitespace-pre-line text-[1.05rem] leading-relaxed text-ink/90" data-reveal>{{ $project->body }}</div>
+                        <div class="measure text-[1.05rem] leading-relaxed text-ink/90 [&_p]:m-0 [&_p+p]:mt-4 [&_strong]:text-ink [&_a]:underline" data-reveal>{!! rich_html($project->body) !!}</div>
                     </div>
                 @endif
 

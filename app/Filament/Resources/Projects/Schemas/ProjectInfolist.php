@@ -23,8 +23,8 @@ class ProjectInfolist
             ]),
 
             Section::make('Content')->icon('heroicon-m-document-text')->columns(2)->schema([
-                TextEntry::make('summary')->columnSpanFull()->placeholder('—'),
-                TextEntry::make('body')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('summary')->html()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('body')->html()->prose()->columnSpanFull()->placeholder('—'),
                 TextEntry::make('services')->badge()->columnSpanFull()->placeholder('—'),
                 // `results` is a list of {label, value} maps — flatten each to a string
                 // so the badge can render it (echoing a raw array throws htmlspecialchars()).

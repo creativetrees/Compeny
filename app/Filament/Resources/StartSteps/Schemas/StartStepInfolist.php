@@ -13,7 +13,7 @@ class StartStepInfolist
         return $schema->components([
             Section::make('Start step')->icon('heroicon-m-list-bullet')->columns(2)->schema([
                 TextEntry::make('title')->icon('heroicon-m-list-bullet')->weight('bold')->columnSpanFull(),
-                TextEntry::make('description')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('description')->html()->prose()->columnSpanFull()->placeholder('—'),
             ]),
         ]);
     }

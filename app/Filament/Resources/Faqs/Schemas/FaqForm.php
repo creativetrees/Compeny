@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Faqs\Schemas;
 
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -23,7 +23,7 @@ class FaqForm
                         ->placeholder('How long does a project take?')
                         ->helperText('The question as a visitor would phrase it.')
                         ->columnSpanFull(),
-                    Textarea::make('answer')->required()->rows(4)->columnSpanFull()
+                    RichEditor::make('answer')->required()->columnSpanFull()
                         ->placeholder('Most engagements run 4–8 weeks…')
                         ->helperText('A clear, direct answer. Plain text.'),
                     Toggle::make('is_published')->default(true)->inline(false)

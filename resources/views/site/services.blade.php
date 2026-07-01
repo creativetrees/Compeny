@@ -47,7 +47,7 @@
                     </div>
 
                     <h2 class="display mt-7 text-2xl leading-none sm:text-[1.7rem]">{{ $service->title }}</h2>
-                    <p class="mt-4 text-[0.97rem] leading-relaxed text-muted">{{ $service->summary }}</p>
+                    <p class="mt-4 text-[0.97rem] leading-relaxed text-muted">{!! rich_html($service->summary) !!}</p>
 
                     @if (! empty($service->capabilities))
                         <div class="mt-auto flex flex-wrap gap-2 border-t border-line pt-6">

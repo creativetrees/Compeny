@@ -60,7 +60,7 @@
                         </h2>
 
                         {{-- Summary --}}
-                        <p class="mt-2.5 text-sm leading-relaxed text-muted">{{ $product->summary }}</p>
+                        <p class="mt-2.5 text-sm leading-relaxed text-muted">{!! rich_html($product->summary) !!}</p>
 
                         {{-- Features --}}
                         @if (! empty($product->features))

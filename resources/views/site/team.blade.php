@@ -60,7 +60,7 @@
                         <div class="label-mono mt-2 text-muted">{{ $member->role }}</div>
 
                         @if ($member->bio)
-                            <p class="mt-4 text-sm leading-relaxed text-muted">{{ $member->bio }}</p>
+                            <p class="mt-4 text-sm leading-relaxed text-muted">{!! rich_html($member->bio) !!}</p>
                         @endif
 
                         @if (! empty($member->socials))

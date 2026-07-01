@@ -13,7 +13,7 @@ class PricingIncludeInfolist
         return $schema->components([
             Section::make('Pricing include')->icon('heroicon-m-check-circle')->columns(2)->schema([
                 TextEntry::make('label')->icon('heroicon-m-check-circle')->weight('bold')->columnSpanFull(),
-                TextEntry::make('description')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('description')->html()->prose()->columnSpanFull()->placeholder('—'),
             ]),
         ]);
     }

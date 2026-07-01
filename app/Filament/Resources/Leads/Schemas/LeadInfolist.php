@@ -22,7 +22,7 @@ class LeadInfolist
             Section::make('Inquiry')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                 TextEntry::make('budget')->icon('heroicon-m-banknotes')->placeholder('—'),
                 TextEntry::make('service_interest')->label('Service interest')->badge()->placeholder('—'),
-                TextEntry::make('message')->prose()->columnSpanFull(),
+                TextEntry::make('message')->html()->prose()->columnSpanFull(),
                 TextEntry::make('status')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => Str::headline($state))

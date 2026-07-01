@@ -17,8 +17,8 @@ class ServiceInfolist
                 TextEntry::make('slug')->icon('heroicon-m-link'),
                 TextEntry::make('icon')->icon('heroicon-m-sparkles'),
                 IconEntry::make('is_featured')->label('Featured')->boolean(),
-                TextEntry::make('summary')->columnSpanFull(),
-                TextEntry::make('description')->prose()->columnSpanFull(),
+                TextEntry::make('summary')->html()->columnSpanFull(),
+                TextEntry::make('description')->html()->prose()->columnSpanFull(),
                 TextEntry::make('capabilities')->badge()->columnSpanFull(),
             ]),
         ]);

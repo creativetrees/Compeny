@@ -88,7 +88,7 @@
                             <span class="-translate-x-1.5 text-muted opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100" aria-hidden="true">→</span>
                         </h3>
 
-                        <p class="mt-3 text-sm leading-relaxed text-muted">{{ $service->summary }}</p>
+                        <p class="mt-3 text-sm leading-relaxed text-muted">{!! rich_html($service->summary) !!}</p>
 
                         @if (! empty($service->capabilities))
                             <div class="mt-auto flex flex-wrap gap-2 border-t border-line pt-6">
@@ -177,7 +177,7 @@
                             <div class="swiper-slide h-auto">
                                 <figure class="flex h-full flex-col border border-line bg-paper p-8 md:p-9">
                                     <div class="font-mono text-5xl leading-none text-faint" aria-hidden="true">“</div>
-                                    <blockquote class="mt-3 flex-1 text-[1.05rem] leading-relaxed text-ink">{{ $t->quote }}</blockquote>
+                                    <blockquote class="mt-3 flex-1 text-[1.05rem] leading-relaxed text-ink">{!! rich_html($t->quote) !!}</blockquote>
                                     <figcaption class="mt-8 flex items-center gap-3 border-t border-line pt-6">
                                         @if ($t->avatar_url)
                                             <img src="{{ $t->avatar_url }}" alt="" loading="lazy" class="h-10 w-10 rounded-full grayscale">

@@ -74,7 +74,7 @@
                                     @endif
                                 </div>
 
-                                <p class="mt-5 text-[0.97rem] leading-relaxed {{ $mutedClass }}">{{ $tier->tagline }}</p>
+                                <p class="mt-5 text-[0.97rem] leading-relaxed {{ $mutedClass }}">{!! rich_html($tier->tagline) !!}</p>
 
                                 <div class="rule my-8"></div>
 
@@ -120,7 +120,7 @@
                 <div class="group border-b border-r border-line p-8 transition-colors duration-500 hover:bg-panel md:p-9" data-stagger-item>
                     <div class="display text-[2.6rem] leading-none text-faint transition-colors duration-500 group-hover:text-ink">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div>
                     <h3 class="mt-7 font-mono text-[0.95rem] font-bold uppercase tracking-tight">{{ $inc->label }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-muted">{{ $inc->description }}</p>
+                    <p class="mt-3 text-sm leading-relaxed text-muted">{!! rich_html($inc->description) !!}</p>
                 </div>
             @endforeach
         </div>
@@ -143,7 +143,7 @@
                             <span class="shrink-0 font-mono text-xl text-faint transition-transform duration-300" :class="iconClass" aria-hidden="true">+</span>
                         </button>
                         <div x-show="open" x-cloak class="faq-panel" id="faq-panel-{{ $loop->index }}">
-                            <p class="measure pb-7 text-[0.97rem] leading-relaxed text-muted">{{ $faq->answer }}</p>
+                            <p class="measure pb-7 text-[0.97rem] leading-relaxed text-muted">{!! rich_html($faq->answer) !!}</p>
                         </div>
                     </div>
                 @endforeach

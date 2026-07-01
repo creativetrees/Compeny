@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Services\Schemas;
 
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -38,14 +38,12 @@ class ServiceForm
                             ->inline(false)
                             ->default(false)
                             ->helperText('Highlight this service on the public page.'),
-                        Textarea::make('summary')
+                        RichEditor::make('summary')
                             ->required()
-                            ->rows(2)
                             ->placeholder('Interfaces that are clear, fast, and on-brand.')
                             ->helperText('Short tagline.')
                             ->columnSpanFull(),
-                        Textarea::make('description')
-                            ->rows(4)
+                        RichEditor::make('description')
                             ->placeholder('Describe what this service covers…')
                             ->helperText('Full description of the service.')
                             ->columnSpanFull(),

@@ -13,7 +13,7 @@ class PrincipleInfolist
         return $schema->components([
             Section::make('Principle')->icon('heroicon-m-light-bulb')->columns(2)->schema([
                 TextEntry::make('title')->icon('heroicon-m-light-bulb')->weight('bold')->columnSpanFull(),
-                TextEntry::make('description')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('description')->html()->prose()->columnSpanFull()->placeholder('—'),
             ]),
         ]);
     }

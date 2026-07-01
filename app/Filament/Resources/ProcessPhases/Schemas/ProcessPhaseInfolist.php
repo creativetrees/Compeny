@@ -14,7 +14,7 @@ class ProcessPhaseInfolist
             Section::make('Process phase')->icon('heroicon-m-rectangle-group')->columns(2)->schema([
                 TextEntry::make('name')->icon('heroicon-m-rectangle-group')->weight('bold'),
                 TextEntry::make('lead'),
-                TextEntry::make('body')->prose()->columnSpanFull(),
+                TextEntry::make('body')->html()->prose()->columnSpanFull(),
                 TextEntry::make('deliverables')->badge()->columnSpanFull(),
             ]),
         ]);

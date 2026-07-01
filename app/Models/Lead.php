@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SanitizesRichHtml;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
+    use SanitizesRichHtml;
+
+    /** @var array<int, string> */
+    protected array $richHtml = ['message'];
+
     use HasFactory;
 
     public const STATUSES = ['new', 'contacted', 'qualified', 'won', 'lost'];

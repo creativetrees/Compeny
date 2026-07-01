@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -30,7 +30,7 @@ class CategoryForm
                             ->prefixIcon('heroicon-m-rectangle-stack')
                             ->placeholder('project')
                             ->helperText('Groups projects/products.'),
-                        Textarea::make('description')->rows(4)->columnSpanFull()
+                        RichEditor::make('description')->columnSpanFull()
                             ->placeholder('Identity, logos, and visual systems…')
                             ->helperText('Optional short summary of what this category covers.'),
                     ]),

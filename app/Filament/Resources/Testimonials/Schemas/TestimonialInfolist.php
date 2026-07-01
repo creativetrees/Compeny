@@ -20,7 +20,7 @@ class TestimonialInfolist
                 TextEntry::make('company')->icon('heroicon-m-building-office-2')->placeholder('—'),
             ]),
             Section::make('Content')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
-                TextEntry::make('quote')->prose()->columnSpanFull(),
+                TextEntry::make('quote')->html()->prose()->columnSpanFull(),
                 TextEntry::make('rating')->icon('heroicon-m-star')->placeholder('—'),
             ]),
             Section::make('Settings')->icon('heroicon-m-cog-6-tooth')->columns(2)->schema([

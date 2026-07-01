@@ -20,7 +20,7 @@ class TeamMemberInfolist
                 TextEntry::make('name')->icon('heroicon-m-user'),
                 TextEntry::make('role')->icon('heroicon-m-briefcase'),
                 TextEntry::make('slug')->icon('heroicon-m-link')->color('gray'),
-                TextEntry::make('bio')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('bio')->html()->prose()->columnSpanFull()->placeholder('—'),
                 KeyValueEntry::make('socials')->columnSpanFull(),
             ]),
         ]);

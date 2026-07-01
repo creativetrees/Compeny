@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\StartSteps\Schemas;
 
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -23,7 +23,7 @@ class StartStepForm
                             ->placeholder('Send a brief')
                             ->helperText('Short, action-oriented name for the step.')
                             ->columnSpanFull(),
-                        Textarea::make('description')->rows(4)->columnSpanFull()
+                        RichEditor::make('description')->columnSpanFull()
                             ->placeholder('Tell us where you are headed and what success looks like…')
                             ->helperText('Explain what happens in this step.'),
                     ]),

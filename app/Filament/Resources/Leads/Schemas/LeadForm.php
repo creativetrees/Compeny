@@ -5,8 +5,8 @@ namespace App\Filament\Resources\Leads\Schemas;
 use App\Models\Lead;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -36,7 +36,7 @@ class LeadForm
                     TextInput::make('service_interest')->label('Service interest')
                         ->prefixIcon('heroicon-m-squares-2x2')->placeholder('UX & UI Design')
                         ->helperText('What they are interested in.'),
-                    Textarea::make('message')->required()->rows(6)->columnSpanFull()
+                    RichEditor::make('message')->required()->columnSpanFull()
                         ->placeholder('Tell us about the project…')
                         ->helperText('The enquiry message submitted from the site.'),
                 ]),

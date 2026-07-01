@@ -14,7 +14,7 @@ class FaqInfolist
         return $schema->components([
             Section::make('FAQ')->icon('heroicon-m-question-mark-circle')->columns(2)->schema([
                 TextEntry::make('question')->icon('heroicon-m-question-mark-circle')->weight('bold')->columnSpanFull(),
-                TextEntry::make('answer')->prose()->columnSpanFull(),
+                TextEntry::make('answer')->html()->prose()->columnSpanFull(),
                 IconEntry::make('is_published')->label('Published')->boolean(),
             ]),
         ]);

@@ -36,7 +36,7 @@
                 <div class="group flex flex-col border-b border-r border-line p-8 transition-colors duration-500 hover:bg-panel md:p-9" data-stagger-item>
                     <div class="display text-[2.6rem] leading-none text-faint transition-colors duration-500 group-hover:text-ink">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</div>
                     <h3 class="mt-7 font-mono text-[0.95rem] font-bold uppercase tracking-tight">{{ $value->title }}</h3>
-                    <p class="mt-3 text-sm leading-relaxed text-muted">{{ $value->description }}</p>
+                    <p class="mt-3 text-sm leading-relaxed text-muted">{!! rich_html($value->description) !!}</p>
                 </div>
             @endforeach
         </div>

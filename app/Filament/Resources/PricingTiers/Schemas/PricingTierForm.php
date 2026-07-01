@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\PricingTiers\Schemas;
 
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
@@ -21,7 +21,7 @@ class PricingTierForm
                         ->placeholder('Sprint')->helperText('Name of the engagement tier.'),
                     TextInput::make('term')->required()->prefixIcon('heroicon-m-clock')
                         ->placeholder('2–4 weeks')->helperText('Typical duration or commitment.'),
-                    Textarea::make('tagline')->rows(2)->columnSpanFull()
+                    RichEditor::make('tagline')->columnSpanFull()
                         ->placeholder('A focused burst to ship one thing well.')
                         ->helperText('One-line summary shown under the tier name.'),
                 ]),

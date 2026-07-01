@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ProcessPhases\Schemas;
 
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -31,8 +32,7 @@ class ProcessPhaseForm
                             ->placeholder('Align on goals, constraints, and success metrics.')
                             ->helperText('One-line summary.')
                             ->columnSpanFull(),
-                        Textarea::make('body')
-                            ->rows(4)
+                        RichEditor::make('body')
                             ->placeholder('Describe what happens during this phase…')
                             ->helperText('Full description.')
                             ->columnSpanFull(),

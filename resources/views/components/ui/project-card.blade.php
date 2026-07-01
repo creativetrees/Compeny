@@ -23,6 +23,6 @@
         <span class="label-mono shrink-0">{{ $project->year }}</span>
     </div>
     <p class="mt-1.5 text-[0.92rem] leading-relaxed text-muted">
-        @if ($project->client_name)<span class="text-ink">{{ $project->client_name }}</span> — @endif{{ \Illuminate\Support\Str::limit($project->summary ?? '', 68) }}
+        @if ($project->client_name)<span class="text-ink">{{ $project->client_name }}</span> — @endif{{ \Illuminate\Support\Str::limit(strip_tags($project->summary ?? ''), 68) }}
     </p>
 </a>

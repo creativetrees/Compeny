@@ -26,8 +26,8 @@ class ProductInfolist
             ]),
 
             Section::make('Content')->icon('heroicon-m-document-text')->columns(2)->schema([
-                TextEntry::make('summary')->columnSpanFull()->placeholder('—'),
-                TextEntry::make('description')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('summary')->html()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('description')->html()->prose()->columnSpanFull()->placeholder('—'),
                 TextEntry::make('features')->badge()->columnSpanFull()->placeholder('—'),
                 TextEntry::make('price_label')->icon('heroicon-m-banknotes')->placeholder('—'),
             ]),

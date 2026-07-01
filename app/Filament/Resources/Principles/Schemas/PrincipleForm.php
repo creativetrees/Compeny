@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Principles\Schemas;
 
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -23,7 +23,7 @@ class PrincipleForm
                             ->placeholder('Ship to learn')
                             ->helperText('Short, memorable name for the principle.')
                             ->columnSpanFull(),
-                        Textarea::make('description')->rows(4)->columnSpanFull()
+                        RichEditor::make('description')->columnSpanFull()
                             ->placeholder('We release early and let real usage guide the next move…')
                             ->helperText('Explain what this principle means in practice.'),
                     ]),

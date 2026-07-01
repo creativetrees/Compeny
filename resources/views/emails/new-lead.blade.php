@@ -42,7 +42,7 @@
 
                             <div style="margin-top:16px;padding-top:16px;border-top:1px solid #e6e6e3;">
                                 <div style="font-family:ui-monospace,monospace;font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#a9a9a5;margin-bottom:8px;">Message</div>
-                                <div style="font-size:14px;line-height:1.6;white-space:pre-line;">{{ $lead->message }}</div>
+                                <div style="font-size:14px;line-height:1.6;white-space:pre-line;">{!! nl2br(e($lead->message)) !!}</div>
                             </div>
                         </td>
                     </tr>

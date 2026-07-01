@@ -15,7 +15,7 @@ class CategoryInfolist
                 TextEntry::make('name')->icon('heroicon-m-tag')->weight('bold'),
                 TextEntry::make('slug')->icon('heroicon-m-link')->color('gray'),
                 TextEntry::make('type')->icon('heroicon-m-rectangle-stack')->badge(),
-                TextEntry::make('description')->prose()->columnSpanFull()->placeholder('—'),
+                TextEntry::make('description')->html()->prose()->columnSpanFull()->placeholder('—'),
             ]),
         ]);
     }

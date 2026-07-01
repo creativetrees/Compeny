@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\Testimonials\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
@@ -30,7 +30,7 @@ class TestimonialForm
                         ->placeholder('Acme Inc.')->helperText('Their organisation.'),
                 ]),
                 Tab::make('Content')->icon('heroicon-o-chat-bubble-left-right')->columns(2)->schema([
-                    Textarea::make('quote')->required()->rows(5)->columnSpanFull()
+                    RichEditor::make('quote')->required()->columnSpanFull()
                         ->placeholder('Working with the team was…')
                         ->helperText('The testimonial text shown on the site.'),
                     TextInput::make('rating')->numeric()->minValue(1)->maxValue(5)

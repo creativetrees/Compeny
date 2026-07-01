@@ -4,7 +4,7 @@ namespace App\Filament\Resources\TeamMembers\Schemas;
 
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
@@ -32,7 +32,7 @@ class TeamMemberForm
                         ->prefixIcon('heroicon-m-briefcase')
                         ->placeholder('Creative Director')
                         ->helperText('Job title or role within the studio.'),
-                    Textarea::make('bio')->rows(4)->columnSpanFull()
+                    RichEditor::make('bio')->columnSpanFull()
                         ->placeholder('A short paragraph about this person…')
                         ->helperText('Optional — a brief biography.'),
                     FileUpload::make('photo_path')->label('Photo')

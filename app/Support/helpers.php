@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\SiteSetting;
+use App\Support\Html;
 
 if (! function_exists('content')) {
     /**
@@ -53,5 +54,33 @@ if (! function_exists('content_title')) {
         );
 
         return trim(html_entity_decode(strip_tags($text), ENT_QUOTES));
+    }
+}
+
+if (! function_exists('rich_html')) {
+    /**
+     * Safely render a RichEditor-backed model field with {!! !!}. HTML values are
+     * sanitized (defence-in-depth on top of the model's save-time sanitizer); plain
+     * legacy text is escaped and line-broken so nothing is lost before a re-save.
+     */
+    function rich_html(?string $value): string
+    {
+        if ($value === null || trim($value) === '') {
+            return '';
+        }
+
+        if (! str_contains($value, '<')) {
+            return nl2br(e($value));   // plain legacy text — escape + keep line breaks
+        }
+
+        $html = (string) Html::clean($value);
+
+        // Unwrap a single wrapping <p> so short values render inline (no nested <p>);
+        // multi-paragraph values keep their structure for a block container.
+        if (preg_match('#^\s*<p>(.*)</p>\s*$#is', $html, $m) && stripos($m[1], '<p') === false) {
+            return $m[1];
+        }
+
+        return $html;
     }
 }

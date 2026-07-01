@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Projects\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
@@ -64,14 +64,12 @@ class ProjectForm
                             ->icon('heroicon-o-document-text')
                             ->columns(2)
                             ->schema([
-                                Textarea::make('summary')
+                                RichEditor::make('summary')
                                     ->required()
-                                    ->rows(3)
                                     ->columnSpanFull()
                                     ->placeholder('A short one-line pitch for this project.')
                                     ->helperText('Brief teaser shown on the work card.'),
-                                Textarea::make('body')
-                                    ->rows(6)
+                                RichEditor::make('body')
                                     ->columnSpanFull()
                                     ->placeholder('Tell the full story of the project…')
                                     ->helperText('Full case-study body shown on the project page.'),

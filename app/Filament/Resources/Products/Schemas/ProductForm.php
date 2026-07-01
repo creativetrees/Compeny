@@ -3,9 +3,9 @@
 namespace App\Filament\Resources\Products\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Tabs;
@@ -65,14 +65,12 @@ class ProductForm
                             ->icon('heroicon-o-document-text')
                             ->columns(2)
                             ->schema([
-                                Textarea::make('summary')
+                                RichEditor::make('summary')
                                     ->required()
-                                    ->rows(3)
                                     ->columnSpanFull()
                                     ->placeholder('A short one-line pitch for this product.')
                                     ->helperText('Brief teaser shown on the product card.'),
-                                Textarea::make('description')
-                                    ->rows(6)
+                                RichEditor::make('description')
                                     ->columnSpanFull()
                                     ->placeholder('Describe what is included and who it is for…')
                                     ->helperText('Full description shown on the product page.'),

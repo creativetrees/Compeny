@@ -17,7 +17,7 @@
                             <span class="label-mono mt-0.5 text-faint">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
                             <div>
                                 <h3 class="font-mono text-sm font-bold uppercase tracking-tight">{{ $step->title }}</h3>
-                                <p class="mt-1 text-sm text-muted">{{ $step->description }}</p>
+                                <p class="mt-1 text-sm text-muted">{!! rich_html($step->description) !!}</p>
                             </div>
                         </div>
                     @endforeach
