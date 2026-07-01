@@ -22,7 +22,7 @@
             <h1 class="display mt-7 text-[2.5rem] leading-[0.98] sm:text-6xl md:text-[4.6rem]" data-reveal data-reveal-delay="0.08">
                 {{ $aboutHeading }}
             </h1>
-            <div class="measure mt-7 space-y-5 text-[1.05rem] leading-relaxed text-muted richtext" data-reveal data-reveal-delay="0.24">{!! $aboutBody !!}</div>
+            <div class="measure mt-7 space-y-5 text-[1.05rem] leading-relaxed text-muted richtext" data-reveal data-reveal-delay="0.24">{!! rich_html($aboutBody) !!}</div>
         </div>
     </section>
 

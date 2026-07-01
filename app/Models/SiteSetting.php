@@ -2,12 +2,18 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SanitizesRichHtml;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SiteSetting extends Model
 {
+    use SanitizesRichHtml;
+
+    /** @var array<int, string> RichEditor columns sanitized on every save. */
+    protected array $richHtml = ['hero_subtitle', 'about_heading', 'about_body', 'footer_cta_title', 'footer_cta_body', 'footer_tagline'];
+
     protected static ?self $cached = null;
 
     protected $fillable = [

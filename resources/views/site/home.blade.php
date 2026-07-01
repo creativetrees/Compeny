@@ -38,7 +38,7 @@
                 </h1>
 
                 <div class="measure mx-auto mt-8 text-[1rem] text-muted sm:text-[1.05rem] richtext" data-reveal data-reveal-delay="0.3">
-                    {!! filled($settings->hero_subtitle) ? $settings->hero_subtitle : 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.' !!}
+                    {!! rich_html(filled($settings->hero_subtitle) ? $settings->hero_subtitle : 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.') !!}
                 </div>
 
                 <div class="mt-9 flex items-center justify-center gap-3" data-reveal data-reveal-delay="0.4">

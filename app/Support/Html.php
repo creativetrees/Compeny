@@ -68,7 +68,7 @@ class Html
 
                 $safeHref = $tag === 'a'
                     && $name === 'href'
-                    && preg_match('#^(https?://|mailto:|/|\#)#i', $value) === 1;
+                    && preg_match('#^(https?://|mailto:|/(?!/)|\#)#i', $value) === 1;
 
                 if (! $safeHref) {
                     $node->removeAttribute($attribute->nodeName);

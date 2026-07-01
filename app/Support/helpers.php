@@ -26,7 +26,7 @@ if (! function_exists('content_rich')) {
      */
     function content_rich(string $key, string $default = ''): string
     {
-        $html = trim(content($key, $default));
+        $html = trim((string) Html::clean(content($key, $default)));
 
         if (preg_match('#^<p>(.*)</p>$#is', $html, $m) && stripos($m[1], '<p') === false) {
             return $m[1];

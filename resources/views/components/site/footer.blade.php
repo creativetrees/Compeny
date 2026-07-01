@@ -27,7 +27,7 @@
             </div>
             <div class="flex flex-col items-start md:col-span-5 md:items-end md:text-right" data-reveal data-reveal-delay="0.1">
                 <div class="mb-7 max-w-sm text-[1rem] leading-relaxed text-[#9a9a96] [&_a]:text-paper [&_a]:underline [&_p]:m-0 [&_p+p]:mt-3 [&_strong]:text-paper">
-                    {!! $settings->footer_cta_body ?: "Tell us where you're headed. We'll tell you the shortest honest path to get there." !!}
+                    {!! rich_html($settings->footer_cta_body ?: "Tell us where you're headed. We'll tell you the shortest honest path to get there.") !!}
                 </div>
                 <x-ui.button href="{{ $settings->footer_cta_url ?: '/start' }}" variant="invert">{{ $settings->footer_cta_label ?: 'Start a project' }}</x-ui.button>
             </div>
@@ -50,7 +50,7 @@
                     @endif
                 </a>
                 <div class="mt-5 max-w-xs text-sm leading-relaxed text-[#9a9a96] richtext [&_a]:text-paper [&_strong]:text-paper">
-                    {!! filled($settings->footer_tagline) ? $settings->footer_tagline : 'Designed and built to compound.' !!}
+                    {!! rich_html(filled($settings->footer_tagline) ? $settings->footer_tagline : 'Designed and built to compound.') !!}
                 </div>
                 <a href="mailto:{{ $email }}" class="link-underline mt-7 inline-block font-mono text-sm text-paper">{{ $email }}</a>
             </div>
