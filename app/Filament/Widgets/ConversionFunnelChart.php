@@ -3,10 +3,12 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Concerns\InteractsWithDashboardFilters;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class ConversionFunnelChart extends ApexChartWidget
 {
+    use HasWidgetShield;
     use InteractsWithDashboardFilters;
 
     protected static ?string $chartId = 'conversionFunnel';

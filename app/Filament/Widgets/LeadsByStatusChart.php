@@ -4,11 +4,13 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Concerns\InteractsWithDashboardFilters;
 use App\Models\Lead;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Illuminate\Support\Str;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class LeadsByStatusChart extends ApexChartWidget
 {
+    use HasWidgetShield;
     use InteractsWithDashboardFilters;
 
     protected static ?string $chartId = 'leadsByStatus';

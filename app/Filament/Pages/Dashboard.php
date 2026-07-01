@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use BackedEnum;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
@@ -12,6 +13,7 @@ use Filament\Support\Icons\Heroicon;
 class Dashboard extends BaseDashboard
 {
     use HasFiltersForm;
+    use HasPageShield;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBarSquare;
 

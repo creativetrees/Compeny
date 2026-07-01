@@ -6,11 +6,13 @@ use App\Filament\Concerns\InteractsWithDashboardFilters;
 use App\Models\Lead;
 use App\Models\Project;
 use App\Models\Service;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class StudioOverview extends StatsOverviewWidget
 {
+    use HasWidgetShield;
     use InteractsWithDashboardFilters;
 
     protected ?string $pollingInterval = '5s';

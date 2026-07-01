@@ -3,11 +3,13 @@
 namespace App\Filament\Widgets;
 
 use App\Filament\Concerns\InteractsWithDashboardFilters;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Illuminate\Support\Carbon;
 use Leandrocfe\FilamentApexCharts\Widgets\ApexChartWidget;
 
 class LeadsOverTimeChart extends ApexChartWidget
 {
+    use HasWidgetShield;
     use InteractsWithDashboardFilters;
 
     protected static ?string $chartId = 'leadsOverTime';

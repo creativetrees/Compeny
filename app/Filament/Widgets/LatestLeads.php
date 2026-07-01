@@ -5,6 +5,7 @@ namespace App\Filament\Widgets;
 use App\Filament\Concerns\InteractsWithDashboardFilters;
 use App\Filament\Resources\Leads\LeadResource;
 use App\Models\Lead;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -13,6 +14,7 @@ use Illuminate\Support\Str;
 
 class LatestLeads extends TableWidget
 {
+    use HasWidgetShield;
     use InteractsWithDashboardFilters;
 
     protected static ?int $sort = 7;
