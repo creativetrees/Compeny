@@ -73,6 +73,25 @@ class AdminPanelTest extends TestCase
         }
     }
 
+    public function test_project_view_page_renders_with_map_shaped_results(): void
+    {
+        $this->seed();
+        $admin = User::factory()->admin()->create(['email' => 'view@creativetrees.group']);
+
+        // Regression: `results` stored as {label, value} maps (not scalars) crashed the
+        // infolist badge with htmlspecialchars(array given) → 500. The view page must render.
+        $project = Project::firstOrFail();
+        $project->update([
+            'services' => ['Design', 'Strategy'],
+            'results' => [['label' => 'Conversion', 'value' => '+49%'], ['label' => 'Launch', 'value' => '8 wks']],
+        ]);
+
+        $this->actingAs($admin)
+            ->get(ProjectResource::getUrl('view', ['record' => $project]))
+            ->assertSuccessful()
+            ->assertSee('Conversion: +49%');
+    }
+
     public function test_edit_own_user_shows_the_two_factor_tab(): void
     {
         $admin = User::factory()->admin()->create(['email' => 'self@creativetrees.group']);

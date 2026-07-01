@@ -26,7 +26,17 @@ class ProjectInfolist
                 TextEntry::make('summary')->columnSpanFull()->placeholder('—'),
                 TextEntry::make('body')->prose()->columnSpanFull()->placeholder('—'),
                 TextEntry::make('services')->badge()->columnSpanFull()->placeholder('—'),
-                TextEntry::make('results')->badge()->columnSpanFull()->placeholder('—'),
+                // `results` is a list of {label, value} maps — flatten each to a string
+                // so the badge can render it (echoing a raw array throws htmlspecialchars()).
+                TextEntry::make('results')
+                    ->badge()
+                    ->getStateUsing(fn ($record): array => collect($record->results ?? [])
+                        ->map(fn ($r) => is_array($r) ? trim(($r['label'] ?? '').': '.($r['value'] ?? ''), ' :') : $r)
+                        ->filter()
+                        ->values()
+                        ->all())
+                    ->columnSpanFull()
+                    ->placeholder('—'),
             ]),
 
             Section::make('Media')->icon('heroicon-m-photo')->schema([
