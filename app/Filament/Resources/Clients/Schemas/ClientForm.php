@@ -14,7 +14,7 @@ class ClientForm
     {
         return $schema
             ->components([
-                Section::make('Client')
+                Section::make('Client')->columnSpanFull()
                     ->description('Logos shown in the "trusted by" strip.')
                     ->icon('heroicon-o-building-office-2')
                     ->columns(2)

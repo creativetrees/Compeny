@@ -13,7 +13,7 @@ class NavLinkForm
     {
         return $schema
             ->components([
-                Section::make('Navigation link')
+                Section::make('Navigation link')->columnSpanFull()
                     ->description('A single link shown in the header or footer navigation.')
                     ->icon('heroicon-m-link')
                     ->columns(2)

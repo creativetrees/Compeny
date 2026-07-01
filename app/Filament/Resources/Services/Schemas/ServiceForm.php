@@ -15,7 +15,7 @@ class ServiceForm
     {
         return $schema
             ->components([
-                Section::make('Service')
+                Section::make('Service')->columnSpanFull()
                     ->description('A single discipline shown on the services page.')
                     ->icon('heroicon-m-swatch')
                     ->columns(2)

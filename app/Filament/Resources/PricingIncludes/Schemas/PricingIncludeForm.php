@@ -13,7 +13,7 @@ class PricingIncludeForm
     {
         return $schema
             ->components([
-                Section::make('Pricing include')
+                Section::make('Pricing include')->columnSpanFull()
                     ->description('An item in the "what is always included" list on the pricing page.')
                     ->icon('heroicon-m-check-circle')
                     ->columns(2)

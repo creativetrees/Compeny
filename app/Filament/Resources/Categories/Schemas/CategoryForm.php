@@ -13,7 +13,7 @@ class CategoryForm
     {
         return $schema
             ->components([
-                Section::make('Category')
+                Section::make('Category')->columnSpanFull()
                     ->description('A grouping used to organise projects and products on the public site.')
                     ->icon('heroicon-m-tag')
                     ->columns(2)

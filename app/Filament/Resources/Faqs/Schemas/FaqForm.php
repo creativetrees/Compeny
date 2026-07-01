@@ -13,7 +13,7 @@ class FaqForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('FAQ')
+            Section::make('FAQ')->columnSpanFull()
                 ->description('A single question and answer shown on the pricing page FAQ.')
                 ->icon('heroicon-m-question-mark-circle')
                 ->columns(2)

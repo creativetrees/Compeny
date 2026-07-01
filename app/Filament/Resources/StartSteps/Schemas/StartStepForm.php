@@ -13,7 +13,7 @@ class StartStepForm
     {
         return $schema
             ->components([
-                Section::make('Start step')
+                Section::make('Start step')->columnSpanFull()
                     ->description('A step in the "how to start" sequence shown on the start page.')
                     ->icon('heroicon-m-list-bullet')
                     ->columns(2)

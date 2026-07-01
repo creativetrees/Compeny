@@ -13,7 +13,7 @@ class PrincipleForm
     {
         return $schema
             ->components([
-                Section::make('Principle')
+                Section::make('Principle')->columnSpanFull()
                     ->description('An operating principle shown on the process page.')
                     ->icon('heroicon-m-light-bulb')
                     ->columns(2)

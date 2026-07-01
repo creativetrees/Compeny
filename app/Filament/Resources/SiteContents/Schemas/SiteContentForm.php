@@ -13,7 +13,7 @@ class SiteContentForm
     {
         return $schema
             ->components([
-                Section::make('Konten')
+                Section::make('Konten')->columnSpanFull()
                     ->icon('heroicon-o-document-text')
                     ->columns(2)
                     ->schema([

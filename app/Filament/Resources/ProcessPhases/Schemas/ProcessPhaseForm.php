@@ -14,7 +14,7 @@ class ProcessPhaseForm
     {
         return $schema
             ->components([
-                Section::make('Process phase')
+                Section::make('Process phase')->columnSpanFull()
                     ->description('A single phase in the studio process, shown on the process page.')
                     ->icon('heroicon-m-rectangle-group')
                     ->columns(2)

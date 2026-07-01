@@ -15,7 +15,7 @@ class TeamMemberForm
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Team member')
+            Section::make('Team member')->columnSpanFull()
                 ->description('A person shown on the public team page.')
                 ->icon('heroicon-m-user')
                 ->columns(2)
