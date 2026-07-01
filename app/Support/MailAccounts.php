@@ -64,38 +64,39 @@ class MailAccounts
     }
 
     /**
-     * Register a runtime mailer for the given role and return its name — or null
-     * when the account is missing, has no SMTP host, or has no server-side
-     * password (the caller then falls back to the default mailer). The password
-     * comes from config (sourced from .env), never from the database.
+     * Register a runtime mailer for the account with the given role and return
+     * its name — or null when the account is missing or cannot send (see
+     * register()). Resolves the password from the CMS secret / .env.
      */
     public static function mailer(string $role): ?string
     {
         $account = static::byRole($role);
 
-        if (! $account) {
-            return null;
-        }
+        return $account ? static::register($account, static::password($account)) : null;
+    }
 
+    /**
+     * Build a runtime Laravel mailer from an account's transport config plus an
+     * explicit password, returning the mailer name — or null when it cannot send.
+     * Non-SMTP transports resolve to the matching built-in mailer by name; SMTP
+     * needs both a host and a password. The password is supplied by the caller
+     * (CMS secret, .env, or a freshly-typed value) and is never persisted here.
+     */
+    public static function register(array $account, ?string $password): ?string
+    {
         $transport = $account['mailer'] ?? 'smtp';
 
-        // Non-SMTP transports map to the built-in mailers (sendmail/log) — no secret needed.
         if ($transport !== 'smtp') {
             return array_key_exists($transport, (array) config('mail.mailers')) ? $transport : null;
         }
 
-        if (blank($account['host'] ?? null)) {
-            return null;
-        }
-
-        $password = static::password($account);
-
-        if (blank($password)) {
+        if (blank($account['host'] ?? null) || blank($password)) {
             return null;
         }
 
         $encryption = $account['encryption'] ?? 'tls';
-        $name = 'cms_'.$role;
+        $key = strtolower((string) ($account['address'] ?? $account['role'] ?? 'account'));
+        $name = 'cms_'.trim((string) preg_replace('/[^a-z0-9]+/', '_', $key), '_');
 
         Config::set('mail.mailers.'.$name, [
             'transport' => 'smtp',

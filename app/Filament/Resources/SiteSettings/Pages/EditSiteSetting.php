@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SiteSettings\Pages;
 
 use App\Filament\Resources\SiteSettings\SiteSettingResource;
 use App\Models\SiteSetting;
+use App\Support\Html;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 
@@ -74,6 +75,17 @@ class EditSiteSetting extends EditRecord
 
         $data['emails'] = array_values($rows);
         $data['email_secrets'] = $kept;
+
+        // Sanitize admin-authored rich HTML so a compromised admin session cannot
+        // persist XSS that would run for every public visitor (footer, hero, error
+        // & maintenance pages all render this content raw with {!! !!}).
+        $data['page_content'] = Html::cleanDeep($data['page_content']);
+
+        foreach (['about_body', 'hero_subtitle', 'footer_tagline', 'footer_cta_body'] as $richField) {
+            if (array_key_exists($richField, $data) && is_string($data[$richField])) {
+                $data[$richField] = Html::clean($data[$richField]);
+            }
+        }
 
         return $data;
     }

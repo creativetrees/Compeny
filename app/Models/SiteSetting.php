@@ -15,7 +15,11 @@ class SiteSetting extends Model
         'hero_eyebrow', 'hero_title', 'hero_subtitle',
         'hero_cta_label', 'hero_cta_url', 'hero_cta_secondary_label', 'hero_cta_secondary_url',
         'about_heading', 'about_body',
-        'contact_email', 'contact_phone', 'contact_address', 'social_links', 'emails', 'email_secrets',
+        'contact_email', 'contact_phone', 'contact_address', 'social_links', 'emails',
+        // email_secrets holds AES-encrypted SMTP passwords; it MUST stay fillable for
+        // Filament's update() save path, but is only ever written via EditSiteSetting's
+        // controlled mutateFormDataBeforeSave (extracted from the write-only field).
+        'email_secrets',
         'stats', 'seo_title', 'seo_description', 'seo_keywords', 'seo_image_path',
         'google_analytics_id', 'seo_noindex', 'footer_tagline',
         'footer_cta_eyebrow', 'footer_cta_title', 'footer_cta_body', 'footer_cta_label', 'footer_cta_url',

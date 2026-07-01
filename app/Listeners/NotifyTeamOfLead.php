@@ -28,16 +28,21 @@ class NotifyTeamOfLead
             // the DB); fall back to the default mailer when it isn't fully configured.
             // When used, align the visible From to that account so SMTP auth matches.
             $mailerName = MailAccounts::mailer('no_reply');
-            if ($mailerName) {
-                $sender = MailAccounts::byRole('no_reply');
+            $sender = $mailerName ? MailAccounts::byRole('no_reply') : null;
+            $originalFrom = config('mail.from.address');
+
+            try {
                 if ($sender && filled($sender['address'] ?? null)) {
                     config(['mail.from.address' => $sender['address']]);
                 }
-            }
 
-            Mail::mailer($mailerName ?? config('mail.default'))
-                ->to($to)
-                ->send(new NewLeadMail($lead));
+                Mail::mailer($mailerName ?? config('mail.default'))
+                    ->to($to)
+                    ->send(new NewLeadMail($lead));
+            } finally {
+                // Restore global from so this account's address can't bleed into other mail.
+                config(['mail.from.address' => $originalFrom]);
+            }
         } catch (\Throwable $e) {
             report($e);
         }

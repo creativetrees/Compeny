@@ -4,6 +4,8 @@ namespace App\Filament\Resources\SiteSettings\Schemas;
 
 use App\Enums\SitePage;
 use App\Models\SiteSetting;
+use App\Support\MailAccounts;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -18,7 +20,9 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Mail;
 
 class SiteSettingForm
 {
@@ -595,6 +599,8 @@ class SiteSettingForm
                             ->label('Email address')
                             ->required()
                             ->email()
+                            ->maxLength(255)
+                            ->dehydrateStateUsing(fn (?string $state) => filled($state) ? mb_strtolower(trim($state)) : $state)
                             ->prefixIcon('heroicon-m-envelope')
                             ->placeholder('support@creativetreesgroup.com'),
                         Fieldset::make('Sending (SMTP) — optional')
@@ -624,15 +630,22 @@ class SiteSettingForm
                                     ]),
                                 TextInput::make('host')
                                     ->label('SMTP host')
+                                    ->required(fn (Get $get): bool => filled($get('port')) || filled($get('username')) || filled($get('password')))
+                                    ->maxLength(255)
                                     ->prefixIcon('heroicon-m-globe-alt')
                                     ->placeholder('mail.creativetreesgroup.com'),
                                 TextInput::make('port')
                                     ->label('Port')
                                     ->numeric()
+                                    ->minValue(1)
+                                    ->maxValue(65535)
+                                    ->required(fn (Get $get): bool => filled($get('host')))
                                     ->prefixIcon('heroicon-m-hashtag')
                                     ->placeholder('465'),
                                 TextInput::make('username')
                                     ->label('Username')
+                                    ->maxLength(255)
+                                    ->dehydrateStateUsing(fn (?string $state) => filled($state) ? trim($state) : $state)
                                     ->prefixIcon('heroicon-m-user')
                                     ->placeholder('support@creativetreesgroup.com')
                                     ->helperText('Usually the full email address. Empty = use the address above.'),
@@ -650,12 +663,113 @@ class SiteSettingForm
                     ->reorderable()
                     ->collapsible()
                     ->cloneable()
+                    ->extraItemActions([
+                        Action::make('test_account')
+                            ->label('Send test')
+                            ->icon('heroicon-m-paper-airplane')
+                            ->color('gray')
+                            ->action(function (array $arguments, Repeater $component): void {
+                                self::sendAccountTest($component->getRawItemState($arguments['item']));
+                            }),
+                    ])
                     ->itemLabel(fn (array $state): ?string => filled($state['address'] ?? null)
                         ? trim((filled($state['role'] ?? null) ? ucfirst(str_replace('_', '-', $state['role'])).' — ' : '').$state['address'])
                         : null)
                     ->addActionLabel('Add email address')
                     ->columnSpanFull(),
             ]);
+    }
+
+    /** Send a real test email through one account's own SMTP (to the signed-in admin only). */
+    private static function sendAccountTest(array $item): void
+    {
+        $to = auth()->user()?->email;
+        $address = $item['address'] ?? null;
+
+        if (blank($to)) {
+            Notification::make()->title('No recipient')->body('Your admin account has no email address.')->danger()->send();
+
+            return;
+        }
+
+        if (blank($address)) {
+            Notification::make()->title('Add an email address first')->warning()->send();
+
+            return;
+        }
+
+        // Defense-in-depth: block SMTP hosts that resolve to the local/private network
+        // so this admin-only test can't be used to probe internal services (SSRF-class).
+        $host = strtolower(trim((string) ($item['host'] ?? '')));
+        if ($host !== '' && self::isBlockedMailHost($host)) {
+            Notification::make()->title('Host not allowed')->body('The SMTP host cannot be a private or loopback address.')->danger()->send();
+
+            return;
+        }
+
+        // Use the freshly-typed password if present, otherwise the saved/.env one.
+        $password = filled($item['password'] ?? null) ? $item['password'] : MailAccounts::password($item);
+        $mailerName = MailAccounts::register($item, $password);
+
+        if (! $mailerName) {
+            Notification::make()
+                ->title('SMTP not fully configured')
+                ->body('Set the host and a password (here or in .env) for '.$address.' before sending a test.')
+                ->warning()
+                ->send();
+
+            return;
+        }
+
+        try {
+            // Set From on the message itself (no global config mutation) so this
+            // account's SMTP auth and the visible sender match.
+            Mail::mailer($mailerName)->raw(
+                'Test email from '.config('app.name').' via '.$address.". If you received this, this mailbox's SMTP settings are working.",
+                fn ($message) => $message->from($address)->to($to)->subject('SMTP test — '.$address),
+            );
+
+            Notification::make()->title('Test email sent')->body('Sent from '.$address.' to '.$to.'. Check your inbox (and spam).')->success()->send();
+        } catch (\Throwable $e) {
+            // Map to a generic reason — never echo the raw transport error, which would
+            // expose the SMTP host/port/username to the browser and notifications table.
+            Notification::make()
+                ->title('Test failed for '.$address)
+                ->body(self::mailErrorReason($e))
+                ->danger()
+                ->persistent()
+                ->send();
+        }
+    }
+
+    /** Human, non-revealing reason for a failed SMTP test. */
+    private static function mailErrorReason(\Throwable $e): string
+    {
+        $message = $e->getMessage();
+
+        return match (true) {
+            str_contains($message, 'authenticate') || str_contains($message, 'Authentication') => 'Authentication failed — check the username and password.',
+            str_contains($message, 'Connection') || str_contains($message, 'connect') || str_contains($message, 'timed out') => 'Could not connect — check the SMTP host, port, and encryption.',
+            default => 'Sending failed — check the SMTP settings for this account.',
+        };
+    }
+
+    /** True when a host resolves to a loopback / private / reserved address (SSRF guard). */
+    private static function isBlockedMailHost(string $host): bool
+    {
+        $host = trim($host, '[]');
+
+        if (in_array($host, ['localhost', '::1', '0.0.0.0'], true)) {
+            return true;
+        }
+
+        $ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
+
+        if (filter_var($ip, FILTER_VALIDATE_IP)) {
+            return ! filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE);
+        }
+
+        return false;
     }
 
     // ── Stats ───────────────────────────────────────────────────────────────
