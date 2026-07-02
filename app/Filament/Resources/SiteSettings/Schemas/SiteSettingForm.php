@@ -210,14 +210,14 @@ class SiteSettingForm
                             ->label('Icon / Logo')
                             ->image()->disk('public')->directory('site/logo')->visibility('public')
                             ->imageEditor()->maxSize(2048)
-                            ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/jpeg', 'image/webp'])
-                            ->helperText('Brand icon next to the wordmark (header & footer). Transparent PNG/SVG, max 2 MB. Empty = default mark.'),
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->helperText('Brand icon next to the wordmark (header & footer). Transparent PNG, max 2 MB. Empty = default mark.'),
                         FileUpload::make('favicon_path')
                             ->label('Favicon')
                             ->image()->disk('public')->directory('site/favicon')->visibility('public')
                             ->maxSize(1024)
-                            ->acceptedFileTypes(['image/png', 'image/svg+xml', 'image/x-icon', 'image/vnd.microsoft.icon'])
-                            ->helperText('Browser tab icon (ICO/PNG/SVG), max 1 MB.'),
+                            ->acceptedFileTypes(['image/png', 'image/x-icon', 'image/vnd.microsoft.icon'])
+                            ->helperText('Browser tab icon (ICO/PNG), max 1 MB.'),
                     ]),
                 Section::make('Header menu (navigation)')
                     ->description('Header menu items. Drag to reorder.')

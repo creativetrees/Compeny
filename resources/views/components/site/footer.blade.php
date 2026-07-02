@@ -62,7 +62,7 @@
                         <p class="label-mono mb-5 text-[#8a8a86]">{{ $title }}</p>
                         <ul class="space-y-3">
                             @foreach ($links as $link)
-                                <li><a href="{{ $link->url }}" class="link-underline text-sm text-[#cfcfcc] transition-colors hover:text-paper">{{ $link->label }}</a></li>
+                                <li><a href="{{ safe_url($link->url) }}" class="link-underline text-sm text-[#cfcfcc] transition-colors hover:text-paper">{{ $link->label }}</a></li>
                             @endforeach
                         </ul>
                     </nav>

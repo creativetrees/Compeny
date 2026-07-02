@@ -39,7 +39,7 @@ class TestimonialForm
                 Tab::make('Settings')->icon('heroicon-o-cog-6-tooth')->columns(2)->schema([
                     FileUpload::make('avatar_path')->label('Avatar')
                         ->avatar()->imageEditor()->disk('public')->directory('site/testimonials')->visibility('public')
-                        ->maxSize(2048)->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                        ->maxSize(2048)->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                         ->helperText('Author photo. PNG/JPG/WEBP, max 2 MB.'),
                     Toggle::make('is_featured')->label('Featured')->inline(false)
                         ->helperText('Show this testimonial in featured slots on the site.'),

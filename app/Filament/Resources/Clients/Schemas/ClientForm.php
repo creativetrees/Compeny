@@ -39,7 +39,8 @@ class ClientForm
                             ->directory('clients')
                             ->visibility('public')
                             ->maxSize(2048)
-                            ->helperText('Optional — leave empty to show the name as text only.'),
+                            ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
+                            ->helperText('Optional — leave empty to show the name as text only. PNG/JPG/WEBP.'),
                         Toggle::make('is_featured')
                             ->label('Show in the marquee')
                             ->default(true)

@@ -95,7 +95,7 @@ class ProjectForm
                                     ->directory('site/projects')
                                     ->visibility('public')
                                     ->maxSize(2048)
-                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                                     ->columnSpanFull()
                                     ->helperText('Main image. PNG/JPG/WEBP, max 2 MB.'),
                                 FileUpload::make('gallery')
@@ -108,7 +108,7 @@ class ProjectForm
                                     ->directory('site/projects/gallery')
                                     ->visibility('public')
                                     ->maxSize(2048)
-                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                                     ->columnSpanFull()
                                     ->helperText('Additional images. Drag to reorder. PNG/JPG/WEBP, max 2 MB each.'),
                                 TextInput::make('website_url')

@@ -57,6 +57,19 @@ if (! function_exists('content_title')) {
     }
 }
 
+if (! function_exists('safe_url')) {
+    /**
+     * Guard an admin-authored navigation URL before placing it in an href. Returns
+     * the URL only if it is a safe scheme (relative path, anchor, http/https, mailto,
+     * tel); otherwise the $fallback. Blocks stored-XSS via javascript:/data: URLs and
+     * backslash-normalised offsite links on free-text nav fields (e.g. footer links).
+     */
+    function safe_url(?string $url, string $fallback = '#'): string
+    {
+        return Html::isSafeUrl($url) ? trim((string) $url) : $fallback;
+    }
+}
+
 if (! function_exists('rich_html')) {
     /**
      * Safely render a RichEditor-backed model field with {!! !!}. HTML values are

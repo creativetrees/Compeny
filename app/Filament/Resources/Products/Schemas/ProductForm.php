@@ -96,7 +96,7 @@ class ProductForm
                                     ->directory('site/products')
                                     ->visibility('public')
                                     ->maxSize(2048)
-                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                                    ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                                     ->columnSpanFull()
                                     ->helperText('Main image. PNG/JPG/WEBP, max 2 MB.'),
                             ]),

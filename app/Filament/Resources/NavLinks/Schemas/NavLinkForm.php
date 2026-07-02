@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\NavLinks\Schemas;
 
+use App\Support\Html;
+use Closure;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Section;
@@ -38,7 +40,14 @@ class NavLinkForm
                             ->required()
                             ->prefixIcon('heroicon-m-link')
                             ->placeholder('/work')
-                            ->helperText('Path or full URL.')
+                            ->helperText('Path (/work), anchor (#), or full URL (https://, mailto:, tel:).')
+                            ->rule(static function (): Closure {
+                                return static function (string $attribute, mixed $value, Closure $fail): void {
+                                    if (! Html::isSafeUrl(is_string($value) ? $value : null)) {
+                                        $fail('Enter a relative path (/work), anchor (#), or a full http(s)/mailto/tel URL.');
+                                    }
+                                };
+                            })
                             ->columnSpanFull(),
                     ]),
             ]);

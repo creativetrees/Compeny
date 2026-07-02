@@ -38,7 +38,7 @@ class TeamMemberForm
                     FileUpload::make('photo_path')->label('Photo')
                         ->avatar()->imageEditor()->disk('public')->directory('site/team')
                         ->visibility('public')->maxSize(2048)
-                        ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+                        ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                         ->helperText('Square photo, max 2 MB.'),
                     KeyValue::make('socials')->columnSpanFull()
                         ->keyLabel('Platform')->valueLabel('URL')
