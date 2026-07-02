@@ -25,7 +25,7 @@ class Lead extends Model
 
     protected function casts(): array
     {
-        return ['meta' => 'array'];
+        return ['meta' => 'array', 'notified_at' => 'datetime'];
     }
 
     public function scopeStatus(Builder $query, string $status): Builder

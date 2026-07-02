@@ -105,7 +105,9 @@ class MailAccounts
             'port' => (int) ($account['port'] ?? ($encryption === 'ssl' ? 465 : 587)),
             'username' => ($account['username'] ?? null) ?: ($account['address'] ?? null),
             'password' => $password,
-            'timeout' => null,
+            // Cap the SMTP connect/read wait so a firewalled/unreachable host can't
+            // hang the public lead-submission request for PHP's default ~60s.
+            'timeout' => 10,
         ]);
 
         return $name;

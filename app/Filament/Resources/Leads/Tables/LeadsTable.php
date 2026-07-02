@@ -10,6 +10,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -64,6 +65,17 @@ class LeadsTable
                         'lost' => 'danger',
                         default => 'gray',
                     }),
+                IconColumn::make('notified_at')
+                    ->label('Emailed')
+                    ->boolean()
+                    ->trueIcon('heroicon-m-check-circle')
+                    ->falseIcon('heroicon-m-exclamation-triangle')
+                    ->trueColor('success')
+                    ->falseColor('danger')
+                    ->tooltip(fn (Lead $record): ?string => $record->notified_at
+                        ? null
+                        : ($record->notification_error ?: 'Team email pending'))
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->label('Received')
                     ->since()

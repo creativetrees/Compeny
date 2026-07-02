@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Leads\Schemas;
 
+use App\Models\Lead;
 use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Section;
@@ -43,6 +44,26 @@ class LeadInfolist
                         default => 'gray',
                     }),
                 TextEntry::make('source')->icon('heroicon-m-globe-alt')->placeholder('—'),
+            ]),
+            Section::make('Team notification')->icon('heroicon-m-bell-alert')->columns(2)->schema([
+                TextEntry::make('notification_status')
+                    ->label('Email to team')
+                    ->badge()
+                    ->state(fn (Lead $record): string => $record->notified_at
+                        ? 'Sent'
+                        : ($record->notification_error ? 'Failed' : 'Pending'))
+                    ->color(fn (Lead $record): string => $record->notified_at
+                        ? 'success'
+                        : ($record->notification_error ? 'danger' : 'warning'))
+                    ->icon(fn (Lead $record): string => $record->notified_at
+                        ? 'heroicon-m-check-circle'
+                        : ($record->notification_error ? 'heroicon-m-exclamation-triangle' : 'heroicon-m-clock')),
+                TextEntry::make('notified_at')->label('Sent at')->since()->placeholder('—'),
+                TextEntry::make('notification_error')
+                    ->label('Failure reason')
+                    ->columnSpanFull()
+                    ->visible(fn (Lead $record): bool => filled($record->notification_error))
+                    ->helperText('The team email did not go out. Check the mail account in Site Settings → Email addresses, then contact this lead directly.'),
             ]),
             Section::make('Metadata')->icon('heroicon-m-information-circle')->columns(2)->collapsed()->schema([
                 TextEntry::make('created_at')->label('Received')->since(),
