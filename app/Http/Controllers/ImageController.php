@@ -37,13 +37,22 @@ class ImageController extends Controller
         abort_unless($disk->exists($path), 404);
         abort_unless(Str::startsWith((string) $disk->mimeType($path), 'image/'), 404);
 
-        $cacheKey = 'responsive/'.$width.'/'.$path.'.webp';
+        // Include the source mtime so re-uploading at the same path busts the cache
+        // instead of serving stale WebP variants forever.
+        $stamp = rescue(fn () => $disk->lastModified($path), 0, false);
+        $cacheKey = 'responsive/'.$width.'/'.$stamp.'/'.$path.'.webp';
 
         if (! $disk->exists($cacheKey)) {
             $binary = $this->resizeToWebp($disk->path($path), $width);
 
-            // Unsupported format / no WebP support → fall back to the original.
+            // Unsupported format / no WebP support → fall back to the original, but
+            // log it so a site-wide resize regression isn't invisible.
             if ($binary === null) {
+                logger()->warning('Responsive image resize failed; serving original.', [
+                    'path' => $path,
+                    'width' => $width,
+                ]);
+
                 return redirect($disk->url($path));
             }
 

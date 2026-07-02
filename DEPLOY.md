@@ -57,7 +57,7 @@ Alternatively, set a per-account password in `.env` as `MAIL_<ROLE>_PASSWORD` (f
 - `/admin` access requires the user to have **at least one role** (`canAccessPanel()` → `roles()->exists()`).
 - The **`developer`** role bypasses every permission (global `Gate::before`) — the standard super-admin.
 - Every resource, page, and widget is gated by a Shield permission (`View:*`, `Create:*`, …). Manage them under **Roles**.
-- Grant a non-developer role **`View:Dashboard`** so it has a landing page, plus the `View:<Widget>` / resource permissions it should see.
+- The Dashboard page itself is always reachable (it is excluded from Shield); what a role actually *sees* there is controlled by the per-widget `View:<Widget>` permissions. Grant those (plus the resource permissions the role should have) — there is no `View:Dashboard` permission to grant.
 - After adding any new resource/page/widget, re-run `php artisan shield:generate --all --panel=admin` (the `ShieldCoverageTest` will fail if an entity is un-gated).
 
 ## 5. Routine deploy (updates)

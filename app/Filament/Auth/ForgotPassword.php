@@ -151,7 +151,13 @@ class ForgotPassword extends RequestPasswordReset
                 $code = PasswordResetOtp::issue($user);
 
                 if ($code !== null) {
-                    Mail::to($user->email)->send(new PasswordResetOtpMail($user->name, $code));
+                    try {
+                        Mail::to($user->email)->send(new PasswordResetOtpMail($user->name, $code));
+                    } catch (\Throwable $e) {
+                        // Stay non-enumerating and crash-free on mail failure: report it,
+                        // but still show the same generic success message below.
+                        report($e);
+                    }
                 }
             }
         }

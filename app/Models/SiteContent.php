@@ -22,6 +22,9 @@ class SiteContent extends Model
             try {
                 static::$store = static::query()->pluck('value', 'key')->all();
             } catch (\Throwable $e) {
+                // A DB outage must not silently serve blank defaults with no trace —
+                // report it so the failure is visible, then fall back so pages render.
+                report($e);
                 static::$store = [];
             }
         }
