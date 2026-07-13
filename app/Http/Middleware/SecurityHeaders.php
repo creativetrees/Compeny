@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\View;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -19,6 +20,13 @@ class SecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // Generated before the view renders so it can be embedded in a script tag's
+        // nonce="" attribute; the same value is echoed into the CSP header below so
+        // that one specific tag (e.g. the GA snippet) is allow-listed without ever
+        // weakening script-src with 'unsafe-inline'.
+        $nonce = base64_encode(random_bytes(16));
+        View::share('cspNonce', $nonce);
+
         $response = $next($request);
 
         $headers = [
@@ -47,7 +55,7 @@ class SecurityHeaders
         } else {
             $strict = implode('; ', [
                 "default-src 'self'",
-                "script-src 'self'",
+                "script-src 'self' 'nonce-{$nonce}'",
                 "style-src 'self' 'unsafe-inline' https://fonts.bunny.net",
                 "font-src 'self' https://fonts.bunny.net",
                 "img-src 'self' data: https:",

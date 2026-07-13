@@ -1,5 +1,5 @@
 @php
-    $aboutBody = filled($settings->about_body)
+    $aboutBody = rich_filled($settings->about_body)
         ? $settings->about_body
         : '<p>Creative Trees Group is a digital product studio. We design and engineer software the way the best in-house teams do — close to the problem, fast to ship, and obsessed with the details users actually feel.</p>';
     // about_heading is a RichEditor value but a column (not a page_content key, so

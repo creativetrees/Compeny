@@ -14,7 +14,21 @@ if (! function_exists('content')) {
     {
         $value = data_get(SiteSetting::current()->page_content ?? [], $key);
 
-        return is_string($value) && $value !== '' ? $value : $default;
+        return rich_filled($value) ? $value : $default;
+    }
+}
+
+if (! function_exists('rich_filled')) {
+    /**
+     * True if a stored value has real content once HTML tags are stripped. A
+     * cleared/never-filled RichEditor field saves as "<p></p>" (or similar), not
+     * "" — an ordinary is_string()/filled() check treats that as present, so the
+     * fallback default silently never applies. Used everywhere a RichEditor-backed
+     * field decides whether to use its stored value or fall back to default copy.
+     */
+    function rich_filled(mixed $value): bool
+    {
+        return is_string($value) && trim(strip_tags($value)) !== '';
     }
 }
 

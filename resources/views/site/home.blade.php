@@ -38,7 +38,7 @@
                 </h1>
 
                 <div class="measure mx-auto mt-8 text-[1rem] text-muted sm:text-[1.05rem] richtext" data-reveal data-reveal-delay="0.3">
-                    {!! rich_html(filled($settings->hero_subtitle) ? $settings->hero_subtitle : 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.') !!}
+                    {!! rich_html(rich_filled($settings->hero_subtitle) ? $settings->hero_subtitle : 'We help startups and teams turn ideas into powerful digital products — from strategy and design to scalable engineering.') !!}
                 </div>
 
                 <div class="mt-9 flex items-center justify-center gap-3" data-reveal data-reveal-delay="0.4">
@@ -58,6 +58,17 @@
                 <x-ui.eyebrow plain>▪ {{ content('home.trusted_eyebrow', 'Trusted by innovative teams') }}</x-ui.eyebrow>
             </div>
             <x-ui.marquee :clients="$clients" />
+        </section>
+    @endif
+
+    {{-- ──────────────────── Stats ──────────────────── --}}
+    @if (!empty($settings->stats))
+        <section class="surface-dark frame !border-0 border-t border-line py-16 md:py-20">
+            <div class="grid grid-cols-2 gap-y-10 lg:grid-cols-4 lg:gap-0" data-stagger>
+                @foreach ($settings->stats as $i => $stat)
+                    <x-ui.stat :value="$stat['value'] ?? ''" :label="$stat['label'] ?? ''" :divider="$i > 0" />
+                @endforeach
+            </div>
         </section>
     @endif
 

@@ -66,7 +66,7 @@
                         @if (! empty($member->socials))
                             <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-5">
                                 @foreach ($member->socials as $platform => $url)
-                                    @if ($url)
+                                    @if ($url && \App\Support\Html::isSafeUrl($url))
                                         <a href="{{ $url }}" target="_blank" rel="noopener noreferrer"
                                            class="link-underline font-mono text-[0.64rem] uppercase tracking-widest text-ink/75 hover:text-ink">{{ $platform }} ↗</a>
                                     @endif
@@ -77,8 +77,8 @@
                 </article>
             @empty
                 <div class="col-span-full flex flex-col items-center border border-line bg-panel px-6 py-20 text-center">
-                    <span class="label-mono text-faint">00 / Roster</span>
-                    <p class="measure mt-4 text-[1rem] text-muted">
+                    <span class="label-mono text-ink">00 / Roster</span>
+                    <p class="measure mt-4 text-[1rem] text-ink/80">
                         {!! content_rich('team.empty_message', 'The studio roster is being assembled. In the meantime, the work speaks for itself.') !!}
                     </p>
                     <div class="mt-7">

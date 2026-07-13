@@ -23,7 +23,12 @@ class LeadInfolist
             Section::make('Inquiry')->icon('heroicon-m-chat-bubble-left-right')->columns(2)->schema([
                 TextEntry::make('budget')->icon('heroicon-m-banknotes')->placeholder('—'),
                 TextEntry::make('service_interest')->label('Service interest')->badge()->placeholder('—'),
-                TextEntry::make('message')->html()->prose()->columnSpanFull(),
+                // Public, anonymous, free-text input — never trusted as HTML. Escape first,
+                // then nl2br() the already-safe text so line breaks still render.
+                TextEntry::make('message')
+                    ->html()
+                    ->formatStateUsing(fn (?string $state): string => nl2br(e((string) $state)))
+                    ->prose()->columnSpanFull(),
                 TextEntry::make('status')
                     ->badge()
                     ->formatStateUsing(fn (string $state): string => Str::headline($state))

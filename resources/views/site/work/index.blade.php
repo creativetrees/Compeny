@@ -20,6 +20,7 @@
     {{-- ──────────────────── Filter + grid ──────────────────── --}}
     <section class="frame border-t border-line py-12 md:py-16"
              x-data="workFilter" data-counts="{{ json_encode($counts) }}">
+        <h2 class="sr-only">All projects</h2>
         @if ($categories->isNotEmpty())
             <div class="mb-10 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex flex-wrap gap-2.5" role="group" aria-label="Filter work by category">

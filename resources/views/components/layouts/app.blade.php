@@ -23,8 +23,8 @@
         $gaId = preg_replace('/[^A-Za-z0-9\-]/', '', (string) ($settings->google_analytics_id ?? ''));
     @endphp
     @if ($gaId !== '')
-        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
-        <script>
+        <script nonce="{{ $cspNonce ?? '' }}" async src="https://www.googletagmanager.com/gtag/js?id={{ $gaId }}"></script>
+        <script nonce="{{ $cspNonce ?? '' }}">
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());

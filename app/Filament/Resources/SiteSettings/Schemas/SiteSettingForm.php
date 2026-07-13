@@ -210,6 +210,11 @@ class SiteSettingForm
                             ->label('Icon / Logo')
                             ->image()->disk('public')->directory('site/logo')->visibility('public')
                             ->imageEditor()->maxSize(2048)
+                            // Rendered at ~32px in the header/footer — cap the stored file at a
+                            // sensible size (still sharp on retina) instead of keeping whatever
+                            // resolution the admin's source file happened to be.
+                            ->imageResizeTargetWidth('256')->imageResizeTargetHeight('256')
+                            ->imageResizeMode('contain')->imageResizeUpscale(false)
                             ->acceptedFileTypes(['image/png', 'image/jpeg', 'image/webp'])
                             ->helperText('Brand icon next to the wordmark (header & footer). Transparent PNG, max 2 MB. Empty = default mark.'),
                         FileUpload::make('favicon_path')

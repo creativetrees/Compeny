@@ -42,7 +42,13 @@ class TeamMemberForm
                         ->helperText('Square photo, max 2 MB.'),
                     KeyValue::make('socials')->columnSpanFull()
                         ->keyLabel('Platform')->valueLabel('URL')
-                        ->helperText('e.g. LinkedIn → https://…'),
+                        ->helperText('e.g. LinkedIn → https://…')
+                        // Defense in depth: the public team page also re-checks each URL
+                        // at render time, but drop unsafe schemes (javascript:, data:) here
+                        // too so nothing bad ever reaches storage in the first place.
+                        ->dehydrateStateUsing(fn (?array $state) => collect($state ?? [])
+                            ->filter(fn ($url) => filled($url) && \App\Support\Html::isSafeUrl($url))
+                            ->all()),
                     Toggle::make('is_published')->inline(false)
                         ->helperText('Only published members appear on the public site.'),
                 ]),

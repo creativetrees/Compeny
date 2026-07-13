@@ -45,6 +45,7 @@ Alpine.data('siteHeader', () => ({
     onResize() { if (window.innerWidth >= 1024) this.open = false; },
     openMenu() { this.open = true; },
     closeMenu() { this.open = false; },
+    get menuButtonLabel() { return this.open ? 'Close menu' : 'Open menu'; },
     get headerClass() {
         return this.scrolled
             ? 'border-line/100 bg-paper/85 backdrop-blur'
@@ -130,6 +131,8 @@ function initReveals() {
 
     gsap.utils.toArray('[data-stagger]').forEach((group) => {
         const items = group.querySelectorAll('[data-stagger-item]');
+        if (!items.length) return; // empty listing state (e.g. no results) — nothing to animate
+
         gsap.set(items, { opacity: 0, y: 24, filter: 'blur(6px)' });
         gsap.to(items, {
             opacity: 1,
