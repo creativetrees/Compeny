@@ -22,7 +22,7 @@ class CategoryForm
                             ->prefixIcon('heroicon-m-tag')
                             ->placeholder('Branding')
                             ->helperText('Display name shown to visitors.'),
-                        TextInput::make('slug')->required()
+                        TextInput::make('slug')->required()->unique(ignoreRecord: true)
                             ->prefixIcon('heroicon-m-link')
                             ->placeholder('branding')
                             ->helperText('URL segment — lowercase, no spaces.'),

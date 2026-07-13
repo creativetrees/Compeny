@@ -21,7 +21,7 @@ class PricingTierForm
                         ->placeholder('Sprint')->helperText('Name of the engagement tier.'),
                     TextInput::make('term')->required()->prefixIcon('heroicon-m-clock')
                         ->placeholder('2–4 weeks')->helperText('Typical duration or commitment.'),
-                    RichEditor::make('tagline')->columnSpanFull()
+                    RichEditor::make('tagline')->required()->columnSpanFull()
                         ->placeholder('A focused burst to ship one thing well.')
                         ->helperText('One-line summary shown under the tier name.'),
                 ]),

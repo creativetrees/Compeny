@@ -33,6 +33,7 @@ class ProcessPhaseForm
                             ->helperText('One-line summary.')
                             ->columnSpanFull(),
                         RichEditor::make('body')
+                            ->required()
                             ->placeholder('Describe what happens during this phase…')
                             ->helperText('Full description.')
                             ->columnSpanFull(),

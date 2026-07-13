@@ -24,7 +24,7 @@ class TeamMemberForm
                         ->prefixIcon('heroicon-m-user')
                         ->placeholder('Jane Doe')
                         ->helperText('Full name shown on the team page.'),
-                    TextInput::make('slug')->required()
+                    TextInput::make('slug')->required()->unique(ignoreRecord: true)
                         ->prefixIcon('heroicon-m-link')
                         ->placeholder('jane-doe')
                         ->helperText('URL segment — lowercase, no spaces.'),

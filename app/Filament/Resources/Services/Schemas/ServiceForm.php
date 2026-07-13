@@ -27,6 +27,7 @@ class ServiceForm
                             ->helperText('The name of this service.'),
                         TextInput::make('slug')
                             ->required()
+                            ->unique(ignoreRecord: true)
                             ->prefixIcon('heroicon-m-link')
                             ->placeholder('ux-ui-design')
                             ->helperText('URL segment — lowercase, no spaces.'),

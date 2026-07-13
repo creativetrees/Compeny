@@ -23,7 +23,7 @@ class PrincipleForm
                             ->placeholder('Ship to learn')
                             ->helperText('Short, memorable name for the principle.')
                             ->columnSpanFull(),
-                        RichEditor::make('description')->columnSpanFull()
+                        RichEditor::make('description')->required()->columnSpanFull()
                             ->placeholder('We release early and let real usage guide the next move…')
                             ->helperText('Explain what this principle means in practice.'),
                     ]),

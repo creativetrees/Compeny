@@ -41,6 +41,7 @@ class ProductForm
                                     ->helperText('Shown as the heading on the product card.'),
                                 TextInput::make('slug')
                                     ->required()
+                                    ->unique(ignoreRecord: true)
                                     ->prefixIcon('heroicon-m-hashtag')
                                     ->placeholder('brand-identity-kit')
                                     ->helperText('URL segment — lowercase, no spaces.'),

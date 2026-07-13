@@ -23,7 +23,7 @@ class StartStepForm
                             ->placeholder('Send a brief')
                             ->helperText('Short, action-oriented name for the step.')
                             ->columnSpanFull(),
-                        RichEditor::make('description')->columnSpanFull()
+                        RichEditor::make('description')->required()->columnSpanFull()
                             ->placeholder('Tell us where you are headed and what success looks like…')
                             ->helperText('Explain what happens in this step.'),
                     ]),

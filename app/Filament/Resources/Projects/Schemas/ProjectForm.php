@@ -41,6 +41,7 @@ class ProjectForm
                                     ->helperText('Shown as the heading on the case study.'),
                                 TextInput::make('slug')
                                     ->required()
+                                    ->unique(ignoreRecord: true)
                                     ->prefixIcon('heroicon-m-hashtag')
                                     ->placeholder('acme-rebrand')
                                     ->helperText('URL segment — lowercase, no spaces.'),
