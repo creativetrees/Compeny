@@ -52,4 +52,17 @@ class SiteContentTest extends TestCase
         $this->assertSame('Start now', content('hero.cta', 'Start a project'));
         $this->assertSame('Default CTA', content('missing.key', 'Default CTA'));
     }
+
+    public function test_content_helper_falls_back_when_stored_value_is_an_empty_rich_editor_paragraph(): void
+    {
+        // A RichEditor field that was cleared out (or never filled) in the admin
+        // saves as "<p></p>", not "" — a non-empty string that must still be
+        // treated as blank, or the fallback copy silently disappears site-wide.
+        SiteSetting::query()->updateOrCreate(
+            ['id' => 1],
+            ['page_content' => ['services' => ['hero_intro' => '<p></p>']]],
+        );
+
+        $this->assertSame('Fallback intro', content('services.hero_intro', 'Fallback intro'));
+    }
 }
