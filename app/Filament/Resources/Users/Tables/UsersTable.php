@@ -108,7 +108,11 @@ class UsersTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->action(function ($records) {
+                            $records->reject(fn ($record) => $record->getKey() === auth()->id())
+                                ->each->delete();
+                        }),
                 ]),
             ])
             ->emptyStateIcon('heroicon-o-users')

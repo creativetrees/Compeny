@@ -29,7 +29,7 @@
                 <div class="mb-7 max-w-sm text-[1rem] leading-relaxed text-[#9a9a96] [&_a]:text-paper [&_a]:underline [&_p]:m-0 [&_p+p]:mt-3 [&_strong]:text-paper">
                     {!! rich_html(rich_filled($settings->footer_cta_body) ? $settings->footer_cta_body : "Tell us where you're headed. We'll tell you the shortest honest path to get there.") !!}
                 </div>
-                <x-ui.button href="{{ $settings->footer_cta_url ?: '/start' }}" variant="invert">{{ $settings->footer_cta_label ?: 'Start a project' }}</x-ui.button>
+                <x-ui.button href="{{ safe_url($settings->footer_cta_url, '/start') }}" variant="invert">{{ $settings->footer_cta_label ?: 'Start a project' }}</x-ui.button>
             </div>
         </div>
     </section>
@@ -82,7 +82,7 @@
                                     $sUrl = is_array($social) ? ($social['url'] ?? null) : $social;
                                     $sName = is_array($social) ? ($social['platform'] ?? null) : $key;
                                 @endphp
-                                @if ($sUrl && $sName)
+                                @if ($sUrl && $sName && \App\Support\Html::isSafeUrl($sUrl))
                                     <a href="{{ $sUrl }}" target="_blank" rel="noopener"
                                        class="link-underline font-mono text-xs uppercase tracking-wide text-[#9a9a96] hover:text-paper">{{ $sName }}</a>
                                 @endif

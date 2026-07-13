@@ -65,4 +65,17 @@ class SiteContentTest extends TestCase
 
         $this->assertSame('Fallback intro', content('services.hero_intro', 'Fallback intro'));
     }
+
+    public function test_content_helper_preserves_plain_text_that_looks_like_a_tag(): void
+    {
+        // Plain (non-RichEditor) TextInput copy that happens to contain "<...>" —
+        // e.g. a "<BETA>" badge label — is not HTML and must not be treated as
+        // empty-rich-content just because strip_tags() would eat it.
+        SiteSetting::query()->updateOrCreate(
+            ['id' => 1],
+            ['page_content' => ['home' => ['badge' => '<BETA>']]],
+        );
+
+        $this->assertSame('<BETA>', content('home.badge', 'Fallback'));
+    }
 }

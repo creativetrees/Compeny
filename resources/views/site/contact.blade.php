@@ -104,7 +104,7 @@
                                         $sUrl = is_array($social) ? ($social['url'] ?? null) : $social;
                                         $sName = is_array($social) ? ($social['platform'] ?? null) : $key;
                                     @endphp
-                                    @if ($sUrl && $sName)
+                                    @if ($sUrl && $sName && \App\Support\Html::isSafeUrl($sUrl))
                                         <a href="{{ $sUrl }}" target="_blank" rel="noopener"
                                            class="link-underline font-mono text-xs uppercase tracking-wide text-ink/80 hover:text-ink">{{ $sName }}</a>
                                     @endif

@@ -88,7 +88,7 @@
                                 </ul>
 
                                 <div class="mt-auto pt-10">
-                                    <x-ui.button href="{{ content('pricing.tier_cta_url', '/start') }}" :variant="$featured ? 'invert' : 'solid'" class="w-full justify-center">{{ content('pricing.tier_cta', 'Start a project') }}</x-ui.button>
+                                    <x-ui.button href="{{ safe_url(content('pricing.tier_cta_url', '/start'), '/start') }}" :variant="$featured ? 'invert' : 'solid'" class="w-full justify-center">{{ content('pricing.tier_cta', 'Start a project') }}</x-ui.button>
                                 </div>
                             </div>
                         </div>

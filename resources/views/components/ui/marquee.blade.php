@@ -23,7 +23,7 @@
         <div class="marquee">
             @foreach ($track as $client)
                 @php
-                    $href = filled($client->website_url) ? $client->website_url : null;
+                    $href = safe_url($client->website_url, '') ?: null;
                     $classes = 'marquee-item'.($href ? '' : ' marquee-item--static');
                     $label = $client->name.($href ? ' — visit website' : '');
                 @endphp

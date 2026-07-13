@@ -83,6 +83,9 @@ test.describe('mobile menu — open/close behavior', () => {
         await page.getByRole('button', { name: 'Open menu' }).click();
         const dialog = page.getByRole('dialog', { name: 'Site menu' });
         await expect(dialog).toBeVisible();
+        // The panel has a 0.35s entrance transform animation (menu-panel-in) — wait
+        // for it to settle so the pixel-coverage check below isn't racing it.
+        await dialog.evaluate((el) => Promise.all(el.getAnimations().map((a) => a.finished)));
 
         const box = await dialog.boundingBox();
         const viewport = page.viewportSize();

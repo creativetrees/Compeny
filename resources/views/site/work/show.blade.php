@@ -65,7 +65,7 @@
                                 @endforeach
                             </div>
                         @endif
-                        @if ($project->website_url)
+                        @if ($project->website_url && \App\Support\Html::isSafeUrl($project->website_url))
                             <x-ui.button :href="$project->website_url" variant="ghost" :magnetic="false">{{ content('work.detail_visit', 'Visit site') }}</x-ui.button>
                         @endif
                     </aside>

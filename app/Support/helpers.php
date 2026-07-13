@@ -28,7 +28,20 @@ if (! function_exists('rich_filled')) {
      */
     function rich_filled(mixed $value): bool
     {
-        return is_string($value) && trim(strip_tags($value)) !== '';
+        if (! is_string($value) || $value === '') {
+            return false;
+        }
+
+        // Only genuine RichEditor output starts with a real block tag ("<p...",
+        // "<h2...", etc) — plain TextInput copy never does, even when it happens to
+        // contain "<...>" (a "<BETA>" badge label, "<3"). Only strip tags to check
+        // for emptiness when the value actually looks like rich HTML, so plain text
+        // that merely contains angle brackets isn't mistaken for empty markup.
+        if (! preg_match('/^\s*<(p|h[1-6]|div|ul|ol|blockquote)[ >]/i', $value)) {
+            return trim($value) !== '';
+        }
+
+        return trim(strip_tags($value)) !== '';
     }
 }
 

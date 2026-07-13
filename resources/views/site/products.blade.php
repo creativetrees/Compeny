@@ -79,7 +79,7 @@
                                     <div class="label-mono text-faint">{{ content('products.investment_label', 'Investment') }}</div>
                                     <div class="mt-1.5 font-mono text-xl font-bold tracking-tight">{{ $product->price_label }}</div>
                                 </div>
-                                <x-ui.button :href="$product->cta_url ?? '/start'" variant="ghost" :magnetic="false">
+                                <x-ui.button :href="safe_url($product->cta_url, '/start')" variant="ghost" :magnetic="false">
                                     {{ $product->cta_label ?? 'Request access' }}
                                 </x-ui.button>
                             </div>

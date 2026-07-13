@@ -47,7 +47,7 @@
         {{-- Desktop nav --}}
         <nav class="hidden items-center gap-7 lg:flex" aria-label="Primary">
             @foreach ($nav as $item)
-                <a href="{{ $item['url'] }}"
+                <a href="{{ safe_url($item['url']) }}"
                    @class([
                        'link-underline font-mono text-[0.78rem] uppercase tracking-wide text-ink/80 transition-colors hover:text-ink',
                    ])
@@ -96,7 +96,7 @@
 
         <nav class="frame !border-0 mt-6 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain pb-10" aria-label="Mobile">
             @foreach ($nav as $i => $item)
-                <a href="{{ $item['url'] }}"
+                <a href="{{ safe_url($item['url']) }}"
                    class="menu-link display flex items-baseline gap-4 border-b border-line py-5 text-3xl"
                    style="animation-delay: {{ 80 + $i * 55 }}ms"
                    @click="closeMenu()">
